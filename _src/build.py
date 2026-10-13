@@ -38,6 +38,7 @@ GENRE = {
     "i-spoke-baby-dragon-and-won-everyone-over-628653": ["Fantasy"],
     "rejected-luna-is-the-alpha-queen-69fa0a97": ["Fantasy", "Romance", "Revenge"],
     "the-empresss-final-wish-6a06bb65": ["Royal", "Family"],
+    "my-billionaire-boss-wont-let-me-quit-6a792e03": ["Romance"],  # thiếu thì phim biến mất dưới mọi bộ lọc Thể loại
 }
 SOCIAL = [("TikTok", "https://www.tiktok.com/@swoonflicks"), ("Instagram", "https://www.instagram.com/swoonflicks"),
           ("YouTube", "https://www.youtube.com/@swoonflicks"), ("Facebook", "https://www.facebook.com/swoonflicks")]
@@ -79,14 +80,16 @@ def metal(t):
 
 def head(title, desc, path, img=None, extra="", noindex=False, src=""):
     cfg = dict(CFG, src=src)
-    og = f'<meta property="og:image" content="{BASE}{img}"><meta name="twitter:card" content="summary_large_image">' if img else ""
+    # OG phim là ảnh dọc 600x800: summary_large_image (khung ngang) sẽ cắt nát, dùng summary; home.jpg ngang giữ large
+    tw = "summary_large_image" if img and img.endswith("home.jpg") else "summary"
+    og = f'<meta property="og:image" content="{BASE}{img}"><meta name="twitter:card" content="{tw}">' if img else ""
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>{e(title)}</title><meta name="description" content="{e(desc)}">
-<link rel="canonical" href="{BASE}{path}">{'<meta name="robots" content="noindex,follow">' if noindex else ''}
+{f'<link rel="canonical" href="{BASE}{path}">' if path else ''}{'<meta name="robots" content="noindex,follow">' if noindex else ''}
 <meta name="theme-color" content="#0b0806"><link rel="icon" href="/img/logo-64.png">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Swoonflicks">
-<meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{BASE}{path}">{og}
+<meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">{f'<meta property="og:url" content="{BASE}{path}">' if path else ''}{og}
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="{FONTS}" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="{FONTS}"></noscript>
 <style>{CSS}</style>
@@ -108,7 +111,7 @@ def card(f, big=False, lazy=True):
     img = f"/img/{f['slug']}-h.webp" if big else f"/img/{f['slug']}.webp"
     w, h = (720, 960) if big else (360, 480)
     return f'''<a class="cd{' big' if big else ''}" href="/{f['slug']}/" data-app="{e(f['app'])}" data-genre="{e('|'.join(f['genre']))}">
-<img src="{img}" alt="{e(f['title'])} poster" width="{w}" height="{h}"{' loading="lazy"' if lazy else ' fetchpriority="high"'} decoding="async">
+<img src="{img}" alt="{e(f['title'])} poster" width="{w}" height="{h}"{' loading="lazy"' if lazy else ' fetchpriority="high"' if big else ''} decoding="async">
 <span class="badge">{e(f['app'])}</span><div class="in"><h2>{e(f['title'])}</h2><span class="go">Watch free {ARROW}</span></div></a>'''
 
 
@@ -123,8 +126,8 @@ def hub_page(films, path="/", src=""):
     apps = sorted({f["app"] for f in films})
     genres = sorted({g for f in films for g in f["genre"]})
     chip = lambda k, v, lbl, on=False: f'<button type="button" class="chip" data-k="{k}" data-v="{e(v)}" aria-pressed="{str(on).lower()}">{e(lbl)}</button>'
-    flt = ('<div class="flt"><div class="chips"><b>App</b>' + chip("app", "", "All", True) + "".join(chip("app", a, a) for a in apps) +
-           '</div><div class="chips"><b>Genre</b>' + chip("genre", "", "All", True) + "".join(chip("genre", g, g) for g in genres) + "</div></div>")
+    flt = ('<div class="flt"><div class="chips" role="group" aria-label="Filter by app"><b aria-hidden="true">App</b>' + chip("app", "", "All", True) + "".join(chip("app", a, a) for a in apps) +
+           '</div><div class="chips" role="group" aria-label="Filter by genre"><b aria-hidden="true">Genre</b>' + chip("genre", "", "All", True) + "".join(chip("genre", g, g) for g in genres) + "</div></div>")
     grid = "\n".join(card(f, big=(i == 0), lazy=(i > 2)) for i, f in enumerate(films))
     desc = "Free episodes of the short dramas everyone is binging. Pick a drama, watch the free part, then finish it on the app."
     return head("Swoonflicks · Free short drama episodes", desc, "/", "/img/og/home.jpg", noindex=(path != "/"), src=src) + f'''
@@ -142,11 +145,11 @@ function poll(){clearInterval(tick);tick=setInterval(function(){if(!P||!P.getDur
 [25,50,75,95].forEach(function(m){var k=cur+m;if(!marks[k]&&t/d*100>=m){marks[k]=1;T('VideoProgress',{percent:m})}})},1000)}
 function start(v){cur=v;if(P){P.loadVideoById(v);return}var host=document.createElement('div');host.className='vid';pl.innerHTML='';pl.appendChild(host);
 var go=function(){P=new YT.Player(host,{host:'https://www.youtube-nocookie.com',videoId:v,playerVars:{autoplay:1,playsinline:1,rel:0,modestbranding:1},
-events:{onStateChange:function(s){if(s.data===1){if(!marks[cur+'p']){marks[cur+'p']=1;T('VideoPlay')}poll()}else clearInterval(tick)}}})};
+events:{onReady:function(e){var f=e.target.getIframe();f.title=b.title+' video';f.focus()},onStateChange:function(s){if(s.data===1){if(!marks[cur+'p']){marks[cur+'p']=1;T('VideoPlay')}poll()}else clearInterval(tick)}}})};
 if(window.YT&&YT.Player)go();else{window.onYouTubeIframeAPIReady=go;var s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';document.head.appendChild(s)}}
 var btn=pl&&pl.querySelector('.play');if(btn)btn.onclick=function(){start(btn.dataset.v)};
 document.querySelectorAll('.parts .chip').forEach(function(c){c.onclick=function(){document.querySelectorAll('.parts .chip').forEach(function(x){x.setAttribute('aria-pressed',x===c)});
-start(c.dataset.v);pl.scrollIntoView({behavior:'smooth',block:'center'})}});
+start(c.dataset.v);pl.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'})}});
 var bar=document.querySelector('.bar'),cta=document.querySelector('.cta');if(bar&&cta&&'IntersectionObserver'in window)
 new IntersectionObserver(function(es){bar.classList.toggle('on',es[0].intersectionRatio<.9)},{threshold:[0,.9,1]}).observe(cta)})()</script>'''
 
@@ -199,9 +202,10 @@ def privacy_page():
 <h2>Tools we use</h2>
 <p>When enabled, Google Analytics, the Meta Pixel and the TikTok Pixel receive these events so we can count visits and show
 our videos to people who are likely to enjoy them. Free episodes play through YouTube's privacy-enhanced mode (youtube-nocookie.com)
-and only load when you press play.</p>
+and only load when you press play; pressing play also loads YouTube's player script from youtube.com.</p>
 <h2>Your choice</h2>
-<p>Visitors in the EU and UK are asked before any of these tools load. You can change your answer by clearing this site's data in your browser.</p>
+<p>Visitors in the EU and UK are asked before any of these tools load. You can change your answer at any time:
+<button type="button" class="chip" onclick="try{localStorage.removeItem('sf_consent')}catch(e){}location.reload()">Cookie settings</button></p>
 <h2>Affiliate links</h2>
 <p>Links to drama apps are affiliate links. If you watch or subscribe there, we may earn a commission at no extra cost to you.
 What you do inside those apps is covered by their own privacy policies.</p>
@@ -210,7 +214,7 @@ What you do inside those apps is covered by their own privacy policies.</p>
 
 
 def nf_page():
-    return head("Not found · Swoonflicks", "This page does not exist.", "/404.html", noindex=True) + f'''
+    return head("Not found · Swoonflicks", "This page does not exist.", None, noindex=True) + f'''
 <body><main class="wrap"><header class="hd"><h1>{metal("Lost the plot?")}</h1>
 <p class="tag">This page does not exist. The dramas are all on the shelf.</p>
 <a class="cta" href="/" style="max-width:320px;margin:20px auto">Back to all dramas {ARROW}</a></header>{FOOT}</main></body></html>'''
@@ -226,6 +230,11 @@ for r in csv.DictReader(open(SD / "ke" / "shelf.csv", encoding="utf-8")):
     slug = re.sub(r"-[0-9a-f]{6,8}$", "", r["film"])
     films.append(dict(id=r["film"], slug=slug, title=r["title"], app=r["app"] or "ReelShort", link=link, d=d,
                       genre=GENRE.get(r["film"], []), syn=synopsis(d)))
+slugs = [f["slug"] for f in films]
+assert len(slugs) == len(set(slugs)), f"slug trùng: {sorted({x for x in slugs if slugs.count(x) > 1})}"
+for f in films:
+    if not f["genre"]:
+        print(f"CẢNH BÁO: {f['id']} chưa có genre trong GENRE, sẽ biến mất khi lọc Thể loại")
 films.sort(key=lambda f: ORDER.index(f["id"]) if f["id"] in ORDER else len(ORDER))
 
 # ---------- dọn bản cũ (giữ .git, CNAME) ----------
