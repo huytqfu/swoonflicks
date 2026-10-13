@@ -3,6 +3,7 @@
    Mục đích (MASTER-PLAN-v2 §6): tệp retarget/lookalike người xem video + bấm link, đếm click theo phim/nguồn. Không tối ưu purchase.
    Mỗi sự kiện có event_id để sau này gửi trùng qua CAPI / Events API (khử trùng). ?debug=1 in sự kiện ra console. */
 (function (W, D) {
+  if (W.SFT) return; // nạp 2 lần = mọi sự kiện bắn đôi
   var C = W.SF || {}, LS, SS, q = new URLSearchParams(location.search);
   try { LS = W.localStorage; SS = W.sessionStorage } catch (e) {}
   function get(s, k) { try { return s && s.getItem(k) } catch (e) { return null } }
@@ -26,7 +27,10 @@
 
   // 2. Đồng ý cookie: chỉ hỏi khách múi giờ châu Âu/UK; nơi khác bật luôn. Chưa trả lời = chưa tải pixel, sự kiện xếp hàng.
   var tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '' } catch (e) {}
-  var EU = /^Europe\//.test(tz) || /^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz);
+  // múi trống / Etc/* (VPN, UTC) coi như EU cho chắc; thêm Síp, Ceuta, Svalbard, lãnh thổ hải ngoại Pháp
+  var EU = !tz || /^Etc\//.test(tz) || /^Europe\//.test(tz) || /^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz) ||
+    /^(Asia\/(Nicosia|Famagusta)|Africa\/Ceuta|Arctic\/Longyearbyen|Indian\/(Reunion|Mayotte)|America\/(Martinique|Guadeloupe|Cayenne|Marigot|St_Barthelemy))$/.test(tz);
+  var ANY = !!(C.ga4 || C.meta || C.tiktok);
   var consent = EU ? get(LS, 'sf_consent') : 'yes', loaded = false, queue = [];
 
   function script(src) { var s = D.createElement('script'); s.async = true; s.src = src; D.head.appendChild(s) }
@@ -34,7 +38,10 @@
     if (loaded) return; loaded = true;
     if (C.ga4) {
       W.dataLayer = W.dataLayer || []; W.gtag = function () { dataLayer.push(arguments) };
-      gtag('js', new Date()); gtag('config', C.ga4, { transport_type: 'beacon' });
+      // load() chỉ chạy sau khi đồng ý hoặc ngoài EU, nên mặc định granted; tín hiệu v2 cần cho remarketing Google Ads ở EEA
+      gtag('consent', 'default', { ad_storage: 'granted', analytics_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted' });
+      var u = new URL(location.href); u.searchParams.delete('fbclid'); u.searchParams.delete('ttclid');
+      gtag('js', new Date()); gtag('config', C.ga4, { transport_type: 'beacon', page_location: u.href });
       script('https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(C.ga4));
     }
     if (C.meta) {
@@ -60,15 +67,18 @@
   }
 
   // 3. Gửi: tên sự kiện chung -> tên chuẩn từng nền
-  var GA = { ViewContent: 'view_film', ClickAffiliate: 'click_affiliate', VideoPlay: 'video_start', VideoProgress: 'video_progress' };
-  function send(name, p, id) {
+  var GA = { ViewContent: 'view_film', ClickAffiliate: 'click_affiliate', VideoPlay: 'video_start', VideoProgress: 'video_progress', Filter: 'filter_select' };
+  function send(name, p0, id) {
+    // click id không gửi thành tham số (pixel Meta/TikTok tự đọc từ URL), tránh nổ cardinality GA4
+    var p = Object.assign({}, p0); delete p.fbclid; delete p.ttclid; delete p.gclid;
+    var ads = name !== 'Filter'; // lọc kệ chỉ đếm ở GA4, không đổ rác vào tệp quảng cáo
     var item = p.film ? [{ content_id: p.film, content_name: p.title, content_type: 'product', content_category: p.app }] : [];
     if (W.gtag && C.ga4) gtag('event', GA[name] || name, Object.assign({ event_id: id }, p));
-    if (W.fbq && C.meta) {
+    if (W.fbq && C.meta && ads) {
       if (name === 'ViewContent') fbq('track', 'ViewContent', Object.assign({ content_ids: [p.film], content_name: p.title, content_type: 'product', content_category: p.app }, p), { eventID: id });
       else fbq('trackCustom', name, p, { eventID: id });
     }
-    if (W.ttq && C.tiktok) {
+    if (W.ttq && C.tiktok && ads) {
       var tp = Object.assign({ contents: item, content_type: 'product' }, p);
       ttq.track(name === 'ClickAffiliate' ? 'ClickButton' : name, tp, { event_id: id });
     }
@@ -80,7 +90,8 @@
     if (consent !== 'yes') { if (consent !== 'no') queue.push([name, p, id]); return }
     loaded ? send(name, p, id) : queue.push([name, p, id]);
   }
-  W.SFT = { track: track };
+  // rút lại đồng ý (GDPR 7(3)): nút "Cookie settings" ở trang privacy gọi SFT.reset()
+  W.SFT = { track: track, reset: function () { try { LS.removeItem('sf_consent') } catch (e) {} location.reload() } };
 
   function banner() {
     var b = D.createElement('div'); b.className = 'cb'; b.setAttribute('role', 'dialog'); b.setAttribute('aria-label', 'Cookie consent');
@@ -88,13 +99,13 @@
       '<div><button type="button" class="n">Decline</button><button type="button" class="y">Accept</button></div>';
     b.querySelector('.y').onclick = function () { put(LS, 'sf_consent', 'yes'); consent = 'yes'; b.remove(); load() };
     b.querySelector('.n').onclick = function () { put(LS, 'sf_consent', 'no'); consent = 'no'; queue.length = 0; b.remove() };
-    D.body.appendChild(b);
+    D.body.appendChild(b); b.querySelector('.y').focus({ preventScroll: true });
   }
 
   // 4. Gắn tự động: trang phim -> ViewContent; link có data-aff -> ClickAffiliate (link CPS giữ nguyên, không cloak)
   function film() { var b = D.body.dataset; return b.film ? { film: b.film, title: b.title, app: b.app } : {} }
   function boot() {
-    if (consent === 'yes') load(); else if (consent !== 'no') banner();
+    if (consent === 'yes') load(); else if (consent !== 'no' && ANY) banner();
     if (D.body.dataset.film) track('ViewContent', film());
     D.addEventListener('click', function (e) {
       var a = e.target.closest && e.target.closest('a[data-aff]');
