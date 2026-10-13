@@ -4,7 +4,7 @@
 <link rel="canonical" href="https://swoonflicks.com/mech-god-from-the-dark-side-of-the-moon/">
 <meta name="theme-color" content="#0b0806"><link rel="icon" href="/img/logo-64.png">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Swoonflicks">
-<meta property="og:title" content="Mech God from the Dark Side of the Moon · Watch free | Swoonflicks"><meta property="og:description" content="Betrayed by his father and left among lunar monsters, Ethan returns with godlike power. When his family steals his victory and a city casts him out, he…"><meta property="og:url" content="https://swoonflicks.com/mech-god-from-the-dark-side-of-the-moon/"><meta property="og:image" content="https://swoonflicks.com/img/og/mech-god-from-the-dark-side-of-the-moon.jpg"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:title" content="Mech God from the Dark Side of the Moon · Watch free | Swoonflicks"><meta property="og:description" content="Betrayed by his father and left among lunar monsters, Ethan returns with godlike power. When his family steals his victory and a city casts him out, he…"><meta property="og:url" content="https://swoonflicks.com/mech-god-from-the-dark-side-of-the-moon/"><meta property="og:image" content="https://swoonflicks.com/img/og/mech-god-from-the-dark-side-of-the-moon.jpg"><meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Playfair+Display:wght@900&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Playfair+Display:wght@900&display=swap"></noscript>
 <style>/* Swoonflicks site. Concept = cover kênh: serif ánh kim (Playfair 900), viền nâu đen, "FREE EPISODES" Cinzel kẹp 2 lằn gạch, nền nâu đen. */
@@ -33,6 +33,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .hd{text-align:center;padding:26px 0 4px}
 .hd .logo{width:60px;height:60px;margin:0 auto 12px;border-radius:50%;background:var(--card);box-shadow:0 0 0 2px var(--gold-lo),0 8px 24px rgba(0,0,0,.6)}
 .hd h1{font-size:clamp(32px,10.5vw,52px);letter-spacing:.01em}
+.hd.sm{padding-top:16px}.hd.sm .hl{display:flex;align-items:center;justify-content:center;gap:10px}
+.hd.sm .logo{width:40px;height:40px;margin:0}.hd.sm h1{font-size:clamp(28px,8.5vw,40px)}.hd.sm .plq{margin-top:6px}
 .plq{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px}
 .plq i{height:2px;flex:0 1 70px;border-radius:1px;background:linear-gradient(90deg,transparent,var(--gold))}
 .plq i:last-child{background:linear-gradient(270deg,transparent,var(--gold))}
@@ -40,33 +42,34 @@ button{font:inherit;color:inherit;cursor:pointer}
 .tag{color:var(--mut);font-size:14px;margin:12px auto 0;max-width:30em}
 
 /* bộ lọc */
-.flt{position:sticky;top:0;z-index:5;margin:16px -16px 0;padding:10px 0;display:grid;gap:8px;background:rgba(11,8,6,.9);
+.flt{position:static;margin:16px -16px 0;padding:10px 0;display:grid;gap:8px;background:rgba(11,8,6,.9);
 -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid rgba(58,42,24,.6)}
 .chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:0 16px}
 .chips::-webkit-scrollbar{display:none}
-.chips b{flex:none;align-self:center;font:700 10px/1 system-ui;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-lo);width:44px}
-.chip{flex:none;border:1px solid var(--line);background:var(--card);font-weight:600;font-size:13px;line-height:1;padding:9px 14px;border-radius:999px}
-.chip[aria-pressed=true]{background:var(--face);color:var(--brown);border-color:transparent}
+.chips b{flex:none;align-self:center;font:700 10px/1 system-ui;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);width:44px}
+.chip{flex:none;min-height:44px;display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--card);font-weight:600;font-size:13px;line-height:1;padding:0 15px;border-radius:999px}
+.chip[aria-pressed=true]{background:#1f1608;color:var(--gold-hi);border-color:var(--gold)}
 
 /* thẻ phim */
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:14px 0 6px}
 @media(min-width:620px){.grid{grid-template-columns:repeat(3,1fr)}}
-.cd{position:relative;display:block;border-radius:14px;overflow:hidden;background:var(--card);aspect-ratio:3/4;
+.cd{position:relative;display:flex;flex-direction:column;border-radius:14px;overflow:hidden;background:var(--card);
 box-shadow:0 0 0 1px var(--line),0 10px 24px rgba(0,0,0,.45);transition:transform .15s}
 .cd:active{transform:scale(.98)}
-.cd img{width:100%;height:100%;object-fit:cover}
-.cd::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(8,5,3,.97) 0%,rgba(8,5,3,.72) 30%,rgba(8,5,3,0) 58%)}
-.cd .in{position:absolute;left:0;right:0;bottom:0;padding:10px;z-index:1}
-.cd h2{font:900 15px/1.2 var(--disp);color:var(--gold-hi);text-shadow:0 2px 6px #000;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.go{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font:700 12px/1 system-ui;color:var(--brown);background:var(--face);padding:7px 10px;border-radius:999px}
+.cd img{width:100%;height:auto;aspect-ratio:3/4;object-fit:cover}
+.cd .in{flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:10px 10px 12px;border-top:1px solid var(--line)}
+.cd h2{font:900 15px/1.2 var(--disp);color:var(--gold-hi);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.go{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font:700 12px/1 system-ui;color:var(--gold)}
 .go svg{width:9px;height:9px;fill:currentColor}
 .badge{position:absolute;top:8px;left:8px;z-index:1;font:700 10px/1 system-ui;letter-spacing:.08em;text-transform:uppercase;
-background:rgba(11,8,6,.78);border:1px solid var(--gold-lo);color:var(--gold);padding:5px 7px;border-radius:6px}
-.cd.big{grid-column:1/-1;aspect-ratio:4/3}
-.cd.big img{object-position:50% 22%}
+background:rgba(11,8,6,.72);color:var(--txt);padding:5px 7px;border-radius:6px}
+.cd.big{grid-column:1/-1}
+.cd.big img{aspect-ratio:4/3;object-position:50% 22%}
 .cd.big h2{font-size:22px}
 .cd[hidden]{display:none}
 .empty{text-align:center;color:var(--mut);padding:30px 0}
+.empty .chip{margin-top:12px;color:var(--txt)}
+.empty[hidden]{display:none}
 
 /* mạng xã hội + chân trang */
 .h3{font:700 12px/1 system-ui;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);text-align:center;margin-top:28px}
@@ -79,29 +82,33 @@ background:rgba(11,8,6,.78);border:1px solid var(--gold-lo);color:var(--gold);pa
 .top{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
 .back{font-weight:600;font-size:14px;color:var(--mut);padding:6px 0}
 .top .brand{font:900 16px var(--disp);letter-spacing:.06em;color:var(--gold)}
-.pl{position:relative;width:min(100%,400px,calc(70vh * 9 / 16));aspect-ratio:9/16;margin:0 auto;border-radius:16px;overflow:hidden;background:#000;
+.pl{position:relative;width:min(100%,400px,calc(62svh * 9 / 16));aspect-ratio:9/16;margin:0 auto;border-radius:16px;overflow:hidden;background:#000;
 box-shadow:0 0 0 1px var(--line),0 18px 40px rgba(0,0,0,.6)}
-.pl.ps{width:min(100%,420px,calc(64vh * 3 / 4));aspect-ratio:3/4}
+.pl.ps{width:min(100%,420px,calc(38svh * 3 / 4));aspect-ratio:3/4}
 .pl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .pl .play{position:absolute;inset:0;width:100%;display:grid;place-items:center;border:0;background:linear-gradient(0deg,rgba(0,0,0,.6),rgba(0,0,0,.05) 50%)}
 .btnp{width:76px;height:76px;border-radius:50%;background:var(--face);display:grid;place-items:center;box-shadow:0 0 0 7px rgba(240,195,90,.22),0 10px 30px rgba(0,0,0,.6)}
 .btnp svg{width:28px;height:28px;fill:var(--brown);margin-left:5px}
 .pl .lbl{position:absolute;left:0;right:0;bottom:16px;text-align:center;font:700 12px system-ui;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-hi);text-shadow:0 2px 6px #000}
-.pl .vid{position:absolute;inset:0;width:100%;height:100%;border:0}
+.pl .vid{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0}
+.pl .vid.on{opacity:1}
+.pst{text-align:center;color:var(--mut);font-size:13px;min-height:1px;margin-top:8px}
+.pst:empty{margin:0}
 .parts{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:12px -16px 0;padding:0 16px;justify-content:safe center}
 .parts::-webkit-scrollbar{display:none}
-.ttl{text-align:center;margin-top:18px}
-.ttl h1{font-size:clamp(26px,7.6vw,38px)}
-.meta{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:12px}
-.meta span{font-weight:600;font-size:12px;color:var(--mut);border:1px solid var(--line);padding:4px 10px;border-radius:999px}
+.ttl{text-align:center;margin:4px 0 14px}
+.ttl h1{font-size:clamp(24px,7vw,36px);text-wrap:balance}
+.ttl .m{line-height:1.16}.ttl .m .l0{-webkit-text-stroke-width:.08em}.ttl .m .l1{-webkit-text-stroke-width:.025em;transform:translateY(.035em)}
+.ttl .m .l2{-webkit-text-stroke-width:.4px;background-size:100% 1.16em}
+.meta{font-weight:600;font-size:13px;color:var(--mut);margin-top:8px}
 .cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin:18px 0 8px;padding:15px 18px;border-radius:14px;background:var(--face);color:var(--brown);
 font:800 17px/1.2 system-ui;text-align:center;box-shadow:0 10px 28px rgba(240,195,90,.2),inset 0 -2px 0 rgba(0,0,0,.18)}
 .cta small{display:block;font-weight:600;font-size:12px;opacity:.78;margin-top:2px}
-.cta svg{width:12px;height:12px;fill:currentColor;flex:none}
+.cta svg{width:14px;height:14px;flex:none}
 .note{text-align:center;color:var(--mut);font-size:12px}
 .syn{margin-top:22px;padding:16px;background:var(--card);border-radius:14px;box-shadow:0 0 0 1px var(--line)}
-.syn h2{font:700 12px/1 system-ui;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
-.syn p{color:#ddd0b8}
+.syn summary{font:700 12px/1 system-ui;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);cursor:pointer;min-height:24px;display:flex;align-items:center}
+.syn p{color:#ddd0b8;margin-top:10px}
 .more{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:12px -16px 0;padding:0 16px 4px}
 .more::-webkit-scrollbar{display:none}
 .more .cd{flex:0 0 40%;max-width:200px}
@@ -135,41 +142,43 @@ border-radius:14px;padding:14px;font-size:13px;box-shadow:0 10px 30px #000}
 </head>
 <body data-film="mech-god-from-the-dark-side-of-the-moon" data-title="Mech God from the Dark Side of the Moon" data-app="NetShort"><main class="wrap">
 <div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/">SWOONFLICKS</a></div>
+<div class="ttl"><h1><span class="m"><span class="l0">Mech God from the Dark Side of the Moon</span><span class="l1" aria-hidden="true">Mech God from the Dark Side of the Moon</span><span class="l2" aria-hidden="true">Mech God from the Dark Side of the Moon</span></span></h1><p class="meta">NetShort · Sci-Fi · Revenge</p></div>
 <div class="pl ps"><img src="/img/mech-god-from-the-dark-side-of-the-moon-h.webp" alt="Mech God from the Dark Side of the Moon poster" width="720" height="960" fetchpriority="high"></div>
-<p class="note" style="margin-top:10px">Free parts are on our <a href="https://www.tiktok.com/@swoonflicks" rel="noopener" target="_blank"><u>TikTok</u></a>
-and <a href="https://www.instagram.com/swoonflicks" rel="noopener" target="_blank"><u>Instagram</u></a>.</p>
-<div class="ttl"><h1><span class="m"><span class="l0">Mech God from the Dark Side of the Moon</span><span class="l1" aria-hidden="true">Mech God from the Dark Side of the Moon</span><span class="l2" aria-hidden="true">Mech God from the Dark Side of the Moon</span></span></h1><div class="meta"><span>NetShort</span><span>Sci-Fi</span><span>Revenge</span></div></div>
-<a class="cta" href="https://r.reelsgo.tv/9XLeiiiFdJxO" target="_blank" rel="nofollow sponsored noopener" data-aff="main" data-film="mech-god-from-the-dark-side-of-the-moon" data-app="NetShort" data-title="Mech God from the Dark Side of the Moon"><span>Watch the full drama on NetShort<small>Continue the story in the app</small></span><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></a>
+<p class="note" style="margin-top:10px">No free part on this site yet. Start from Part 1 in NetShort.</p><p class="pst" role="status"></p>
+<a class="cta" href="https://r.reelsgo.tv/9XLeiiiFdJxO" target="_blank" rel="nofollow sponsored noopener" data-aff="main" data-film="mech-god-from-the-dark-side-of-the-moon" data-app="NetShort" data-title="Mech God from the Dark Side of the Moon"><span>Watch full on NetShort<small>Continues in the NetShort app</small></span><svg class="ext" viewBox="0 0 12 12" aria-hidden="true"><path d="M4 1h7v7M11 1L3 9M1 4v7h7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
 <p class="note">Opens NetShort. Affiliate link: we may earn a commission.</p>
-<section class="syn"><h2>The story</h2><p>Betrayed by his father and left among lunar monsters, Ethan returns with godlike power. When his family steals his victory and a city casts him out, he builds a twelve-winged mech for those who trust him. As an alien emperor threatens humanity, the discarded son turns the entire planet into a weapon.</p></section>
+<details class="syn"><summary>The story</summary><p>Betrayed by his father and left among lunar monsters, Ethan returns with godlike power. When his family steals his victory and a city casts him out, he builds a twelve-winged mech for those who trust him. As an alien emperor threatens humanity, the discarded son turns the entire planet into a weapon.</p></details>
 <p class="h3">More dramas</p><div class="more"><a class="cd" href="/dragons-bow-to-the-trash/" data-app="NetShort" data-genre="Fantasy">
 <img src="/img/dragons-bow-to-the-trash.webp" alt="Dragons Bow To The Trash poster" width="360" height="480" loading="lazy" decoding="async">
-<span class="badge">NetShort</span><div class="in"><h2>Dragons Bow To The Trash</h2><span class="go">Watch free <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a><a class="cd" href="/mommy-i-m-not-lying/" data-app="ShortMax" data-genre="Family">
+<span class="badge">NetShort</span><div class="in"><h2>Dragons Bow To The Trash</h2><span class="go">Watch on NetShort <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a><a class="cd" href="/mommy-i-m-not-lying/" data-app="ShortMax" data-genre="Family">
 <img src="/img/mommy-i-m-not-lying.webp" alt="Mommy, I&#x27;m Not Lying poster" width="360" height="480" loading="lazy" decoding="async">
-<span class="badge">ShortMax</span><div class="in"><h2>Mommy, I&#x27;m Not Lying</h2><span class="go">Watch free <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a><a class="cd" href="/the-unbound-rise-of-the-godslayer/" data-app="ShortMax" data-genre="Fantasy">
+<span class="badge">ShortMax</span><div class="in"><h2>Mommy, I&#x27;m Not Lying</h2><span class="go">Watch on ShortMax <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a><a class="cd" href="/the-unbound-rise-of-the-godslayer/" data-app="ShortMax" data-genre="Fantasy">
 <img src="/img/the-unbound-rise-of-the-godslayer.webp" alt="The Unbound: Rise of the Godslayer poster" width="360" height="480" loading="lazy" decoding="async">
 <span class="badge">ShortMax</span><div class="in"><h2>The Unbound: Rise of the Godslayer</h2><span class="go">Watch free <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a><a class="cd" href="/i-spoke-baby-dragon-and-won-everyone-over/" data-app="NetShort" data-genre="Fantasy">
 <img src="/img/i-spoke-baby-dragon-and-won-everyone-over.webp" alt="I Spoke Baby Dragon and Won Everyone Over! poster" width="360" height="480" loading="lazy" decoding="async">
-<span class="badge">NetShort</span><div class="in"><h2>I Spoke Baby Dragon and Won Everyone Over!</h2><span class="go">Watch free <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a><a class="cd" href="/rejected-luna-is-the-alpha-queen/" data-app="ReelShort" data-genre="Fantasy|Romance|Revenge">
+<span class="badge">NetShort</span><div class="in"><h2>I Spoke Baby Dragon and Won Everyone Over!</h2><span class="go">Watch on NetShort <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a><a class="cd" href="/rejected-luna-is-the-alpha-queen/" data-app="ReelShort" data-genre="Fantasy|Romance|Revenge">
 <img src="/img/rejected-luna-is-the-alpha-queen.webp" alt="Rejected Luna Is the Alpha Queen poster" width="360" height="480" loading="lazy" decoding="async">
 <span class="badge">ReelShort</span><div class="in"><h2>Rejected Luna Is the Alpha Queen</h2><span class="go">Watch free <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a><a class="cd" href="/the-empresss-final-wish/" data-app="ReelShort" data-genre="Royal|Family">
 <img src="/img/the-empresss-final-wish.webp" alt="The Empress&#x27;s Final Wish poster" width="360" height="480" loading="lazy" decoding="async">
-<span class="badge">ReelShort</span><div class="in"><h2>The Empress&#x27;s Final Wish</h2><span class="go">Watch free <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a><a class="cd" href="/my-billionaire-boss-wont-let-me-quit/" data-app="ReelShort" data-genre="">
+<span class="badge">ReelShort</span><div class="in"><h2>The Empress&#x27;s Final Wish</h2><span class="go">Watch on ReelShort <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a><a class="cd" href="/my-billionaire-boss-wont-let-me-quit/" data-app="ReelShort" data-genre="Romance">
 <img src="/img/my-billionaire-boss-wont-let-me-quit.webp" alt="My Billionaire Boss Won&#x27;t Let Me Quit poster" width="360" height="480" loading="lazy" decoding="async">
-<span class="badge">ReelShort</span><div class="in"><h2>My Billionaire Boss Won&#x27;t Let Me Quit</h2><span class="go">Watch free <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a></div>
+<span class="badge">ReelShort</span><div class="in"><h2>My Billionaire Boss Won&#x27;t Let Me Quit</h2><span class="go">Watch on ReelShort <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a></div>
 <p class="h3">Follow for new parts</p><nav class="soc"><a href="https://www.tiktok.com/@swoonflicks" rel="noopener" target="_blank">TikTok</a><a href="https://www.instagram.com/swoonflicks" rel="noopener" target="_blank">Instagram</a><a href="https://www.youtube.com/@swoonflicks" rel="noopener" target="_blank">YouTube</a><a href="https://www.facebook.com/swoonflicks" rel="noopener" target="_blank">Facebook</a></nav><p class="ft">Swoonflicks shares free episodes of short dramas we love.<br>
 Links to the apps are affiliate links: we may earn a commission when you watch there, at no extra cost to you.<br>
 <a href="/privacy/">Privacy</a> · <a href="mailto:admin@swoonflicks.com">admin@swoonflicks.com</a></p><div class="pad"></div></main>
-<div class="bar"><a class="cta" href="https://r.reelsgo.tv/9XLeiiiFdJxO" target="_blank" rel="nofollow sponsored noopener" data-aff="sticky" data-film="mech-god-from-the-dark-side-of-the-moon" data-app="NetShort" data-title="Mech God from the Dark Side of the Moon"><span>Watch full on NetShort</span><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></a></div><script>(function(){var b=document.body.dataset,pl=document.querySelector('.pl'),P=null,cur='',marks={},tick;
+<div class="bar"><a class="cta" href="https://r.reelsgo.tv/9XLeiiiFdJxO" target="_blank" rel="nofollow sponsored noopener" data-aff="sticky" data-film="mech-god-from-the-dark-side-of-the-moon" data-app="NetShort" data-title="Mech God from the Dark Side of the Moon"><span>Watch full on NetShort</span><svg class="ext" viewBox="0 0 12 12" aria-hidden="true"><path d="M4 1h7v7M11 1L3 9M1 4v7h7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a></div><script>(function(){var b=document.body.dataset,pl=document.querySelector('.pl'),P=null,cur='',marks={},tick;
 function T(n,p){if(window.SFT)SFT.track(n,Object.assign({film:b.film,title:b.title,app:b.app,video_id:cur},p||{}))}
 function poll(){clearInterval(tick);tick=setInterval(function(){if(!P||!P.getDuration)return;var d=P.getDuration(),t=P.getCurrentTime();if(!d)return;
 [25,50,75,95].forEach(function(m){var k=cur+m;if(!marks[k]&&t/d*100>=m){marks[k]=1;T('VideoProgress',{percent:m})}})},1000)}
-function start(v){cur=v;if(P){P.loadVideoById(v);return}var host=document.createElement('div');host.className='vid';pl.innerHTML='';pl.appendChild(host);
+var st=document.querySelector('.pst');function fail(){st.innerHTML='Could not load the player. <button type="button" class="chip">Retry</button> <a href="https://www.youtube.com/shorts/'+cur+'" target="_blank" rel="noopener"><u>Open on YouTube</u></a>';
+st.querySelector('button').onclick=function(){var v=cur;P=null;var o=pl.querySelector('iframe,.vid');if(o)o.remove();start(v)}}
+function start(v){cur=v;if(P){P.loadVideoById(v);return}st.textContent='Loading free part…';var host=document.createElement('div');host.className='vid';
+[].forEach.call(pl.querySelectorAll('.play,.lbl'),function(x){x.remove()});pl.appendChild(host);
 var go=function(){P=new YT.Player(host,{host:'https://www.youtube-nocookie.com',videoId:v,playerVars:{autoplay:1,playsinline:1,rel:0,modestbranding:1},
-events:{onStateChange:function(s){if(s.data===1){if(!marks[cur+'p']){marks[cur+'p']=1;T('VideoPlay')}poll()}else clearInterval(tick)}}})};
-if(window.YT&&YT.Player)go();else{window.onYouTubeIframeAPIReady=go;var s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';document.head.appendChild(s)}}
+events:{onError:fail,onReady:function(e){var f=e.target.getIframe();f.title=b.title+' video';f.className='vid on';st.textContent='';f.focus()},onStateChange:function(s){if(s.data===1){if(!marks[cur+'p']){marks[cur+'p']=1;T('VideoPlay')}poll()}else clearInterval(tick)}}})};
+if(window.YT&&YT.Player)go();else{window.onYouTubeIframeAPIReady=go;var s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';s.onerror=fail;document.head.appendChild(s)}}
 var btn=pl&&pl.querySelector('.play');if(btn)btn.onclick=function(){start(btn.dataset.v)};
 document.querySelectorAll('.parts .chip').forEach(function(c){c.onclick=function(){document.querySelectorAll('.parts .chip').forEach(function(x){x.setAttribute('aria-pressed',x===c)});
-start(c.dataset.v);pl.scrollIntoView({behavior:'smooth',block:'center'})}});
+start(c.dataset.v);pl.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'})}});
 var bar=document.querySelector('.bar'),cta=document.querySelector('.cta');if(bar&&cta&&'IntersectionObserver'in window)
 new IntersectionObserver(function(es){bar.classList.toggle('on',es[0].intersectionRatio<.9)},{threshold:[0,.9,1]}).observe(cta)})()</script></body></html>

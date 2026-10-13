@@ -33,6 +33,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .hd{text-align:center;padding:26px 0 4px}
 .hd .logo{width:60px;height:60px;margin:0 auto 12px;border-radius:50%;background:var(--card);box-shadow:0 0 0 2px var(--gold-lo),0 8px 24px rgba(0,0,0,.6)}
 .hd h1{font-size:clamp(32px,10.5vw,52px);letter-spacing:.01em}
+.hd.sm{padding-top:16px}.hd.sm .hl{display:flex;align-items:center;justify-content:center;gap:10px}
+.hd.sm .logo{width:40px;height:40px;margin:0}.hd.sm h1{font-size:clamp(28px,8.5vw,40px)}.hd.sm .plq{margin-top:6px}
 .plq{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px}
 .plq i{height:2px;flex:0 1 70px;border-radius:1px;background:linear-gradient(90deg,transparent,var(--gold))}
 .plq i:last-child{background:linear-gradient(270deg,transparent,var(--gold))}
@@ -40,33 +42,34 @@ button{font:inherit;color:inherit;cursor:pointer}
 .tag{color:var(--mut);font-size:14px;margin:12px auto 0;max-width:30em}
 
 /* bộ lọc */
-.flt{position:sticky;top:0;z-index:5;margin:16px -16px 0;padding:10px 0;display:grid;gap:8px;background:rgba(11,8,6,.9);
+.flt{position:static;margin:16px -16px 0;padding:10px 0;display:grid;gap:8px;background:rgba(11,8,6,.9);
 -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid rgba(58,42,24,.6)}
 .chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:0 16px}
 .chips::-webkit-scrollbar{display:none}
-.chips b{flex:none;align-self:center;font:700 10px/1 system-ui;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-lo);width:44px}
-.chip{flex:none;border:1px solid var(--line);background:var(--card);font-weight:600;font-size:13px;line-height:1;padding:9px 14px;border-radius:999px}
-.chip[aria-pressed=true]{background:var(--face);color:var(--brown);border-color:transparent}
+.chips b{flex:none;align-self:center;font:700 10px/1 system-ui;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);width:44px}
+.chip{flex:none;min-height:44px;display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--card);font-weight:600;font-size:13px;line-height:1;padding:0 15px;border-radius:999px}
+.chip[aria-pressed=true]{background:#1f1608;color:var(--gold-hi);border-color:var(--gold)}
 
 /* thẻ phim */
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:14px 0 6px}
 @media(min-width:620px){.grid{grid-template-columns:repeat(3,1fr)}}
-.cd{position:relative;display:block;border-radius:14px;overflow:hidden;background:var(--card);aspect-ratio:3/4;
+.cd{position:relative;display:flex;flex-direction:column;border-radius:14px;overflow:hidden;background:var(--card);
 box-shadow:0 0 0 1px var(--line),0 10px 24px rgba(0,0,0,.45);transition:transform .15s}
 .cd:active{transform:scale(.98)}
-.cd img{width:100%;height:100%;object-fit:cover}
-.cd::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(8,5,3,.97) 0%,rgba(8,5,3,.72) 30%,rgba(8,5,3,0) 58%)}
-.cd .in{position:absolute;left:0;right:0;bottom:0;padding:10px;z-index:1}
-.cd h2{font:900 15px/1.2 var(--disp);color:var(--gold-hi);text-shadow:0 2px 6px #000;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.go{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font:700 12px/1 system-ui;color:var(--brown);background:var(--face);padding:7px 10px;border-radius:999px}
+.cd img{width:100%;height:auto;aspect-ratio:3/4;object-fit:cover}
+.cd .in{flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:10px 10px 12px;border-top:1px solid var(--line)}
+.cd h2{font:900 15px/1.2 var(--disp);color:var(--gold-hi);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.go{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font:700 12px/1 system-ui;color:var(--gold)}
 .go svg{width:9px;height:9px;fill:currentColor}
 .badge{position:absolute;top:8px;left:8px;z-index:1;font:700 10px/1 system-ui;letter-spacing:.08em;text-transform:uppercase;
-background:rgba(11,8,6,.78);border:1px solid var(--gold-lo);color:var(--gold);padding:5px 7px;border-radius:6px}
-.cd.big{grid-column:1/-1;aspect-ratio:4/3}
-.cd.big img{object-position:50% 22%}
+background:rgba(11,8,6,.72);color:var(--txt);padding:5px 7px;border-radius:6px}
+.cd.big{grid-column:1/-1}
+.cd.big img{aspect-ratio:4/3;object-position:50% 22%}
 .cd.big h2{font-size:22px}
 .cd[hidden]{display:none}
 .empty{text-align:center;color:var(--mut);padding:30px 0}
+.empty .chip{margin-top:12px;color:var(--txt)}
+.empty[hidden]{display:none}
 
 /* mạng xã hội + chân trang */
 .h3{font:700 12px/1 system-ui;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);text-align:center;margin-top:28px}
@@ -79,29 +82,33 @@ background:rgba(11,8,6,.78);border:1px solid var(--gold-lo);color:var(--gold);pa
 .top{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
 .back{font-weight:600;font-size:14px;color:var(--mut);padding:6px 0}
 .top .brand{font:900 16px var(--disp);letter-spacing:.06em;color:var(--gold)}
-.pl{position:relative;width:min(100%,400px,calc(70vh * 9 / 16));aspect-ratio:9/16;margin:0 auto;border-radius:16px;overflow:hidden;background:#000;
+.pl{position:relative;width:min(100%,400px,calc(62svh * 9 / 16));aspect-ratio:9/16;margin:0 auto;border-radius:16px;overflow:hidden;background:#000;
 box-shadow:0 0 0 1px var(--line),0 18px 40px rgba(0,0,0,.6)}
-.pl.ps{width:min(100%,420px,calc(64vh * 3 / 4));aspect-ratio:3/4}
+.pl.ps{width:min(100%,420px,calc(38svh * 3 / 4));aspect-ratio:3/4}
 .pl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .pl .play{position:absolute;inset:0;width:100%;display:grid;place-items:center;border:0;background:linear-gradient(0deg,rgba(0,0,0,.6),rgba(0,0,0,.05) 50%)}
 .btnp{width:76px;height:76px;border-radius:50%;background:var(--face);display:grid;place-items:center;box-shadow:0 0 0 7px rgba(240,195,90,.22),0 10px 30px rgba(0,0,0,.6)}
 .btnp svg{width:28px;height:28px;fill:var(--brown);margin-left:5px}
 .pl .lbl{position:absolute;left:0;right:0;bottom:16px;text-align:center;font:700 12px system-ui;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-hi);text-shadow:0 2px 6px #000}
-.pl .vid{position:absolute;inset:0;width:100%;height:100%;border:0}
+.pl .vid{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0}
+.pl .vid.on{opacity:1}
+.pst{text-align:center;color:var(--mut);font-size:13px;min-height:1px;margin-top:8px}
+.pst:empty{margin:0}
 .parts{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:12px -16px 0;padding:0 16px;justify-content:safe center}
 .parts::-webkit-scrollbar{display:none}
-.ttl{text-align:center;margin-top:18px}
-.ttl h1{font-size:clamp(26px,7.6vw,38px)}
-.meta{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:12px}
-.meta span{font-weight:600;font-size:12px;color:var(--mut);border:1px solid var(--line);padding:4px 10px;border-radius:999px}
+.ttl{text-align:center;margin:4px 0 14px}
+.ttl h1{font-size:clamp(24px,7vw,36px);text-wrap:balance}
+.ttl .m{line-height:1.16}.ttl .m .l0{-webkit-text-stroke-width:.08em}.ttl .m .l1{-webkit-text-stroke-width:.025em;transform:translateY(.035em)}
+.ttl .m .l2{-webkit-text-stroke-width:.4px;background-size:100% 1.16em}
+.meta{font-weight:600;font-size:13px;color:var(--mut);margin-top:8px}
 .cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin:18px 0 8px;padding:15px 18px;border-radius:14px;background:var(--face);color:var(--brown);
 font:800 17px/1.2 system-ui;text-align:center;box-shadow:0 10px 28px rgba(240,195,90,.2),inset 0 -2px 0 rgba(0,0,0,.18)}
 .cta small{display:block;font-weight:600;font-size:12px;opacity:.78;margin-top:2px}
-.cta svg{width:12px;height:12px;fill:currentColor;flex:none}
+.cta svg{width:14px;height:14px;flex:none}
 .note{text-align:center;color:var(--mut);font-size:12px}
 .syn{margin-top:22px;padding:16px;background:var(--card);border-radius:14px;box-shadow:0 0 0 1px var(--line)}
-.syn h2{font:700 12px/1 system-ui;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
-.syn p{color:#ddd0b8}
+.syn summary{font:700 12px/1 system-ui;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);cursor:pointer;min-height:24px;display:flex;align-items:center}
+.syn p{color:#ddd0b8;margin-top:10px}
 .more{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:12px -16px 0;padding:0 16px 4px}
 .more::-webkit-scrollbar{display:none}
 .more .cd{flex:0 0 40%;max-width:200px}
@@ -134,37 +141,38 @@ border-radius:14px;padding:14px;font-size:13px;box-shadow:0 10px 30px #000}
 <script>window.SF={"ga4": "", "meta": "", "tiktok": "", "invite": [{"program": "RS Boost", "code": "jCsNUgQuecHY", "note": "RS Boost is the official ReelShort affiliate program: share ReelShort dramas and earn a share of what your viewers spend. Sign-up asks for an invitation code.", "signup": "https://cps.reelshort.com/"}], "src": "facebook"}</script><script src="/assets/t.js" defer></script>
 </head>
 <body><main class="wrap">
-<header class="hd"><img class="logo" src="/img/logo-128.png" alt="" width="60" height="60"><h1><span class="m"><span class="l0">Swoonflicks</span><span class="l1" aria-hidden="true">Swoonflicks</span><span class="l2" aria-hidden="true">Swoonflicks</span></span></h1>
+<header class="hd sm"><div class="hl"><img class="logo" src="/img/logo-128.png" alt="" width="60" height="60"><h1><span class="m"><span class="l0">Swoonflicks</span><span class="l1" aria-hidden="true">Swoonflicks</span><span class="l2" aria-hidden="true">Swoonflicks</span></span></h1></div>
 <div class="plq"><i></i><span class="m"><span class="l0">FREE EPISODES</span><span class="l1" aria-hidden="true">FREE EPISODES</span><span class="l2" aria-hidden="true">FREE EPISODES</span></span><i></i></div>
-<p class="tag">Pick a drama, watch the free part here, then finish the story on the app.</p></header>
-<div class="flt"><div class="chips"><b>App</b><button type="button" class="chip" data-k="app" data-v="" aria-pressed="true">All</button><button type="button" class="chip" data-k="app" data-v="NetShort" aria-pressed="false">NetShort</button><button type="button" class="chip" data-k="app" data-v="ReelShort" aria-pressed="false">ReelShort</button><button type="button" class="chip" data-k="app" data-v="ShortMax" aria-pressed="false">ShortMax</button></div><div class="chips"><b>Genre</b><button type="button" class="chip" data-k="genre" data-v="" aria-pressed="true">All</button><button type="button" class="chip" data-k="genre" data-v="Family" aria-pressed="false">Family</button><button type="button" class="chip" data-k="genre" data-v="Fantasy" aria-pressed="false">Fantasy</button><button type="button" class="chip" data-k="genre" data-v="Revenge" aria-pressed="false">Revenge</button><button type="button" class="chip" data-k="genre" data-v="Romance" aria-pressed="false">Romance</button><button type="button" class="chip" data-k="genre" data-v="Royal" aria-pressed="false">Royal</button><button type="button" class="chip" data-k="genre" data-v="Sci-Fi" aria-pressed="false">Sci-Fi</button></div></div><div class="grid"><a class="cd big" href="/dragons-bow-to-the-trash/" data-app="NetShort" data-genre="Fantasy">
-<img src="/img/dragons-bow-to-the-trash-h.webp" alt="Dragons Bow To The Trash poster" width="720" height="960" fetchpriority="high" decoding="async">
-<span class="badge">NetShort</span><div class="in"><h2>Dragons Bow To The Trash</h2><span class="go">Watch free <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<p class="tag">Find the drama you saw.</p></header>
+<div class="flt"><div class="chips" role="group" aria-label="Filter by app"><b aria-hidden="true">App</b><button type="button" class="chip" data-k="app" data-v="" aria-pressed="true">All</button><button type="button" class="chip" data-k="app" data-v="NetShort" aria-pressed="false">NetShort</button><button type="button" class="chip" data-k="app" data-v="ReelShort" aria-pressed="false">ReelShort</button><button type="button" class="chip" data-k="app" data-v="ShortMax" aria-pressed="false">ShortMax</button></div><div class="chips" role="group" aria-label="Filter by genre"><b aria-hidden="true">Genre</b><button type="button" class="chip" data-k="genre" data-v="" aria-pressed="true">All</button><button type="button" class="chip" data-k="genre" data-v="Family" aria-pressed="false">Family</button><button type="button" class="chip" data-k="genre" data-v="Fantasy" aria-pressed="false">Fantasy</button><button type="button" class="chip" data-k="genre" data-v="Revenge" aria-pressed="false">Revenge</button><button type="button" class="chip" data-k="genre" data-v="Romance" aria-pressed="false">Romance</button><button type="button" class="chip" data-k="genre" data-v="Royal" aria-pressed="false">Royal</button><button type="button" class="chip" data-k="genre" data-v="Sci-Fi" aria-pressed="false">Sci-Fi</button></div></div><div class="grid"><a class="cd" href="/dragons-bow-to-the-trash/" data-app="NetShort" data-genre="Fantasy">
+<img src="/img/dragons-bow-to-the-trash.webp" alt="Dragons Bow To The Trash poster" width="360" height="480" decoding="async">
+<span class="badge">NetShort</span><div class="in"><h2>Dragons Bow To The Trash</h2><span class="go">Watch on NetShort <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
 <a class="cd" href="/mommy-i-m-not-lying/" data-app="ShortMax" data-genre="Family">
-<img src="/img/mommy-i-m-not-lying.webp" alt="Mommy, I&#x27;m Not Lying poster" width="360" height="480" fetchpriority="high" decoding="async">
-<span class="badge">ShortMax</span><div class="in"><h2>Mommy, I&#x27;m Not Lying</h2><span class="go">Watch free <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<img src="/img/mommy-i-m-not-lying.webp" alt="Mommy, I&#x27;m Not Lying poster" width="360" height="480" decoding="async">
+<span class="badge">ShortMax</span><div class="in"><h2>Mommy, I&#x27;m Not Lying</h2><span class="go">Watch on ShortMax <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
 <a class="cd" href="/mech-god-from-the-dark-side-of-the-moon/" data-app="NetShort" data-genre="Sci-Fi|Revenge">
-<img src="/img/mech-god-from-the-dark-side-of-the-moon.webp" alt="Mech God from the Dark Side of the Moon poster" width="360" height="480" fetchpriority="high" decoding="async">
-<span class="badge">NetShort</span><div class="in"><h2>Mech God from the Dark Side of the Moon</h2><span class="go">Watch free <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<img src="/img/mech-god-from-the-dark-side-of-the-moon.webp" alt="Mech God from the Dark Side of the Moon poster" width="360" height="480" decoding="async">
+<span class="badge">NetShort</span><div class="in"><h2>Mech God from the Dark Side of the Moon</h2><span class="go">Watch on NetShort <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
 <a class="cd" href="/the-unbound-rise-of-the-godslayer/" data-app="ShortMax" data-genre="Fantasy">
-<img src="/img/the-unbound-rise-of-the-godslayer.webp" alt="The Unbound: Rise of the Godslayer poster" width="360" height="480" loading="lazy" decoding="async">
+<img src="/img/the-unbound-rise-of-the-godslayer.webp" alt="The Unbound: Rise of the Godslayer poster" width="360" height="480" decoding="async">
 <span class="badge">ShortMax</span><div class="in"><h2>The Unbound: Rise of the Godslayer</h2><span class="go">Watch free <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
 <a class="cd" href="/i-spoke-baby-dragon-and-won-everyone-over/" data-app="NetShort" data-genre="Fantasy">
 <img src="/img/i-spoke-baby-dragon-and-won-everyone-over.webp" alt="I Spoke Baby Dragon and Won Everyone Over! poster" width="360" height="480" loading="lazy" decoding="async">
-<span class="badge">NetShort</span><div class="in"><h2>I Spoke Baby Dragon and Won Everyone Over!</h2><span class="go">Watch free <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<span class="badge">NetShort</span><div class="in"><h2>I Spoke Baby Dragon and Won Everyone Over!</h2><span class="go">Watch on NetShort <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
 <a class="cd" href="/rejected-luna-is-the-alpha-queen/" data-app="ReelShort" data-genre="Fantasy|Romance|Revenge">
 <img src="/img/rejected-luna-is-the-alpha-queen.webp" alt="Rejected Luna Is the Alpha Queen poster" width="360" height="480" loading="lazy" decoding="async">
 <span class="badge">ReelShort</span><div class="in"><h2>Rejected Luna Is the Alpha Queen</h2><span class="go">Watch free <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
 <a class="cd" href="/the-empresss-final-wish/" data-app="ReelShort" data-genre="Royal|Family">
 <img src="/img/the-empresss-final-wish.webp" alt="The Empress&#x27;s Final Wish poster" width="360" height="480" loading="lazy" decoding="async">
-<span class="badge">ReelShort</span><div class="in"><h2>The Empress&#x27;s Final Wish</h2><span class="go">Watch free <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
-<a class="cd" href="/my-billionaire-boss-wont-let-me-quit/" data-app="ReelShort" data-genre="">
+<span class="badge">ReelShort</span><div class="in"><h2>The Empress&#x27;s Final Wish</h2><span class="go">Watch on ReelShort <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<a class="cd" href="/my-billionaire-boss-wont-let-me-quit/" data-app="ReelShort" data-genre="Romance">
 <img src="/img/my-billionaire-boss-wont-let-me-quit.webp" alt="My Billionaire Boss Won&#x27;t Let Me Quit poster" width="360" height="480" loading="lazy" decoding="async">
-<span class="badge">ReelShort</span><div class="in"><h2>My Billionaire Boss Won&#x27;t Let Me Quit</h2><span class="go">Watch free <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a></div><p class="empty" hidden>No drama matches both filters yet.</p>
+<span class="badge">ReelShort</span><div class="in"><h2>My Billionaire Boss Won&#x27;t Let Me Quit</h2><span class="go">Watch on ReelShort <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a></div><div class="empty" hidden><p>No drama matches both filters yet.</p><button type="button" class="chip clr">Clear filters</button></div>
 <p class="h3">Follow for new parts</p><nav class="soc"><a href="https://www.tiktok.com/@swoonflicks" rel="noopener" target="_blank">TikTok</a><a href="https://www.instagram.com/swoonflicks" rel="noopener" target="_blank">Instagram</a><a href="https://www.youtube.com/@swoonflicks" rel="noopener" target="_blank">YouTube</a><a href="https://www.facebook.com/swoonflicks" rel="noopener" target="_blank">Facebook</a></nav><p class="ft">Swoonflicks shares free episodes of short dramas we love.<br>
 Links to the apps are affiliate links: we may earn a commission when you watch there, at no extra cost to you.<br>
 <a href="/privacy/">Privacy</a> · <a href="mailto:admin@swoonflicks.com">admin@swoonflicks.com</a></p></main><script>(function(){var sel={app:'',genre:''},cards=[].slice.call(document.querySelectorAll('.grid .cd')),em=document.querySelector('.empty');
 document.querySelectorAll('.chip').forEach(function(c){c.onclick=function(){var k=c.dataset.k;sel[k]=c.dataset.v;
 document.querySelectorAll('.chip[data-k='+k+']').forEach(function(x){x.setAttribute('aria-pressed',x===c)});var n=0;
 cards.forEach(function(d){var ok=(!sel.app||d.dataset.app===sel.app)&&(!sel.genre||d.dataset.genre.split('|').indexOf(sel.genre)>=0);d.hidden=!ok;if(ok)n++});
-em.hidden=n>0;if(window.SFT)SFT.track('Filter',{key:k,value:c.dataset.v||'all'})}})})()</script></body></html>
+em.hidden=n>0;if(window.SFT)SFT.track('Filter',{key:k,value:c.dataset.v||'all'})}});
+em.querySelector('.clr').onclick=function(){document.querySelectorAll('.chip[data-v=""]').forEach(function(c){c.click()})}})()</script></body></html>
