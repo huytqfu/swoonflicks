@@ -86,13 +86,15 @@ def head(title, desc, path, img=None, extra="", noindex=False, src=""):
     cfg = dict(CFG, src=src)
     # OG phim là ảnh dọc 600x800: summary_large_image (khung ngang) sẽ cắt nát, dùng summary; home.jpg ngang giữ large
     tw = "summary_large_image" if img and img.endswith("home.jpg") else "summary"
-    og = f'<meta property="og:image" content="{BASE}{img}"><meta name="twitter:card" content="{tw}">' if img else ""
+    wh = (1200, 630) if img and img.endswith("home.jpg") else (600, 800)
+    og = (f'<meta property="og:image" content="{BASE}{img}"><meta property="og:image:width" content="{wh[0]}">'
+          f'<meta property="og:image:height" content="{wh[1]}"><meta name="twitter:card" content="{tw}">') if img else ""
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>{e(title)}</title><meta name="description" content="{e(desc)}">
 {f'<link rel="canonical" href="{BASE}{path}">' if path else ''}{'<meta name="robots" content="noindex,follow">' if noindex else ''}
 <meta name="theme-color" content="#0b0806"><link rel="icon" href="/img/logo-64.png">
-<meta property="og:type" content="website"><meta property="og:site_name" content="Swoonflicks">
+<meta property="og:type" content="{'video.tv_show' if img and '/og/' in img and not img.endswith('home.jpg') else 'website'}"><meta property="og:site_name" content="Swoonflicks">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">{f'<meta property="og:url" content="{BASE}{path}">' if path else ''}{og}
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="{FONTS}" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="{FONTS}"></noscript>
@@ -137,6 +139,8 @@ def hub_page(films, path="/", src=""):
     grid = "\n".join(card(f, big=(i == 0 and not ig), lazy=(i > 3)) for i, f in enumerate(films))
     desc = "Free episodes of the short dramas everyone is binging. Pick a drama, watch the free part, then finish it on the app."
     ld = [{"@context": "https://schema.org", "@type": "WebSite", "name": "Swoonflicks", "url": f"{BASE}/", "description": desc},
+          {"@context": "https://schema.org", "@type": "Organization", "name": "Swoonflicks", "url": f"{BASE}/",
+           "logo": f"{BASE}/img/logo-128.png", "sameAs": [u for _, u in SOCIAL]},
           {"@context": "https://schema.org", "@type": "ItemList", "itemListElement": [
               {"@type": "ListItem", "position": i + 1, "url": f"{BASE}/{f['slug']}/", "name": f["title"]} for i, f in enumerate(films)]}]
     extra = f'<script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>' if path == "/" else ""
@@ -184,13 +188,17 @@ def film_page(f, films):
                          f'data-film="{e(f["slug"])}" data-app="{e(f["app"])}" data-title="{e(f["title"])}"')
     more = "".join(card(o) for o in films if o is not f)
     ld = {"@context": "https://schema.org", "@type": "TVSeries", "name": f["title"], "description": cut(syn, 300),
-          "image": f"{BASE}/img/og/{f['slug']}.jpg", "url": f"{BASE}/{f['slug']}/", "genre": f["genre"]}
+          "image": f"{BASE}/img/og/{f['slug']}.jpg", "url": f"{BASE}/{f['slug']}/", "genre": f["genre"],
+          "inLanguage": "en", "publisher": {"@type": "Organization", "name": f["app"]}}
     if yt:
         ld["trailer"] = {"@type": "VideoObject", "name": f"{f['title']} {yt[0][0]}", "embedUrl": f"https://www.youtube.com/embed/{yt[0][1]}",
                          "thumbnailUrl": f"https://i.ytimg.com/vi/{yt[0][1]}/hqdefault.jpg", "description": cut(syn, 200)}
         if yt[0][1] in YT_DATE:
             ld["trailer"]["uploadDate"] = YT_DATE[yt[0][1]]
-    extra = f'<script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>'
+    bc = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Swoonflicks", "item": f"{BASE}/"},
+        {"@type": "ListItem", "position": 2, "name": f["title"], "item": f"{BASE}/{f['slug']}/"}]}
+    extra = f'<script type="application/ld+json">{json.dumps([ld, bc], ensure_ascii=False)}</script>'
     title = f"{f['title']} · Watch free | Swoonflicks"
     return head(title, cut(syn, 155), f"/{f['slug']}/", f"/img/og/{f['slug']}.jpg", extra) + f'''
 <body data-film="{e(f['slug'])}" data-title="{e(f['title'])}" data-app="{e(f['app'])}"><main class="wrap">
@@ -273,7 +281,7 @@ films.sort(key=lambda f: ORDER.index(f["id"]) if f["id"] in ORDER else len(ORDER
 for p in OUT.iterdir():
     if p.is_dir() and ((p / ".gen").exists() or p.name in ("img", "assets")):
         shutil.rmtree(p, ignore_errors=True)  # OneDrive hay khoá thư mục rỗng: xoá được file là đủ
-for p in ("index.html", "404.html", "sitemap.xml", "robots.txt"):
+for p in ("index.html", "404.html", "sitemap.xml", "robots.txt", "llms.txt"):
     (OUT / p).unlink(missing_ok=True)
 (OUT / "img" / "og").mkdir(parents=True, exist_ok=True)
 (OUT / "assets").mkdir(exist_ok=True)
@@ -325,5 +333,9 @@ urls = ["/", "/privacy/"] + (["/invite/"] if INV else []) + [f"/{f['slug']}/" fo
 write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
       "".join(f"<url><loc>{BASE}{u}</loc><lastmod>{date.today().isoformat()}</lastmod></url>" for u in urls) + "</urlset>\n")
 write("robots.txt", f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")
+# llms.txt: bản đồ markdown cho bot AI (rẻ, không kỳ vọng thứ hạng)
+write("llms.txt", "# Swoonflicks\n\n> Free parts of English short dramas, with links to watch the full series in each app.\n\n## Dramas\n" +
+      "".join(f"- [{f['title']}]({BASE}/{f['slug']}/): {', '.join(f['genre'])} drama on {f['app']}\n" for f in films) +
+      f"\n## Creators\n- [Invitation codes]({BASE}/invite/): creator sign-up code for short drama affiliate programs\n")
 (OUT / ".nojekyll").write_text("")
 print("ok", len(films), "phim:", ", ".join(f["slug"] for f in films))
