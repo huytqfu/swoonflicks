@@ -171,8 +171,16 @@ var bar=document.querySelector('.bar'),cta=document.querySelector('.cta');if(bar
 new IntersectionObserver(function(es){bar.classList.toggle('on',es[0].intersectionRatio<.9)},{threshold:[0,.9,1]}).observe(cta)})()</script>'''
 
 
+def content(slug):
+    # nội dung riêng từng phim: site/_src/content/<slug>.json (+ .seo.json), viết tay, có thể thiếu
+    d = OUT / "_src" / "content"
+    rd = lambda n: json.loads((d / n).read_text(encoding="utf-8")) if (d / n).exists() else {}
+    return rd(f"{slug}.json"), rd(f"{slug}.seo.json")
+
+
 def film_page(f, films):
     syn = f["syn"]
+    ct, seo = content(f["slug"])
     yt = YT.get(f["id"], [])
     if yt:
         player = f'''<div class="pl"><img src="/img/{f['slug']}-h.webp" alt="" width="720" height="960" fetchpriority="high">
@@ -198,16 +206,28 @@ def film_page(f, films):
     bc = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Swoonflicks", "item": f"{BASE}/"},
         {"@type": "ListItem", "position": 2, "name": f["title"], "item": f"{BASE}/{f['slug']}/"}]}
-    extra = f'<script type="application/ld+json">{json.dumps([ld, bc], ensure_ascii=False)}</script>'
-    title = f"{f['title']} · Watch free | Swoonflicks"
-    return head(title, cut(syn, 155), f"/{f['slug']}/", f"/img/og/{f['slug']}.jpg", extra) + f'''
+    lds = [ld, bc]
+    faq = ct.get("faq", [])
+    if faq:  # FAQPage khớp đúng chữ hiển thị
+        lds.append({"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+            {"@type": "Question", "name": x["q"], "acceptedAnswer": {"@type": "Answer", "text": x["a"]}} for x in faq]})
+    extra = f'<script type="application/ld+json">{json.dumps(lds, ensure_ascii=False)}</script>'
+    title = seo.get("title") or f"{f['title']} · Watch free | Swoonflicks"
+    about = ""
+    if ct.get("intro"):
+        about = f'<section class="syn ab"><h2>Why watch</h2><p>{e(ct["intro"])}</p>' + (
+            "<ul>" + "".join(f"<li>{e(x)}</li>" for x in ct.get("why", [])) + "</ul>" if ct.get("why") else "") + "</section>"
+    faqh = ('<section class="syn faq"><h2>Questions</h2>' + "".join(
+        f'<details><summary>{e(x["q"])}</summary><p>{e(x["a"])}</p></details>' for x in faq) + "</section>") if faq else ""
+    return head(title, seo.get("description") or cut(syn, 155), f"/{f['slug']}/", f"/img/og/{f['slug']}.jpg", extra) + f'''
 <body data-film="{e(f['slug'])}" data-title="{e(f['title'])}" data-app="{e(f['app'])}"><main class="wrap">
 <div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/">SWOONFLICKS</a></div>
 <div class="ttl"><h1>{metal(f['title'])}</h1><p class="meta">{' · '.join(e(x) for x in [f['app']] + f['genre'])}</p></div>
 {player}<p class="pst" role="status"></p>
 <a class="cta" {aff("main")}><span>Watch full on {e(f['app'])}<small>Continues in the {e(f['app'])} app</small></span>{EXT}</a>
 <p class="note">Opens {e(f['app'])}. Affiliate link: we may earn a commission.</p>
-<details class="syn"><summary>The story</summary><p>{e(syn)}</p></details>
+{about}<details class="syn"><summary>The story</summary><p>{e(syn)}</p></details>
+{faqh}
 <p class="h3">More dramas</p><div class="more">{more}</div>
 {social()}{FOOT}<div class="pad"></div></main>
 <div class="bar"><a class="cta" {aff("sticky")}><span>Watch full on {e(f['app'])}</span>{EXT}</a></div>{JS_FILM}</body></html>'''
