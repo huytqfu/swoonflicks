@@ -209,6 +209,23 @@ What you do inside those apps is covered by their own privacy policies.</p>
 ''' + FOOT + "</main></body></html>"
 
 
+def invite_page(inv):
+    """Trang /invite/: mã mời làm affiliate (RS Boost, DramaCPS...). Chỉ mục có code thật trong config.json "invite" mới hiện."""
+    rows = "".join(f'''<section class="syn inv"><h2>{html.escape(i["program"])}</h2>
+<p>{html.escape(i.get("note", ""))}</p>
+<div class="code"><b>{html.escape(i["code"])}</b><button type="button" data-copy="{html.escape(i["code"])}" data-prog="{html.escape(i["program"])}">Copy</button></div>
+{f'<a class="cta" href="{html.escape(i["signup"])}" rel="noopener" target="_blank">Sign up for {html.escape(i["program"])} {ARROW}</a>' if i.get("signup") else ""}
+</section>''' for i in inv)
+    return head("Invitation codes · Swoonflicks", "Invitation codes to join short drama affiliate programs like RS Boost.", "/invite/") + f'''
+<body><main class="wrap"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/">SWOONFLICKS</a></div>
+<div class="ttl"><h1>{metal("Invitation codes")}</h1></div>
+<p class="tag" style="text-align:center">Want to earn by sharing short dramas? These programs ask for an invitation code when you sign up. Copy ours and paste it in the sign-up form.</p>
+{rows}{FOOT}</main>
+<script>document.addEventListener('click',function(e){{var b=e.target.closest('[data-copy]');if(!b)return;
+navigator.clipboard&&navigator.clipboard.writeText(b.dataset.copy);b.textContent='Copied';
+window.SFT&&SFT.track('CopyInvite',{{program:b.dataset.prog}})}})</script></body></html>'''
+
+
 def nf_page():
     return head("Not found · Swoonflicks", "This page does not exist.", "/404.html", noindex=True) + f'''
 <body><main class="wrap"><header class="hd"><h1>{metal("Lost the plot?")}</h1>
@@ -278,8 +295,11 @@ for k, src in BIO.items():
 for f in films:
     write(f"{f['slug']}/index.html", film_page(f, films), gen=True)
 write("privacy/index.html", privacy_page(), gen=True)
+INV = [i for i in CFG.get("invite", []) if i.get("code")]
+if INV:
+    write("invite/index.html", invite_page(INV), gen=True)
 write("404.html", nf_page())
-urls = ["/", "/privacy/"] + [f"/{f['slug']}/" for f in films]
+urls = ["/", "/privacy/"] + (["/invite/"] if INV else []) + [f"/{f['slug']}/" for f in films]
 write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
       "".join(f"<url><loc>{BASE}{u}</loc></url>" for u in urls) + "</urlset>\n")
 write("robots.txt", f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")
