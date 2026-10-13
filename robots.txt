@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://swoonflicks.com/sitemap.xml
