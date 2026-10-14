@@ -1,7 +1,8 @@
 """Website swoonflicks.com: hub (kệ phim) + handcliff (1 trang / phim) + bản bio theo nguồn. Sếp giao 13/10 16:23.
 Đọc ke/shelf.csv (ready=CO + link, phim RS lấy RS_LINK) → hub/site/ (repo huytqfu/swoonflicks, GitHub Pages).
 Chạy: py -3.14 hub/build.py
-- Concept: Playfair Display 900 ánh kim viền nâu đen, "FREE EPISODES" Cinzel kẹp 2 lằn (cover kênh). CSS: hub/site.css (nhúng inline).
+- Concept brand v3c: đen hồng, Poppins, logo lockup "oo" móc xích + "Romance novels, now on screen" (sếp 14/10: bỏ vàng royal). CSS: hub/site.css.
+- Không hiện tên network (ReelShort/DramaCPS) cho người xem; f["app"] chỉ còn trong tracking nội bộ (sếp 14/10).
 - Tracking: hub/t.js (GA4 + Meta + TikTok, ID ở hub/config.json, trống = không tải). Nút ra app = link CPS gốc, không cloak.
 - Video: chỉ nhúng Shorts trên YouTube @swoonflicks của mình (map YT). Phim chưa có video thì hiện poster, không giả nút play.
 - Build xoá thư mục sinh (có file .gen), img/, assets/; giữ .git + CNAME.
@@ -15,7 +16,7 @@ SD = Path(__file__).resolve().parent.parent
 HUB = SD / "hub"
 OUT = HUB / "site"
 BASE = "https://swoonflicks.com"
-FONTS = "https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Playfair+Display:wght@900&display=swap"
+FONTS = "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
 
 # Link CPS RS Boost (reelslink) lấy từ caption X/YT đã đăng
 RS_LINK = {
@@ -78,8 +79,7 @@ def cut(t, n):
 
 
 def metal(t):
-    t = e(t)
-    return f'<span class="m"><span class="l0">{t}</span><span class="l1" aria-hidden="true">{t}</span><span class="l2" aria-hidden="true">{t}</span></span>'
+    return f'<span class="m">{e(t)}</span>'
 
 
 def head(title, desc, path, img=None, extra="", noindex=False, src="", lang="en"):
@@ -93,7 +93,7 @@ def head(title, desc, path, img=None, extra="", noindex=False, src="", lang="en"
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>{e(title)}</title><meta name="description" content="{e(desc)}">
 {f'<link rel="canonical" href="{BASE}{path}">' if path else ''}{'<meta name="robots" content="noindex,follow">' if noindex else ''}
-<meta name="theme-color" content="#0b0806"><link rel="icon" href="/img/logo-64.png">
+<meta name="theme-color" content="#0b0709"><link rel="icon" href="/img/logo-64.png">
 <meta property="og:type" content="{'video.tv_show' if img and '/og/' in img and not img.endswith('home.jpg') else 'website'}"><meta property="og:site_name" content="Swoonflicks">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">{f'<meta property="og:url" content="{BASE}{path}">' if path else ''}{og}
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -104,7 +104,7 @@ def head(title, desc, path, img=None, extra="", noindex=False, src="", lang="en"
 
 
 FOOT = '''<p class="ft">Swoonflicks shares free episodes of short dramas we love.<br>
-Links to the apps are affiliate links: we may earn a commission when you watch there, at no extra cost to you.<br>
+Some links are affiliate links: we may earn a commission when you keep watching, at no extra cost to you.<br>
 <a href="/privacy/">Privacy</a> · <a href="mailto:admin@swoonflicks.com">admin@swoonflicks.com</a></p>'''
 
 
@@ -116,28 +116,26 @@ def social():
 def card(f, big=False, lazy=True):
     img = f"/img/{f['slug']}-w.webp" if big else f"/img/{f['slug']}.webp"
     w, h = (720, 540) if big else (360, 480)
-    return f'''<a class="cd{' big' if big else ''}" href="/{f['slug']}/" data-app="{e(f['app'])}" data-genre="{e('|'.join(f['genre']))}">
+    return f'''<a class="cd{' big' if big else ''}" href="/{f['slug']}/" data-genre="{e('|'.join(f['genre']))}">
 <img src="{img}" alt="{e(f['title'])} poster" width="{w}" height="{h}"{' loading="lazy"' if lazy else ' fetchpriority="high"' if big else ''} decoding="async">
-<span class="badge">{e(f['app'])}</span><div class="in"><h2>{e(f['title'])}</h2><span class="go">{'Watch free' if f['id'] in YT else 'Watch on ' + e(f['app'])} {ARROW}</span></div></a>'''
+<div class="in"><h2>{e(f['title'])}</h2><span class="go">Watch free {ARROW}</span></div></a>'''
 
 
-JS_HUB = '''<script>(function(){var sel={app:'',genre:''},cards=[].slice.call(document.querySelectorAll('.grid .cd')),em=document.querySelector('.empty');
+JS_HUB = '''<script>(function(){var sel={genre:''},cards=[].slice.call(document.querySelectorAll('.grid .cd')),em=document.querySelector('.empty');
 document.querySelectorAll('.chip').forEach(function(c){c.onclick=function(){var k=c.dataset.k;sel[k]=c.dataset.v;
 document.querySelectorAll('.chip[data-k='+k+']').forEach(function(x){x.setAttribute('aria-pressed',x===c)});var n=0;
-cards.forEach(function(d){var ok=(!sel.app||d.dataset.app===sel.app)&&(!sel.genre||d.dataset.genre.split('|').indexOf(sel.genre)>=0);d.hidden=!ok;if(ok)n++});
+cards.forEach(function(d){var ok=(!sel.genre||d.dataset.genre.split('|').indexOf(sel.genre)>=0);d.hidden=!ok;if(ok)n++});
 em.hidden=n>0;if(window.SFT)SFT.track('Filter',{key:k,value:c.dataset.v||'all'})}});
 em.querySelector('.clr').onclick=function(){document.querySelectorAll('.chip[data-v=""]').forEach(function(c){c.click()})}})()</script>'''
 
 
 def hub_page(films, path="/", src=""):
     ig = path != "/"
-    apps = sorted({f["app"] for f in films})
     genres = sorted({g for f in films for g in f["genre"]})
     chip = lambda k, v, lbl, on=False: f'<button type="button" class="chip" data-k="{k}" data-v="{e(v)}" aria-pressed="{str(on).lower()}">{e(lbl)}</button>'
-    flt = ('<div class="flt"><div class="chips" role="group" aria-label="Filter by app"><b aria-hidden="true">App</b>' + chip("app", "", "All", True) + "".join(chip("app", a, a) for a in apps) +
-           '</div><div class="chips" role="group" aria-label="Filter by genre"><b aria-hidden="true">Genre</b>' + chip("genre", "", "All", True) + "".join(chip("genre", g, g) for g in genres) + "</div></div>")
+    flt = ('<div class="flt"><div class="chips" role="group" aria-label="Filter by genre"><b aria-hidden="true">Genre</b>' + chip("genre", "", "All", True) + "".join(chip("genre", g, g) for g in genres) + "</div></div>")
     grid = "\n".join(card(f, big=(i == 0 and not ig), lazy=(i > 3)) for i, f in enumerate(films))
-    desc = "Free episodes of the short dramas everyone is binging. Pick a drama, watch the free part, then finish it on the app."
+    desc = "Free episodes of the short dramas everyone is binging. Pick a drama and binge every free episode."
     ld = [{"@context": "https://schema.org", "@type": "WebSite", "name": "Swoonflicks", "url": f"{BASE}/", "description": desc},
           {"@context": "https://schema.org", "@type": "Organization", "name": "Swoonflicks", "url": f"{BASE}/",
            "logo": f"{BASE}/img/logo-128.png", "sameAs": [u for _, u in SOCIAL]},
@@ -146,10 +144,9 @@ def hub_page(films, path="/", src=""):
     extra = f'<script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>' if path == "/" else ""
     return head("Swoonflicks · Free short drama episodes", desc, "/", "/img/og/home.jpg", extra, noindex=(path != "/"), src=src) + f'''
 <body><main class="wrap">
-<header class="hd{' sm' if ig else ''}"><div class="hl"><img class="logo" src="/img/logo-128.png" alt="" width="60" height="60"><h1>{metal("Swoonflicks")}</h1></div>
-<div class="plq"><i></i>{metal("FREE EPISODES")}<i></i></div>
-<p class="tag">{"Find the drama you saw." if ig else "Find your drama. Watch available free parts or continue in the app."}</p></header>
-{flt}<div class="grid">{grid}</div><div class="empty" hidden><p>No drama matches both filters yet.</p><button type="button" class="chip clr">Clear filters</button></div>
+<header class="hd{' sm' if ig else ''}"><h1><img class="lk" src="/img/lockup.png" alt="Swoonflicks · Romance novels, now on screen" width="681" height="150"></h1>
+<p class="tag">{"Find the drama you saw." if ig else "Tap a drama and watch every free episode."}</p></header>
+{flt}<div class="grid">{grid}</div><div class="empty" hidden><p>No drama in this genre yet.</p><button type="button" class="chip clr">Show all</button></div>
 {social()}{FOOT}</main>{JS_HUB}</body></html>'''
 
 
@@ -191,13 +188,13 @@ def film_page(f, films):
                 f'<button type="button" class="chip" data-v="{v}" aria-pressed="{str(i == 0).lower()}">{e(n)}</button>' for i, (n, v) in enumerate(yt)) + "</div>"
     else:
         player = f'''<div class="pl ps"><img src="/img/{f['slug']}-h.webp" alt="{e(f['title'])} poster" width="720" height="960" fetchpriority="high"></div>
-<p class="note" style="margin-top:10px">No free part on this site yet. Start from Part 1 in {e(f['app'])}.</p>'''
+<p class="note" style="margin-top:10px">No free part on this site yet. Episodes are coming soon.</p>'''
     aff = lambda place: (f'href="{e(f["link"])}" target="_blank" rel="nofollow sponsored noopener" data-aff="{place}" '
                          f'data-film="{e(f["slug"])}" data-app="{e(f["app"])}" data-title="{e(f["title"])}"')
     more = "".join(card(o) for o in films if o is not f)
     ld = {"@context": "https://schema.org", "@type": "TVSeries", "name": f["title"], "description": cut(syn, 300),
           "image": f"{BASE}/img/og/{f['slug']}.jpg", "url": f"{BASE}/{f['slug']}/", "genre": f["genre"],
-          "inLanguage": "en", "publisher": {"@type": "Organization", "name": f["app"]}}
+          "inLanguage": "en"}
     if yt:
         ld["trailer"] = {"@type": "VideoObject", "name": f"{f['title']} {yt[0][0]}", "embedUrl": f"https://www.youtube.com/embed/{yt[0][1]}",
                          "thumbnailUrl": f"https://i.ytimg.com/vi/{yt[0][1]}/hqdefault.jpg", "description": cut(syn, 200)}
@@ -221,21 +218,21 @@ def film_page(f, films):
         f'<details><summary>{e(x["q"])}</summary><p>{e(x["a"])}</p></details>' for x in faq) + "</section>") if faq else ""
     return head(title, seo.get("description") or cut(syn, 155), f"/{f['slug']}/", f"/img/og/{f['slug']}.jpg", extra) + f'''
 <body data-film="{e(f['slug'])}" data-title="{e(f['title'])}" data-app="{e(f['app'])}"><main class="wrap">
-<div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/">SWOONFLICKS</a></div>
-<div class="ttl"><h1>{metal(f['title'])}</h1><p class="meta">{' · '.join(e(x) for x in [f['app']] + f['genre'])}</p></div>
+<div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a></div>
+<div class="ttl"><h1>{metal(f['title'])}</h1><p class="meta">{' · '.join(e(x) for x in f['genre'])}</p></div>
 {player}<p class="pst" role="status"></p>
-<a class="cta" {aff("main")}><span>Watch full on {e(f['app'])}<small>Continues in the {e(f['app'])} app</small></span>{EXT}</a>
-<p class="note">Opens {e(f['app'])}. Affiliate link: we may earn a commission.</p>
+<a class="cta" {aff("main")}><span>Continue watching<small>Unlock the next episodes</small></span>{EXT}</a>
+<p class="note">Affiliate link: we may earn a commission.</p>
 {about}<details class="syn"><summary>The story</summary><p>{e(syn)}</p></details>
 {faqh}
 <p class="h3">More dramas</p><div class="more">{more}</div>
 {social()}{FOOT}<div class="pad"></div></main>
-<div class="bar"><a class="cta" {aff("sticky")}><span>Watch full on {e(f['app'])}</span>{EXT}</a></div>{JS_FILM}</body></html>'''
+<div class="bar"><a class="cta" {aff("sticky")}><span>Continue watching</span>{EXT}</a></div>{JS_FILM}</body></html>'''
 
 
 def privacy_page():
     return head("Privacy · Swoonflicks", "How Swoonflicks uses cookies and measurement.", "/privacy/") + '''
-<body><main class="wrap doc"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/">SWOONFLICKS</a></div>
+<body><main class="wrap doc"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a></div>
 <h1>Privacy</h1>
 <p>Swoonflicks is a fan site that shares free episodes of short dramas and links to the apps where you can watch the rest.</p>
 <h2>What we measure</h2>
@@ -268,7 +265,7 @@ def invite_page(inv):
         rows += '<section class="syn ab"><h2>Guides</h2><ul>' + "".join(
             f'<li><a href="{e(g["path"])}"><u>{e(g["h1"])}</u></a></li>' for g in gl) + "</ul></section>"
     return head("Invitation codes · Swoonflicks", "Invitation codes to join short drama affiliate programs like RS Boost.", "/invite/") + f'''
-<body><main class="wrap"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/">SWOONFLICKS</a></div>
+<body><main class="wrap"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a></div>
 <div class="ttl"><h1>{metal("Invitation codes")}</h1></div>
 <p class="tag" style="text-align:center">For creators who want to earn by sharing short dramas. These affiliate programs ask for an invitation code when you sign up. Copy ours and paste it in the sign-up form.</p>
 <p class="note" style="text-align:center">This is a creator sign-up code, not a viewer code: it does not unlock episodes or give coins. Earnings depend on each program's own terms.</p>
@@ -342,7 +339,7 @@ def guide_page(g, films):
             {"@type": "Question", "name": x["q"], "acceptedAnswer": {"@type": "Answer", "text": x["a"]}} for x in faq]})
     extra = altl + f'<script type="application/ld+json">{json.dumps(lds, ensure_ascii=False)}</script>'
     return head(g["title"], g["description"], g["path"], "/img/og/home.jpg", extra, lang=lang) + f'''
-<body><main class="wrap doc"><div class="top"><a class="back" href="/">{e(u["back"])}</a><a class="brand" href="/">SWOONFLICKS</a></div>
+<body><main class="wrap doc"><div class="top"><a class="back" href="/">{e(u["back"])}</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a></div>
 <h1>{e(g["h1"])}</h1>{f'<p>{e(g["lead"])}</p>' if g.get("lead") else ""}
 {codebox}{body}{faqh}{relh}{srch}
 {f'<p class="note">{e(u["checked"])}: {e(g["checked"])}</p>' if g.get("checked") else ""}
@@ -355,7 +352,7 @@ var s=e.target.closest('[data-signup]');if(s&&window.SFT)SFT.track('ClickSignup'
 
 def nf_page():
     return head("Not found · Swoonflicks", "This page does not exist.", None, noindex=True) + f'''
-<body><main class="wrap"><header class="hd"><h1>{metal("Lost the plot?")}</h1>
+<body><main class="wrap"><header class="hd"><img class="lk" src="/img/lockup.png" alt="Swoonflicks" width="681" height="150"><h1 style="margin-top:18px">{metal("Lost the plot?")}</h1>
 <p class="tag">This page does not exist. The dramas are all on the shelf.</p>
 <a class="cta" href="/" style="max-width:320px;margin:20px auto">Back to all dramas {ARROW}</a></header>{FOOT}</main></body></html>'''
 
@@ -391,6 +388,9 @@ shutil.copy(HUB / "t.js", OUT / "assets" / "t.js")
 logo = Image.open(SD / "brand" / "logo-mark-1024-transparent.png")
 for s in (64, 128):
     im = logo.copy(); im.thumbnail((s, s)); im.save(OUT / "img" / f"logo-{s}.png", optimize=True)
+lk = Image.open(SD / "brand" / "logo-lockup-transparent.png")  # 1362x300, gồm tagline
+lk.resize((681, 150), Image.LANCZOS).save(OUT / "img" / "lockup.png", optimize=True)
+lk.crop((0, 0, 1362, 200)).resize((354, 52), Image.LANCZOS).save(OUT / "img" / "lockup-sm.png", optimize=True)  # bỏ tagline, nét 2x cho cao 26px
 
 
 def fit(im, w, h):
@@ -442,8 +442,8 @@ write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="htt
       "".join(f"<url><loc>{BASE}{u}</loc><lastmod>{date.today().isoformat()}</lastmod></url>" for u in urls) + "</urlset>\n")
 write("robots.txt", f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")
 # llms.txt: bản đồ markdown cho bot AI (rẻ, không kỳ vọng thứ hạng)
-write("llms.txt", "# Swoonflicks\n\n> Free parts of English short dramas, with links to watch the full series in each app.\n\n## Dramas\n" +
-      "".join(f"- [{f['title']}]({BASE}/{f['slug']}/): {', '.join(f['genre'])} drama on {f['app']}\n" for f in films) +
+write("llms.txt", "# Swoonflicks\n\n> Romance novels, now on screen: free episodes of English short dramas.\n\n## Dramas\n" +
+      "".join(f"- [{f['title']}]({BASE}/{f['slug']}/): {', '.join(f['genre'])} drama\n" for f in films) +
       f"\n## Creators\n- [Invitation codes]({BASE}/invite/): creator sign-up code for short drama affiliate programs\n" +
       ("\n## Guides\n" + "".join(f"- [{g['h1']}]({BASE}{g['path']}) ({g.get('lang', 'en')}): {g['description']}\n" for g in GUIDES) if GUIDES else ""))
 (OUT / ".nojekyll").write_text("")

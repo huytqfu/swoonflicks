@@ -40,7 +40,12 @@ for r in csv.DictReader(open(SD / "ke" / "shelf.csv", encoding="utf-8")):
             eps.append({"n": n, "src": "rs", "url": rs[n]})
         else:
             eps.append({"n": n, "src": None})
-    out[r["film"]] = {"slug": re.sub(r"-[0-9a-f]{6,8}$", "", r["film"]), "title": r["title"], "total": total,
+    slug = re.sub(r"-[0-9a-f]{6,8}$", "", r["film"])
+    ct = HUB / "site" / "_src" / "content" / f"{slug}.json"  # total thiếu → lấy số tập trang chính chủ (sources trong file content)
+    if total is None and ct.exists():
+        m = re.search(r"(\d+) episodes", json.loads(ct.read_text(encoding="utf-8"))["faq"][0]["a"])
+        total = int(m.group(1)) if m else None
+    out[r["film"]] = {"slug": slug, "title": r["title"], "total": total,
                       "free": free, "cta": r["link"] or RS_LINK.get(r["film"]) or info.get("link"), "eps": eps}
 
 (HUB / "episodes.json").write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
