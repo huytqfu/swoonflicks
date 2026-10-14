@@ -111,7 +111,8 @@
       var a = e.target.closest && e.target.closest('a[data-aff]');
       if (!a) return;
       track('ClickAffiliate', Object.assign(film(), { film: a.dataset.film || film().film, title: a.dataset.title || film().title,
-        app: a.dataset.app || film().app, placement: a.dataset.aff, link_url: a.href }));
+        app: a.dataset.app || film().app, placement: a.dataset.aff, link_url: a.href,
+        episode: a.dataset.ep ? +a.dataset.ep : undefined }));
     }, true);
   }
   D.readyState === 'loading' ? D.addEventListener('DOMContentLoaded', boot) : boot();

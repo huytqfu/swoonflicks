@@ -1,0 +1,11 @@
+{
+ "_doc": "Tập của từng phim cho player lướt dọc. total/free_until chỉ ghi khi trang app chính thức có (URL ở src), không có thì null. eps: số tập -> video đã đăng trên kênh Swoonflicks, ưu tiên yt > ig > fb. yt = id Shorts YouTube; ig = mã Reel (instagram.com/reel/<mã>/); fb = URL đầy đủ bài reel/video của Page. TikTok không dùng (kênh tắt nhúng). Tập không có video = khoá, bấm ra link app.",
+ "dragons-bow-to-the-trash": {"total": 34, "free_until": null, "src": "https://netshort.com/full-episodes/dragons-bow-to-the-trash-2098349014030798849", "eps": {}},
+ "i-spoke-baby-dragon-and-won-everyone-over": {"total": 32, "free_until": null, "src": "https://netshort.com/full-episodes/i-spoke-baby-dragon-and-won-everyone-over-2094674901238480897", "eps": {}},
+ "mech-god-from-the-dark-side-of-the-moon": {"total": 46, "free_until": null, "src": "https://netshort.com/full-episodes/mech-god-from-the-dark-side-of-the-moon-2100150024030355457", "eps": {}},
+ "mommy-i-m-not-lying": {"total": 47, "free_until": null, "src": "https://www.shorttv.live/episode/mommy-im-not-lyingupdating-18550-1", "eps": {}},
+ "my-billionaire-boss-wont-let-me-quit": {"total": 61, "free_until": 15, "src": "https://www.reelshort.com/movie/my-billionaire-boss-won-t-let-me-quit-6a792e03ee704ba9f605ffb9", "eps": {}},
+ "rejected-luna-is-the-alpha-queen": {"total": 59, "free_until": 10, "src": "https://www.reelshort.com/movie/rejected-luna-is-the-alpha-queen-69fa0a977e9368c0730c1459", "eps": {"10": {"yt": "cx-rFqh4x4w"}}},
+ "the-empresss-final-wish": {"total": 78, "free_until": 4, "src": "https://www.reelshort.com/movie/the-empress-s-final-wish-6a06bb6551a5d1e3b304e6a9", "eps": {}},
+ "the-unbound-rise-of-the-godslayer": {"total": null, "free_until": null, "src": null, "eps": {"1": {"yt": "VOS5UiGpIV8"}, "2": {"yt": "ylUIh9I908I"}, "3": {"yt": "ZkCDRpUW8w8"}, "4": {"yt": "FQGrMJvSNhA"}, "5": {"yt": "TH9eRUwcubs"}}}
+}
