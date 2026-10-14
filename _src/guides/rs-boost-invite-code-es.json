@@ -1,0 +1,79 @@
+{
+ "path": "/es/invite/rs-boost/",
+ "lang": "es",
+ "code": "RS Boost",
+ "films_app": "ReelShort",
+ "checked": "2026-10-14",
+ "alternates": {
+  "en": "/invite/rs-boost/",
+  "es": "/es/invite/rs-boost/",
+  "pt": "/pt/invite/rs-boost/"
+ },
+ "crumbs": [
+  {
+   "name": "Invitation codes",
+   "path": "/invite/"
+  }
+ ],
+ "title": "Código de invitación RS Boost de ReelShort",
+ "description": "Código de invitación gratis para RS Boost, el programa de afiliados de ReelShort. Visible aquí, sin correo. Dónde pegarlo y para qué sirve.",
+ "h1": "Código de invitación de RS Boost (afiliados de ReelShort)",
+ "lead": "¿Te estás registrando en RS Boost, el programa de afiliados de ReelShort para creadores? El formulario tiene una casilla para el código de invitación. Aquí está el nuestro. Cópialo y pégalo, sin dejar tu correo.",
+ "disclosure": "Este es nuestro código de referido. Si te registras con él, ReelShort puede darnos una mejor comisión. A ti no te cuesta nada y no cambia lo que ganas.",
+ "sections": [
+  {
+   "h2": "Dónde pegar el código",
+   "steps": [
+    "Abre la página de registro de RS Boost en cps.reelshort.com.",
+    "Completa los datos de la cuenta que pide el formulario.",
+    "Pega el código en la casilla del código de invitación.",
+    "Termina el registro, inicia sesión y crea tus enlaces de promoción."
+   ],
+   "after": [
+    "Considera el código como permanente: puede que no se pueda cambiar después del registro."
+   ]
+  },
+  {
+   "h2": "Qué es RS Boost",
+   "p": [
+    "RS Boost es el programa propio de ReelShort para quienes promocionan sus dramas. Compartes dramas de ReelShort con un enlace o código de tu panel y cobras por venta cuando tus espectadores pagan en la app.",
+    "Por ahora el programa y su panel están en inglés."
+   ]
+  },
+  {
+   "h2": "No es un código para espectadores",
+   "p": [
+    "El código de RS Boost es para creadores. No desbloquea episodios ni da monedas. La app de ReelShort tiene otra casilla de invitación para espectadores."
+   ],
+   "links": [
+    {
+     "text": "Guía oficial de ReelShort sobre el código de invitación en la app (en inglés)",
+     "href": "https://www.reelshort.com/fandom/reelshort-invitation-code-01-25-1a2b555/"
+    }
+   ]
+  }
+ ],
+ "faq": [
+  {
+   "q": "¿El código de invitación de RS Boost es gratis?",
+   "a": "Sí. Los códigos de invitación son gratis. No pagues a nadie por uno."
+  },
+  {
+   "q": "¿Puedo cambiar el código después de registrarme?",
+   "a": "Mejor asume que no. Elige el código antes de terminar el registro."
+  },
+  {
+   "q": "¿Este código da monedas gratis en ReelShort?",
+   "a": "No. Es un código de registro para creadores, no para espectadores."
+  },
+  {
+   "q": "¿DramaCPS tiene código de invitación?",
+   "a": "No. En DramaCPS te registras directamente, sin código."
+  }
+ ],
+ "sources": [
+  "https://cps.reelshort.com/user/register",
+  "https://cps.reelshort.com/user/agreement",
+  "https://www.reelshort.com/fandom/reelshort-invitation-code-01-25-1a2b555/"
+ ]
+}

@@ -1,0 +1,95 @@
+{
+ "path": "/invite/rs-boost/",
+ "lang": "en",
+ "code": "RS Boost",
+ "films_app": "ReelShort",
+ "checked": "2026-10-14",
+ "alternates": {
+  "en": "/invite/rs-boost/",
+  "es": "/es/invite/rs-boost/",
+  "pt": "/pt/invite/rs-boost/"
+ },
+ "crumbs": [
+  {
+   "name": "Invitation codes",
+   "path": "/invite/"
+  }
+ ],
+ "title": "RS Boost Invite Code for ReelShort Creators",
+ "description": "Free RS Boost invitation code for the ReelShort affiliate program, shown right here, no email needed. Where to paste it and what it does.",
+ "h1": "RS Boost invite code (ReelShort affiliate program)",
+ "lead": "Signing up for RS Boost, ReelShort's affiliate program for creators? The sign-up form has an invitation code box. Here is ours. Copy it, paste it, done. No email form, no waiting.",
+ "disclosure": "This is our referral code. If you join with it, ReelShort may give us a better commission rate. It costs you nothing and does not change what you earn.",
+ "sections": [
+  {
+   "h2": "Where to paste the code",
+   "steps": [
+    "Open the RS Boost sign-up page on cps.reelshort.com and choose to register.",
+    "Fill in the account details the form asks for.",
+    "Paste the code into the invitation code field.",
+    "Finish sign-up, then log in and set up your promotion links."
+   ],
+   "after": [
+    "Treat the code as permanent: you may not be able to change it after sign-up. If you already have a code from someone you know, use theirs."
+   ]
+  },
+  {
+   "h2": "What RS Boost is",
+   "p": [
+    "RS Boost is ReelShort's own program for people who promote its dramas. You share ReelShort dramas with a link or code from your dashboard, and you are paid on a cost-per-sale basis when your viewers pay in the app.",
+    "Swoonflicks is a small short-drama channel that uses RS Boost itself. The dramas below are ones we share."
+   ]
+  },
+  {
+   "h2": "This is not a viewer code",
+   "p": [
+    "The RS Boost code is for creators signing up to promote dramas. It does not unlock episodes or add coins to a viewer account. ReelShort's app has a separate invitation code box for viewers."
+   ],
+   "links": [
+    {
+     "text": "ReelShort's own guide to the in-app invitation code",
+     "href": "https://www.reelshort.com/fandom/reelshort-invitation-code-01-25-1a2b555/"
+    },
+    {
+     "text": "Our guide: ReelShort invitation code for viewers",
+     "href": "/guides/reelshort-invitation-code/"
+    }
+   ]
+  }
+ ],
+ "faq": [
+  {
+   "q": "Is the RS Boost invite code free?",
+   "a": "Yes. Invitation codes are free. Never pay anyone for one."
+  },
+  {
+   "q": "Do I need an invitation code to join RS Boost?",
+   "a": "The RS Boost sign-up form has an invitation code field. If you have one, paste it there. Ours is on this page, shown in full, with no email needed."
+  },
+  {
+   "q": "Can I change my invitation code after I sign up?",
+   "a": "Plan as if you cannot. Pick the code you want before you finish sign-up."
+  },
+  {
+   "q": "Does this code give me free coins on ReelShort?",
+   "a": "No. It is a creator sign-up code, not a viewer code. It does not unlock episodes or add coins."
+  },
+  {
+   "q": "Does DramaCPS have an invitation code?",
+   "a": "No. DramaCPS does not use invitation codes. You sign up directly on its site."
+  },
+  {
+   "q": "How much can I earn with RS Boost?",
+   "a": "We do not publish earnings figures. RS Boost pays on a cost-per-sale basis under its own terms, and your dashboard shows the rates that apply to you."
+  }
+ ],
+ "related": [
+  "/guides/how-to-join-rs-boost/",
+  "/guides/rs-boost-rules/"
+ ],
+ "sources": [
+  "https://cps.reelshort.com/user/register",
+  "https://cps.reelshort.com/user/agreement",
+  "https://www.reelshort.com/fandom/reelshort-invitation-code-01-25-1a2b555/"
+ ]
+}

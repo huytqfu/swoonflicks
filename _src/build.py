@@ -82,14 +82,14 @@ def metal(t):
     return f'<span class="m"><span class="l0">{t}</span><span class="l1" aria-hidden="true">{t}</span><span class="l2" aria-hidden="true">{t}</span></span>'
 
 
-def head(title, desc, path, img=None, extra="", noindex=False, src=""):
+def head(title, desc, path, img=None, extra="", noindex=False, src="", lang="en"):
     cfg = dict(CFG, src=src)
     # OG phim là ảnh dọc 600x800: summary_large_image (khung ngang) sẽ cắt nát, dùng summary; home.jpg ngang giữ large
     tw = "summary_large_image" if img and img.endswith("home.jpg") else "summary"
     wh = (1200, 630) if img and img.endswith("home.jpg") else (600, 800)
     og = (f'<meta property="og:image" content="{BASE}{img}"><meta property="og:image:width" content="{wh[0]}">'
           f'<meta property="og:image:height" content="{wh[1]}"><meta name="twitter:card" content="{tw}">') if img else ""
-    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8">
+    return f'''<!doctype html><html lang="{lang}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>{e(title)}</title><meta name="description" content="{e(desc)}">
 {f'<link rel="canonical" href="{BASE}{path}">' if path else ''}{'<meta name="robots" content="noindex,follow">' if noindex else ''}
@@ -261,7 +261,12 @@ def invite_page(inv):
 <p>{html.escape(i.get("note", ""))}</p>
 <div class="code"><b>{html.escape(i["code"])}</b><button type="button" data-copy="{html.escape(i["code"])}" data-prog="{html.escape(i["program"])}">Copy</button></div>
 {f'<a class="cta" href="{html.escape(i["signup"])}" rel="noopener" target="_blank">Sign up for {html.escape(i["program"])} {ARROW}</a>' if i.get("signup") else ""}
+{f'<p class="note"><a href="{html.escape(i["guide"])}"><u>Step-by-step guide and FAQ</u></a></p>' if i.get("guide") else ""}
 </section>''' for i in inv)
+    gl = [g for g in GUIDES if g.get("lang", "en") == "en"]
+    if gl:
+        rows += '<section class="syn ab"><h2>Guides</h2><ul>' + "".join(
+            f'<li><a href="{e(g["path"])}"><u>{e(g["h1"])}</u></a></li>' for g in gl) + "</ul></section>"
     return head("Invitation codes · Swoonflicks", "Invitation codes to join short drama affiliate programs like RS Boost.", "/invite/") + f'''
 <body><main class="wrap"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/">SWOONFLICKS</a></div>
 <div class="ttl"><h1>{metal("Invitation codes")}</h1></div>
@@ -271,6 +276,81 @@ def invite_page(inv):
 <script>document.addEventListener('click',function(e){{var b=e.target.closest('[data-copy]');if(!b)return;
 navigator.clipboard&&navigator.clipboard.writeText(b.dataset.copy);b.textContent='Copied';
 window.SFT&&SFT.track('CopyInvite',{{program:b.dataset.prog}})}})</script></body></html>'''
+
+
+# ---------- trang guide (_src/guides/*.json): invite code RS Boost EN/ES/PT + bài hướng dẫn ----------
+# Chữ thường, build tự escape. Khối "code" lấy code thật từ config.json "invite" theo tên program (không có code thì bỏ khối).
+# Không số coin/hoa hồng nếu không có link nguồn trong "sources".
+UI = {"en": dict(back="‹ All dramas", copy="Copy", copied="Copied", checked="Last checked", src="Sources", faq="Questions",
+                 code="invitation code", signup="Open {p} sign-up", more="Dramas we share", rel="Related guides"),
+      "es": dict(back="‹ Todos los dramas", copy="Copiar", copied="Copiado", checked="Última revisión", src="Fuentes", faq="Preguntas",
+                 code="código de invitación", signup="Abrir el registro de {p}", more="Dramas que compartimos", rel="Guías relacionadas"),
+      "pt": dict(back="‹ Todos os dramas", copy="Copiar", copied="Copiado", checked="Última revisão", src="Fontes", faq="Perguntas",
+                 code="código de convite", signup="Abrir o cadastro do {p}", more="Dramas que compartilhamos", rel="Guias relacionados")}
+
+
+def load_guides():
+    d = OUT / "_src" / "guides"
+    gs = [json.loads(x.read_text(encoding="utf-8")) for x in sorted(d.glob("*.json"))] if d.exists() else []
+    paths = [g["path"] for g in gs]
+    assert len(paths) == len(set(paths)), "guide path trùng"
+    return gs
+
+
+def guide_page(g, films):
+    lang = g.get("lang", "en")
+    u = UI[lang]
+    inv = next((i for i in CFG.get("invite", []) if i.get("code") and i["program"] == g.get("code")), None)
+    codebox = ""
+    if inv:
+        codebox = f'''<section class="syn inv"><h2>{e(inv["program"])} {e(u["code"])}</h2>
+<div class="code"><b>{e(inv["code"])}</b><button type="button" data-copy="{e(inv["code"])}" data-prog="{e(inv["program"])}" data-done="{e(u["copied"])}">{e(u["copy"])}</button></div>
+{f'<a class="cta" href="{e(inv["signup"])}" rel="noopener" target="_blank" data-signup="{e(inv["program"])}">{e(u["signup"].format(p=inv["program"]))} {ARROW}</a>' if inv.get("signup") else ""}
+{f'<p class="note">{e(g["disclosure"])}</p>' if g.get("disclosure") else ""}</section>'''
+    body = ""
+    for s in g.get("sections", []):
+        body += f'<h2>{e(s["h2"])}</h2>' + "".join(f"<p>{e(x)}</p>" for x in s.get("p", []))
+        if s.get("steps"):
+            body += "<ol>" + "".join(f"<li>{e(x)}</li>" for x in s["steps"]) + "</ol>"
+        if s.get("ul"):
+            body += "<ul>" + "".join(f"<li>{e(x)}</li>" for x in s["ul"]) + "</ul>"
+        if s.get("links"):
+            body += "<ul>" + "".join(f'<li><a href="{e(l["href"])}"{" rel=\"noopener\" target=\"_blank\"" if l["href"].startswith("http") else ""}><u>{e(l["text"])}</u></a></li>'
+                                     for l in s["links"]) + "</ul>"
+        body += "".join(f"<p>{e(x)}</p>" for x in s.get("after", []))
+    faq = g.get("faq", [])
+    faqh = (f'<section class="syn faq"><h2>{e(u["faq"])}</h2>' + "".join(
+        f'<details><summary>{e(x["q"])}</summary><p>{e(x["a"])}</p></details>' for x in faq) + "</section>") if faq else ""
+    rel = [x for x in GUIDES if x["path"] in g.get("related", [])]
+    relh = (f'<h2>{e(u["rel"])}</h2><ul>' + "".join(f'<li><a href="{e(x["path"])}"><u>{e(x["h1"])}</u></a></li>' for x in rel) + "</ul>") if rel else ""
+    srcs = g.get("sources", [])
+    srch = (f'<h2>{e(u["src"])}</h2><ul>' + "".join(f'<li><a href="{e(x)}" rel="noopener" target="_blank"><u>{e(x)}</u></a></li>' for x in srcs) + "</ul>") if srcs else ""
+    fl = [f for f in films if f["app"] == g.get("films_app")] if g.get("films_app") else []
+    moreh = (f'<p class="h3">{e(u["more"])}</p><div class="more">' + "".join(card(f) for f in fl) + "</div>") if fl else ""
+    alt = g.get("alternates", {})
+    altl = "".join(f'<link rel="alternate" hreflang="{k}" href="{BASE}{v}">' for k, v in alt.items())
+    if "en" in alt:
+        altl += f'<link rel="alternate" hreflang="x-default" href="{BASE}{alt["en"]}">'
+    crumbs = [("Swoonflicks", "/")] + [(c["name"], c["path"]) for c in g.get("crumbs", [])] + [(g["h1"], g["path"])]
+    lds = [{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+              {"@type": "ListItem", "position": i + 1, "name": n, "item": f"{BASE}{p}"} for i, (n, p) in enumerate(crumbs)]},
+           {"@context": "https://schema.org", "@type": "WebPage", "name": g["title"], "url": f"{BASE}{g['path']}", "inLanguage": lang,
+            "description": g["description"], "dateModified": g.get("checked", date.today().isoformat()),
+            "publisher": {"@type": "Organization", "name": "Swoonflicks", "url": f"{BASE}/"}}]
+    if faq:
+        lds.append({"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": lang, "mainEntity": [
+            {"@type": "Question", "name": x["q"], "acceptedAnswer": {"@type": "Answer", "text": x["a"]}} for x in faq]})
+    extra = altl + f'<script type="application/ld+json">{json.dumps(lds, ensure_ascii=False)}</script>'
+    return head(g["title"], g["description"], g["path"], "/img/og/home.jpg", extra, lang=lang) + f'''
+<body><main class="wrap doc"><div class="top"><a class="back" href="/">{e(u["back"])}</a><a class="brand" href="/">SWOONFLICKS</a></div>
+<h1>{e(g["h1"])}</h1>{f'<p>{e(g["lead"])}</p>' if g.get("lead") else ""}
+{codebox}{body}{faqh}{relh}{srch}
+{f'<p class="note">{e(u["checked"])}: {e(g["checked"])}</p>' if g.get("checked") else ""}
+{moreh}{FOOT}</main>
+<script>document.addEventListener('click',function(e){{var b=e.target.closest('[data-copy]');if(b){{
+navigator.clipboard&&navigator.clipboard.writeText(b.dataset.copy);b.textContent=b.dataset.done||'Copied';
+window.SFT&&SFT.track('CopyInvite',{{program:b.dataset.prog,page:location.pathname}});return}}
+var s=e.target.closest('[data-signup]');if(s&&window.SFT)SFT.track('ClickSignup',{{program:s.dataset.signup,page:location.pathname}})}})</script></body></html>'''
 
 
 def nf_page():
@@ -331,6 +411,7 @@ shutil.copy(HUB / "og-home.jpg", OUT / "img" / "og" / "home.jpg")
 
 
 # ---------- trang ----------
+GUIDES = load_guides()
 def write(rel, text, gen=False):
     p = OUT / rel
     p.parent.mkdir(parents=True, exist_ok=True)
@@ -348,14 +429,22 @@ write("privacy/index.html", privacy_page(), gen=True)
 INV = [i for i in CFG.get("invite", []) if i.get("code")]
 if INV:
     write("invite/index.html", invite_page(INV), gen=True)
+for g in GUIDES:
+    rel = g["path"].strip("/") + "/index.html"
+    write(rel, guide_page(g, films), gen=True)
+    (OUT / rel.split("/")[0] / ".gen").write_text("")  # thư mục gốc (es/, pt/, guides/) cũng là thư mục sinh
+# IndexNow: file key ở gốc; ping sau deploy bằng _src/indexnow.py
+if CFG.get("indexnow"):
+    write(f'{CFG["indexnow"]}.txt', CFG["indexnow"])
 write("404.html", nf_page())
-urls = ["/", "/privacy/"] + (["/invite/"] if INV else []) + [f"/{f['slug']}/" for f in films]
+urls = ["/", "/privacy/"] + (["/invite/"] if INV else []) + [g["path"] for g in GUIDES] + [f"/{f['slug']}/" for f in films]
 write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
       "".join(f"<url><loc>{BASE}{u}</loc><lastmod>{date.today().isoformat()}</lastmod></url>" for u in urls) + "</urlset>\n")
 write("robots.txt", f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")
 # llms.txt: bản đồ markdown cho bot AI (rẻ, không kỳ vọng thứ hạng)
 write("llms.txt", "# Swoonflicks\n\n> Free parts of English short dramas, with links to watch the full series in each app.\n\n## Dramas\n" +
       "".join(f"- [{f['title']}]({BASE}/{f['slug']}/): {', '.join(f['genre'])} drama on {f['app']}\n" for f in films) +
-      f"\n## Creators\n- [Invitation codes]({BASE}/invite/): creator sign-up code for short drama affiliate programs\n")
+      f"\n## Creators\n- [Invitation codes]({BASE}/invite/): creator sign-up code for short drama affiliate programs\n" +
+      ("\n## Guides\n" + "".join(f"- [{g['h1']}]({BASE}{g['path']}) ({g.get('lang', 'en')}): {g['description']}\n" for g in GUIDES) if GUIDES else ""))
 (OUT / ".nojekyll").write_text("")
 print("ok", len(films), "phim:", ", ".join(f["slug"] for f in films))

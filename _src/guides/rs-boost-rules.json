@@ -1,0 +1,84 @@
+{
+ "path": "/guides/rs-boost-rules/",
+ "lang": "en",
+ "checked": "2026-10-14",
+ "films_app": "ReelShort",
+ "crumbs": [
+  {
+   "name": "Invitation codes",
+   "path": "/invite/"
+  }
+ ],
+ "title": "RS Boost Rules: What Can Freeze Your Commission",
+ "description": "The RS Boost terms in plain English: what counts as misleading promotion, what gets accounts frozen, and the disclosure US viewers expect.",
+ "h1": "RS Boost rules every new creator should know",
+ "lead": "Most lost commissions come from breaking a rule nobody read. This is a plain summary of the RS Boost terms, with section numbers so you can check the original.",
+ "sections": [
+  {
+   "h2": "Where you can post",
+   "p": [
+    "Section III.2: you may share RS Boost materials and links on online media you choose, except media that is illegal where you live. The terms advise against sites aimed at minors."
+   ]
+  },
+  {
+   "h2": "What you must not do",
+   "ul": [
+    "Make materials that are fake, fraudulent or misleading (III.3). Promising free coins or free full series falls here.",
+    "Change, blur or cover trademarks and copyright marks on the materials (III.3).",
+    "Use dishonest methods such as dark patterns, fake clicks, or forced or tricked clicks (III.4).",
+    "Crawl, deep-link to or scrape the platform (III.4). Use the links your dashboard gives you."
+   ]
+  },
+  {
+   "h2": "What happens if you break them",
+   "p": [
+    "Section III.5 lets RS Boost revoke your license and freeze your account together with unpaid earnings. There is no warning step written into the terms."
+   ]
+  },
+  {
+   "h2": "Inviting other creators",
+   "p": [
+    "Section IV.2 says that if you bring other users into the program, your CPS ratio may be raised. The terms do not say by how much."
+   ]
+  },
+  {
+   "h2": "If you also use DramaCPS",
+   "p": [
+    "DramaCPS has its own terms. They ban misleading promotion and incentivized traffic without written approval, and ban redirects or intermediate pages that interfere with its tracking. Break them and unpaid commission can be confiscated."
+   ]
+  },
+  {
+   "h2": "Disclose your links (US viewers)",
+   "p": [
+    "The FTC expects a clear disclosure close to the link, such as \"paid link\" or \"I earn a commission if you buy through this link\". A disclosure only on your home page or behind a footer link is not enough."
+   ]
+  }
+ ],
+ "faq": [
+  {
+   "q": "Can I say viewers get free coins through my link?",
+   "a": "No. That is misleading under RS Boost section III.3 unless it is true for that exact offer, and DramaCPS bans incentivized traffic without approval."
+  },
+  {
+   "q": "Can I use a link shortener?",
+   "a": "Use the links the program gives you. DramaCPS bans redirects that interfere with its tracking, and RS Boost limits deep-linking."
+  },
+  {
+   "q": "Can RS Boost freeze my earnings?",
+   "a": "Yes. Section III.5 allows freezing the account and unpaid earnings when the terms are broken."
+  },
+  {
+   "q": "This page is a summary. Is it legal advice?",
+   "a": "No. Read the full terms through the links below before you rely on any point."
+  }
+ ],
+ "related": [
+  "/invite/rs-boost/",
+  "/guides/how-to-join-rs-boost/"
+ ],
+ "sources": [
+  "https://cps.reelshort.com/user/agreement",
+  "https://dramacps.com/terms",
+  "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking"
+ ]
+}

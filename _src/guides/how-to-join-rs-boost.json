@@ -1,0 +1,76 @@
+{
+ "path": "/guides/how-to-join-rs-boost/",
+ "lang": "en",
+ "code": "RS Boost",
+ "films_app": "ReelShort",
+ "checked": "2026-10-14",
+ "crumbs": [
+  {
+   "name": "Invitation codes",
+   "path": "/invite/"
+  }
+ ],
+ "title": "How to Join RS Boost, ReelShort's Affiliate Program",
+ "description": "Step-by-step: sign up for RS Boost, add an invitation code, and get your first ReelShort promotion link. Plain guide from a channel that uses it.",
+ "h1": "How to join RS Boost, step by step",
+ "lead": "RS Boost is how ReelShort pays creators who send viewers to its dramas. Here is the sign-up path we used, without the hype.",
+ "disclosure": "The code above is our referral code. Using it may raise our commission rate with ReelShort. It costs you nothing.",
+ "sections": [
+  {
+   "h2": "Before you start",
+   "ul": [
+    "An email address you check, for the account and its notices.",
+    "At least one place to share dramas: a TikTok, YouTube, Instagram or Facebook account, or a site.",
+    "An invitation code if you want to bind one. Ours is above."
+   ]
+  },
+  {
+   "h2": "Sign up",
+   "steps": [
+    "Go to cps.reelshort.com and choose to register.",
+    "Enter the account details the form asks for.",
+    "Paste an invitation code in the invitation code field if you have one.",
+    "Read the terms of service before you accept them. They decide what promotion is allowed.",
+    "Confirm your account and log in."
+   ]
+  },
+  {
+   "h2": "Get your first link",
+   "p": [
+    "In the dashboard, pick a drama and generate its promotion link or code. Share that exact link. Do not shorten it through another redirect or deep-link into the app another way, because RS Boost's terms limit deep-linking and tracking only works on the links it gives you."
+   ]
+  },
+  {
+   "h2": "What to expect",
+   "p": [
+    "RS Boost pays on a cost-per-sale basis, so you earn when your viewers pay in the app, not per view. We do not publish income figures: they depend on your audience and the terms in your dashboard."
+   ]
+  }
+ ],
+ "faq": [
+  {
+   "q": "Who can join RS Boost?",
+   "a": "Creators who promote ReelShort dramas online. The terms let you choose your own media, but rule out illegal sites and advise against sites aimed at minors."
+  },
+  {
+   "q": "Can I promote RS Boost dramas on my own website?",
+   "a": "RS Boost's terms say you may share its materials and links on online media you choose, so a site of your own is allowed as long as you follow the rest of the terms."
+  },
+  {
+   "q": "Is an invitation code required?",
+   "a": "The sign-up form has a field for one. If you have a code, add it there; ours is on this page."
+  },
+  {
+   "q": "How do I get paid?",
+   "a": "On a cost-per-sale basis, under the payment terms shown in the RS Boost terms and dashboard."
+  }
+ ],
+ "related": [
+  "/invite/rs-boost/",
+  "/guides/rs-boost-rules/"
+ ],
+ "sources": [
+  "https://cps.reelshort.com/user/register",
+  "https://cps.reelshort.com/user/agreement"
+ ]
+}

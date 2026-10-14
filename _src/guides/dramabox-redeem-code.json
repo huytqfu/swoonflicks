@@ -1,0 +1,64 @@
+{
+ "path": "/guides/dramabox-redeem-code/",
+ "lang": "en",
+ "checked": "2026-10-14",
+ "title": "DramaBox Redeem Code: What Is Real",
+ "description": "Does DramaBox have redeem or gift codes? What we could and could not verify, how to spot fake code pages, and safer ways to watch.",
+ "h1": "DramaBox redeem codes: what is real",
+ "lead": "Search for DramaBox codes and you will find pages full of codes, generators and masked codes. Here is what we could check.",
+ "sections": [
+  {
+   "h2": "What we could verify",
+   "p": [
+    "As of the date below, we could not find an official DramaBox help page about redeem or gift codes. Third-party pages describe a redemption option in the app settings during promotions, but we could not confirm it from DramaBox itself."
+   ]
+  },
+  {
+   "h2": "How to spot a fake code page",
+   "ul": [
+    "The code is hidden behind question marks, a countdown or a \"verify you are human\" step.",
+    "It promises a round number of free coins with no date and no source.",
+    "It asks you to install another app, enter your login or complete offers.",
+    "It links to modded or hacked versions of the app."
+   ]
+  },
+  {
+   "h2": "If DramaBox runs a code promotion",
+   "p": [
+    "Real promotions usually come through DramaBox's own app notices or official social accounts. Use codes only from there."
+   ]
+  },
+  {
+   "h2": "Creators",
+   "p": [
+    "DramaBox dramas can be promoted through affiliate networks such as DramaCPS, which does not use invitation codes. For ReelShort, see our RS Boost invite code page."
+   ],
+   "links": [
+    {
+     "text": "RS Boost invite code for creators",
+     "href": "/invite/rs-boost/"
+    }
+   ]
+  }
+ ],
+ "faq": [
+  {
+   "q": "Does DramaBox have redeem codes?",
+   "a": "We could not confirm it from an official DramaBox source. Only use codes DramaBox posts itself."
+  },
+  {
+   "q": "Are DramaBox coin generators real?",
+   "a": "No. Treat them as scams."
+  },
+  {
+   "q": "Does Swoonflicks give DramaBox codes?",
+   "a": "No. We do not hand out viewer codes or coins."
+  }
+ ],
+ "related": [
+  "/guides/reelshort-invitation-code/"
+ ],
+ "sources": [
+  "https://dramacps.com/news/dramabox-affiliate-program"
+ ]
+}
