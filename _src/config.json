@@ -6,10 +6,15 @@
   {
    "program": "RS Boost",
    "code": "jCsNUgQuecHY",
-   "note": "RS Boost is the official ReelShort affiliate program: share ReelShort dramas and earn a share of what your viewers spend. Sign-up asks for an invitation code.",
+   "note": "RS Boost is the official ReelShort affiliate program: share ReelShort dramas and earn a share of what your viewers spend. Sign-up asks for an invitation code, and we send ours by email, on request.",
    "signup": "https://cps.reelshort.com/",
-   "guide": "/invite/rs-boost/"
+   "guide": "/invite/rs-boost/",
+   "disclosure": "This is our referral code. If you join with it, ReelShort may give us a better commission rate. It costs you nothing and does not change what you earn."
   }
  ],
- "indexnow": "d3a799fed00242b6823404499b12f5ed"
+ "indexnow": "d3a799fed00242b6823404499b12f5ed",
+ "gate": {
+  "endpoint": "https://api.swoonflicks.com/invite",
+  "turnstile": "0x4AAAAAAFW1AozifNupSekS"
+ }
 }

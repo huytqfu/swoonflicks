@@ -93,7 +93,7 @@ def metal(t):
 
 
 def head(title, desc, path, img=None, extra="", noindex=False, src="", lang="en"):
-    cfg = dict(CFG, src=src)
+    cfg = {k: CFG.get(k, "") for k in ("ga4", "meta", "tiktok")}; cfg["src"] = src  # chỉ ID tracking ra trang; không rò "invite"/"gate" (mã mời) vào HTML
     # OG phim là ảnh dọc 600x800: summary_large_image (khung ngang) sẽ cắt nát, dùng summary; home.jpg ngang giữ large
     tw = "summary_large_image" if img and img.endswith("home.jpg") else "summary"
     wh = (1200, 630) if img and img.endswith("home.jpg") else (600, 800)
@@ -306,6 +306,11 @@ and only load when you press play; pressing play also loads YouTube's player scr
 <h2>Your choice</h2>
 <p>Visitors in the EU and UK are asked before any of these tools load. You can change your answer at any time:
 <button type="button" class="chip" onclick="try{localStorage.removeItem('sf_consent')}catch(e){}location.reload()">Cookie settings</button></p>
+<h2>Invite code emails</h2>
+<p>If you ask for a creator invitation code on our invite pages, we use the email address you enter to send you that one email
+(the code, the sign-up link and a short checklist) and keep it, with the date and page, so we can answer questions and stop abuse.
+We do not add you to a newsletter. Write to <a href="mailto:partner@swoonflicks.com">partner@swoonflicks.com</a> to have it deleted.
+The form is protected by Cloudflare Turnstile, which checks that you are not a bot.</p>
 <h2>Affiliate links</h2>
 <p>Links to drama apps are affiliate links. If you watch or subscribe there, we may earn a commission at no extra cost to you.
 What you do inside those apps is covered by their own privacy policies.</p>
@@ -315,36 +320,95 @@ What you do inside those apps is covered by their own privacy policies.</p>
 
 def invite_page(inv):
     """Trang /invite/: mã mời làm affiliate (RS Boost, DramaCPS...). Chỉ mục có code thật trong config.json "invite" mới hiện."""
-    rows = "".join(f'''<section class="syn inv"><h2>{html.escape(i["program"])}</h2>
+    def block(i):
+        if GATE.get("endpoint"):  # cổng email: mã không in ra trang, form gửi mã qua mail
+            return f'''<section class="syn ab"><h2>{e(i["program"])}</h2><p>{e(i.get("note", ""))}</p>
+{f'<p class="note"><a href="{e(i["guide"])}"><u>Step-by-step guide and FAQ</u></a></p>' if i.get("guide") else ""}</section>''' + gate_box(i, "en", i.get("disclosure", ""))
+        return f'''<section class="syn inv"><h2>{html.escape(i["program"])}</h2>
 <p>{html.escape(i.get("note", ""))}</p>
 <div class="code"><b>{html.escape(i["code"])}</b><button type="button" data-copy="{html.escape(i["code"])}" data-prog="{html.escape(i["program"])}">Copy</button></div>
 {f'<a class="cta" href="{html.escape(i["signup"])}" rel="noopener" target="_blank">Sign up for {html.escape(i["program"])} {ARROW}</a>' if i.get("signup") else ""}
 {f'<p class="note"><a href="{html.escape(i["guide"])}"><u>Step-by-step guide and FAQ</u></a></p>' if i.get("guide") else ""}
-</section>''' for i in inv)
+</section>'''
+    rows = "".join(block(i) for i in inv)
     gl = [g for g in GUIDES if g.get("lang", "en") == "en"]
     if gl:
         rows += '<section class="syn ab"><h2>Guides</h2><ul>' + "".join(
             f'<li><a href="{e(g["path"])}"><u>{e(g["h1"])}</u></a></li>' for g in gl) + "</ul></section>"
-    return head("Invitation codes · Swoonflicks", "Invitation codes to join short drama affiliate programs like RS Boost.", "/invite/") + f'''
+    return head("Invitation codes · Swoonflicks", "Invitation codes to join short drama affiliate programs like RS Boost.", "/invite/", extra=TURNSTILE_JS) + f'''
 <body><main class="wrap"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a></div>
 <div class="ttl"><h1>{metal("Invitation codes")}</h1></div>
-<p class="tag" style="text-align:center">For creators who want to earn by sharing short dramas. These affiliate programs ask for an invitation code when you sign up. Copy ours and paste it in the sign-up form.</p>
+<p class="tag" style="text-align:center">For creators who want to earn by sharing short dramas. These affiliate programs ask for an invitation code when you sign up. {"Request ours below and paste it in the sign-up form." if GATE.get("endpoint") else "Copy ours and paste it in the sign-up form."}</p>
 <p class="note" style="text-align:center">This is a creator sign-up code, not a viewer code: it does not unlock episodes or give coins. Earnings depend on each program's own terms.</p>
 {rows}{FOOT}</main>
 <script>document.addEventListener('click',function(e){{var b=e.target.closest('[data-copy]');if(!b)return;
 navigator.clipboard&&navigator.clipboard.writeText(b.dataset.copy);b.textContent='Copied';
-window.SFT&&SFT.track('CopyInvite',{{program:b.dataset.prog}})}})</script></body></html>'''
+window.SFT&&SFT.track('CopyInvite',{{program:b.dataset.prog}})}})</script>{JS_GATE if GATE.get("endpoint") else ""}</body></html>'''
 
 
 # ---------- trang guide (_src/guides/*.json): invite code RS Boost EN/ES/PT + bài hướng dẫn ----------
 # Chữ thường, build tự escape. Khối "code" lấy code thật từ config.json "invite" theo tên program (không có code thì bỏ khối).
 # Không số coin/hoa hồng nếu không có link nguồn trong "sources".
 UI = {"en": dict(back="‹ All dramas", copy="Copy", copied="Copied", checked="Last checked", src="Sources", faq="Questions",
-                 code="invitation code", signup="Open {p} sign-up", more="Dramas we share", rel="Related guides"),
+                 code="invitation code", signup="Open {p} sign-up", more="Dramas we share", rel="Related guides",
+                 gate_h="Get the {p} invite code by email", badge="By request only",
+                 gate_p="We send the code personally, to people who ask for it. Enter the email you will use for {p} and it arrives within a minute, with the sign-up link and a short checklist.",
+                 email="Your email", send="Send my invite code", sending="Sending…", ok_h="Check your inbox",
+                 ok_p="Your invite code is on its way to {e}. If it is not there in a few minutes, look in spam or promotions.",
+                 err="Something went wrong. Try again in a minute, or write to partner@swoonflicks.com.",
+                 limit="You already requested this code today. Check your inbox and spam folder.",
+                 bad="Please enter a valid email address.", fine="One email with the code. No newsletter, no follow-ups."),
       "es": dict(back="‹ Todos los dramas", copy="Copiar", copied="Copiado", checked="Última revisión", src="Fuentes", faq="Preguntas",
-                 code="código de invitación", signup="Abrir el registro de {p}", more="Dramas que compartimos", rel="Guías relacionadas"),
+                 code="código de invitación", signup="Abrir el registro de {p}", more="Dramas que compartimos", rel="Guías relacionadas",
+                 gate_h="Recibe el código de invitación de {p} por correo", badge="Solo a quien lo pide",
+                 gate_p="Enviamos el código personalmente, a quien lo pide. Escribe el correo que usarás en {p} y te llega en un minuto, con el enlace de registro y una lista breve de pasos.",
+                 email="Tu correo", send="Enviar mi código", sending="Enviando…", ok_h="Revisa tu correo",
+                 ok_p="Tu código va camino a {e}. Si no llega en unos minutos, mira en spam o promociones.",
+                 err="Algo salió mal. Inténtalo de nuevo en un minuto o escribe a partner@swoonflicks.com.",
+                 limit="Ya pediste este código hoy. Revisa tu bandeja de entrada y el spam.",
+                 bad="Escribe un correo válido.", fine="Un solo correo con el código. Sin boletín ni seguimientos."),
       "pt": dict(back="‹ Todos os dramas", copy="Copiar", copied="Copiado", checked="Última revisão", src="Fontes", faq="Perguntas",
-                 code="código de convite", signup="Abrir o cadastro do {p}", more="Dramas que compartilhamos", rel="Guias relacionados")}
+                 code="código de convite", signup="Abrir o cadastro do {p}", more="Dramas que compartilhamos", rel="Guias relacionados",
+                 gate_h="Receba o código de convite do {p} por e-mail", badge="Só a pedido",
+                 gate_p="Enviamos o código pessoalmente, a quem pede. Digite o e-mail que você vai usar no {p} e ele chega em um minuto, com o link de cadastro e um checklist curto.",
+                 email="Seu e-mail", send="Enviar meu código", sending="Enviando…", ok_h="Confira sua caixa de entrada",
+                 ok_p="Seu código está a caminho de {e}. Se não chegar em alguns minutos, veja o spam ou promoções.",
+                 err="Algo deu errado. Tente de novo em um minuto ou escreva para partner@swoonflicks.com.",
+                 limit="Você já pediu este código hoje. Confira a caixa de entrada e o spam.",
+                 bad="Digite um e-mail válido.", fine="Um único e-mail com o código. Sem newsletter, sem cobranças.")}
+# Cổng email (sếp 14/10 09:31: "điền mail vào và gửi qua mail... y chang drama partner"): config.json "gate" {endpoint, turnstile}.
+# endpoint = URL Worker (worker/README.md); có endpoint thì khối code đổi thành form, mã KHÔNG in ra HTML. Trống = hiện code như cũ.
+GATE = CFG.get("gate") or {}
+TURNSTILE_JS = '<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>' if GATE.get("endpoint") and GATE.get("turnstile") else ""
+
+
+def gate_box(inv, lang, disclosure=""):
+    """Form xin mã qua email thay khối code. Chữ theo UI[lang]; Worker trả 200 ok / 429 limit / 4xx-5xx lỗi."""
+    u = UI[lang]; p = inv["program"]
+    ts = f'<div class="cf-turnstile" data-sitekey="{e(GATE["turnstile"])}" data-theme="dark" data-size="flexible" data-action="invite"></div>' if GATE.get("turnstile") else ""
+    return f'''<section class="syn inv gate" id="invite"><span class="bd">{e(u["badge"])}</span><h2>{e(u["gate_h"].format(p=p))}</h2>
+<p class="gp">{e(u["gate_p"].format(p=p))}</p>
+<form class="gf" method="post" action="{e(GATE["endpoint"])}" novalidate data-program="{e(p)}" data-lang="{lang}" data-ok-h="{e(u["ok_h"])}" data-ok-p="{e(u["ok_p"])}"
+ data-err="{e(u["err"])}" data-limit="{e(u["limit"])}" data-bad="{e(u["bad"])}" data-sending="{e(u["sending"])}">
+<label for="ge">{e(u["email"])}</label>
+<div class="row"><input id="ge" type="email" name="email" required autocomplete="email" inputmode="email" spellcheck="false" placeholder="you@mail.com" maxlength="254"><button type="submit">{e(u["send"])}</button></div>
+{ts}<p class="fine">{e(u["fine"])}</p><p class="msg" role="status" aria-live="polite" hidden></p></form>
+{f'<p class="note">{e(disclosure)}</p>' if disclosure else ""}</section>'''
+
+
+# JS form: gửi JSON {email, lang, program, page, token} tới Worker; thành công thì thay form bằng lời cảm ơn; bắn event RequestInvite.
+JS_GATE = '''<script>(function(){var f=document.querySelector('form.gf');if(!f)return;var m=f.querySelector('.msg'),b=f.querySelector('button'),i=f.querySelector('input[type=email]');
+function say(t,ok){m.textContent=t;m.hidden=!t;m.className='msg'+(ok?' ok':'')}
+f.addEventListener('submit',function(ev){ev.preventDefault();var em=(i.value||'').trim();
+if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(em)){say(f.dataset.bad);i.focus();return}
+var tk=f.querySelector('[name=cf-turnstile-response]');var body={email:em,lang:f.dataset.lang,program:f.dataset.program,page:location.pathname,token:tk?tk.value:''};
+b.disabled=true;var t0=b.textContent;b.textContent=f.dataset.sending;say('');
+fetch(f.action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json().catch(function(){return{}}).then(function(j){return{s:r.status,j:j}})})
+.then(function(r){if(r.s===200&&r.j.ok){f.innerHTML='<p class="okh">'+f.dataset.okH+'</p><p class="okp">'+f.dataset.okP.replace('{e}','<b></b>')+'</p>';f.querySelector('.okp b').textContent=em;
+window.SFT&&SFT.track('RequestInvite',{program:f.dataset.program,page:location.pathname,lang:f.dataset.lang});return}
+say(r.s===429?f.dataset.limit:(r.j&&r.j.error==='bad_email'?f.dataset.bad:f.dataset.err));b.disabled=false;b.textContent=t0;if(window.turnstile)try{turnstile.reset()}catch(e){}})
+.catch(function(){say(f.dataset.err);b.disabled=false;b.textContent=t0})})})()</script>'''
+
 
 
 def load_guides():
@@ -360,7 +424,9 @@ def guide_page(g, films):
     u = UI[lang]
     inv = next((i for i in CFG.get("invite", []) if i.get("code") and i["program"] == g.get("code")), None)
     codebox = ""
-    if inv:
+    if inv and GATE.get("endpoint"):
+        codebox = gate_box(inv, lang, g.get("disclosure", ""))
+    elif inv:
         codebox = f'''<section class="syn inv"><h2>{e(inv["program"])} {e(u["code"])}</h2>
 <div class="code"><b>{e(inv["code"])}</b><button type="button" data-copy="{e(inv["code"])}" data-prog="{e(inv["program"])}" data-done="{e(u["copied"])}">{e(u["copy"])}</button></div>
 {f'<a class="cta" href="{e(inv["signup"])}" rel="noopener" target="_blank" data-signup="{e(inv["program"])}">{e(u["signup"].format(p=inv["program"]))} {ARROW}</a>' if inv.get("signup") else ""}
@@ -398,7 +464,7 @@ def guide_page(g, films):
     if faq:
         lds.append({"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": lang, "mainEntity": [
             {"@type": "Question", "name": x["q"], "acceptedAnswer": {"@type": "Answer", "text": x["a"]}} for x in faq]})
-    extra = altl + f'<script type="application/ld+json">{json.dumps(lds, ensure_ascii=False)}</script>'
+    extra = altl + f'<script type="application/ld+json">{json.dumps(lds, ensure_ascii=False)}</script>' + (TURNSTILE_JS if inv else "")
     return head(g["title"], g["description"], g["path"], "/img/og/home.jpg", extra, lang=lang) + f'''
 <body><main class="wrap doc"><div class="top"><a class="back" href="/">{e(u["back"])}</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a></div>
 <h1>{e(g["h1"])}</h1>{f'<p>{e(g["lead"])}</p>' if g.get("lead") else ""}
@@ -408,7 +474,7 @@ def guide_page(g, films):
 <script>document.addEventListener('click',function(e){{var b=e.target.closest('[data-copy]');if(b){{
 navigator.clipboard&&navigator.clipboard.writeText(b.dataset.copy);b.textContent=b.dataset.done||'Copied';
 window.SFT&&SFT.track('CopyInvite',{{program:b.dataset.prog,page:location.pathname}});return}}
-var s=e.target.closest('[data-signup]');if(s&&window.SFT)SFT.track('ClickSignup',{{program:s.dataset.signup,page:location.pathname}})}})</script></body></html>'''
+var s=e.target.closest('[data-signup]');if(s&&window.SFT)SFT.track('ClickSignup',{{program:s.dataset.signup,page:location.pathname}})}})</script>{JS_GATE if inv and GATE.get("endpoint") else ""}</body></html>'''
 
 
 def nf_page():

@@ -148,8 +148,25 @@ border-radius:14px;padding:14px;font-size:13px;box-shadow:0 10px 30px #000}
 
 /* vùng an toàn 64px nền tối trên logo/trái tim trên mobile: thanh công cụ của app/trình xem không đè logo (sếp 14/10) */
 @media (max-width:720px){:root{--sa:calc(64px + env(safe-area-inset-top))}}
+/* cổng email xin mã mời (thay khối code khi config "gate" có endpoint) */
+.gate{position:relative;border:1px solid var(--crim);box-shadow:0 0 0 1px var(--line),0 14px 36px rgba(244,64,109,.14)}
+.gate .bd{position:absolute;top:-10px;left:14px;font:700 10px/1 system-ui;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:var(--face);padding:6px 9px;border-radius:999px}
+.gate h2{margin-top:6px;font:700 20px/1.25 var(--disp);letter-spacing:-.01em;text-transform:none;color:var(--txt)}
+.gate .gp{margin-top:8px}
+.gf{margin-top:14px}
+.gf label{display:block;font:700 11px/1 system-ui;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);margin-bottom:6px}
+.gf .row{display:flex;gap:8px}
+.gf input{flex:1;min-width:0;min-height:48px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:#0b0709;color:var(--txt);font:600 15px var(--disp)}
+.gf input:focus{border-color:var(--pink);outline:0}
+.gf button{flex:none;min-height:48px;padding:0 18px;border:0;border-radius:12px;background:var(--face);color:#fff;font:800 14px/1 var(--disp);white-space:nowrap;box-shadow:0 8px 22px rgba(244,64,109,.28)}
+.gf button[disabled]{opacity:.6;cursor:wait}
+.gf .cf-turnstile{margin-top:10px}
+.gf .fine{color:var(--mut);font-size:12px;margin-top:10px}
+.gf .msg{margin-top:10px;font-weight:600;font-size:13px;color:#ff9f9f}.gf .msg.ok{color:var(--pink-hi)}.gf .msg[hidden]{display:none}
+.gf .okh{font:700 20px/1.25 var(--disp);color:var(--pink-hi)}.gf .okp{margin-top:8px}.gf .okp b{color:var(--txt)}
+@media(max-width:380px){.gf .row{flex-direction:column}.gf button{width:100%}}
 </style>
-<script>window.SF={"ga4": "", "meta": "", "tiktok": "", "invite": [{"program": "RS Boost", "code": "jCsNUgQuecHY", "note": "RS Boost is the official ReelShort affiliate program: share ReelShort dramas and earn a share of what your viewers spend. Sign-up asks for an invitation code.", "signup": "https://cps.reelshort.com/", "guide": "/invite/rs-boost/"}], "indexnow": "d3a799fed00242b6823404499b12f5ed", "bio_first": "my-billionaire-boss-wont-let-me-quit", "src": ""}</script><script src="/assets/t.js" defer></script>
+<script>window.SF={"ga4": "", "meta": "", "tiktok": "", "src": ""}</script><script src="/assets/t.js" defer></script>
 </head>
 <body class="one" data-film="mech-god-from-the-dark-side-of-the-moon" data-title="Mech God from the Dark Side of the Moon" data-app="NetShort"><main class="wrap">
 <a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a>
