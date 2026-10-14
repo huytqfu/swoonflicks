@@ -8,7 +8,7 @@
 (function (W, D) {
   var B = D.body.dataset, feed = D.querySelector('.rl'), S = [].slice.call(D.querySelectorAll('.rl > .sl')), ct = D.querySelector('.rt .ct'),
     gate = D.querySelector('.sl.gate'), dlg = D.querySelector('.eps'), link = gate && gate.querySelector('.unl'),
-    act = null, gest = false, P = null, cur = '', marks = {}, tick, cdT, auto = false, KEY = 'sf_cont',
+    act = null, gest = false, P = null, cur = '', marks = {}, tick, KEY = 'sf_cont',
     RM = W.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
   if (!feed) return;
   function T(n, p) { if (W.SFT) SFT.track(n, Object.assign({ film: B.film, title: B.title, app: B.app }, p || {})) }
@@ -80,20 +80,17 @@
   }
   function next(s) {
     var n = S[S.indexOf(s) + 1];
-    if (n === gate) auto = true;
     go(n);
   }
 
   // ---- màn đang xem ----
   function activate(s) {
     if (act === s) return;
-    var prev = act; act = s; stop(prev); stopCd();
+    var prev = act; act = s; stop(prev);
     D.body.classList.toggle('at-info', s.classList.contains('info'));
     var n = s.dataset.ep;
     ct.textContent = n ? 'EP ' + n + (B.total ? ' / ' + B.total : '') : '';
     if (s.classList.contains('fr') && gest) play(s);
-    if (s === gate && auto) startCd();
-    auto = false;
   }
   if ('IntersectionObserver' in W) {
     var io = new IntersectionObserver(function (es) { es.forEach(function (x) { if (x.isIntersecting) activate(x.target) }) }, { root: feed, threshold: 0.6 });
@@ -101,21 +98,7 @@
   }
   S.forEach(function (s) { var b = s.querySelector('.play'); if (b) b.onclick = function () { act = s; play(s) } });
 
-  // ---- hết tập free: đếm ngược rồi mở link app ----
-  var cdn = gate && gate.querySelector('.cdn');
-  function stopCd() { clearInterval(cdT); cdT = null; if (cdn) cdn.hidden = true }
-  function startCd() {
-    if (!cdn || !link) return;
-    var left = 5, b = cdn.querySelector('b'); b.textContent = left; cdn.hidden = false;
-    cdT = setInterval(function () {
-      left--; b.textContent = left;
-      if (left > 0) return;
-      stopCd(); remember(link.dataset.ep);
-      T('ClickAffiliate', { placement: 'auto', episode: link.dataset.ep ? +link.dataset.ep : undefined, link_url: link.href });
-      setTimeout(function () { location.assign(link.href) }, 350); // chờ beacon pixel
-    }, 1000);
-  }
-  if (cdn) cdn.querySelector('.stay').onclick = stopCd;
+  // hết tập free: chỉ cuộn tới màn khoá, khách tự bấm nút ra app (không tự chuyển: điều khoản network cấm forced redirect)
 
   // ---- nhớ tập đã ra app, quay lại thì nói rõ đang xem tiếp ở app nào ----
   function remember(ep) { try { localStorage.setItem(KEY, JSON.stringify({ film: B.film, ep: ep || '', t: Date.now() })) } catch (e) {} }

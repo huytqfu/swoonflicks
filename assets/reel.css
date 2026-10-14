@@ -41,8 +41,6 @@ background:linear-gradient(100deg,var(--r-acc2),var(--r-acc) 55%,#d61b62);color:
 .unl svg{width:14px;height:14px}
 .gt .nt,.eps .nt{color:var(--r-mut);font-size:12px;margin-top:10px}
 .cont{margin-top:16px;padding:10px 14px;border-radius:12px;background:rgba(255,79,139,.16);border:1px solid rgba(255,79,139,.55);color:#fff;font:600 14px/1.35 system-ui}
-.cdn{margin-top:14px;color:#fff;font:600 14px system-ui}
-.cdn .stay{margin-left:8px;border:0;background:none;color:var(--r-acc2);text-decoration:underline;font-weight:700;min-height:44px}
 .gt .lnk{margin-top:14px;border-color:rgba(255,255,255,.25)}
 
 /* lưới đủ tập */

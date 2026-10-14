@@ -212,7 +212,6 @@ def film_page(f, films):
 <div class="gt">{LOCK}<p class="t">{e(f["title"])}</p><p class="ep">Episode {gate}</p>
 <p class="cont" hidden></p>
 <a class="unl" {aff("gate", gate)}>Continue watching {EXT}</a>
-<p class="cdn" hidden>Opening in <b>5</b>s <button type="button" class="stay">Stay here</button></p>
 <p class="nt">Opens the official app · affiliate link</p>
 <button type="button" class="eps-o lnk">All episodes</button></div></section>''')
     # lưới đủ tập: free có nguồn = bấm xem; free chưa nguồn = mở app; trả phí = mờ + khoá -> link app
