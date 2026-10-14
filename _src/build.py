@@ -108,7 +108,7 @@ def head(title, desc, path, img=None, extra="", noindex=False, src="", lang="en"
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">{f'<meta property="og:url" content="{BASE}{path}">' if path else ''}{og}
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="{FONTS}" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="{FONTS}"></noscript>
-<style>{CSS}</style>
+<script>if(/Instagram|FBAN|FBAV|FB_IAB|musical_ly|TikTok|Bytedance|Snapchat|Twitter|Pinterest|Line\\//i.test(navigator.userAgent))document.documentElement.classList.add("inapp")</script><style>{CSS}</style>
 <script>window.SF={json.dumps(cfg)}</script><script src="/assets/t.js" defer></script>{extra}
 </head>'''
 
