@@ -21,7 +21,7 @@ html:has(body.reel){height:100%;overflow:hidden;scroll-behavior:auto}
 .ep{font:700 13px/1 system-ui;letter-spacing:.14em;text-transform:uppercase;color:var(--r-acc2);margin-top:8px}
 
 /* thanh trên: quay lại, Ep x/y, Episodes */
-.rt{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;gap:10px;padding:calc(var(--safe) - 8px + env(safe-area-inset-top)) 12px 8px;
+.rt{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;gap:10px;padding:calc(8px + env(safe-area-inset-top)) 12px 8px;
 background:linear-gradient(180deg,rgba(0,0,0,.6),rgba(0,0,0,0));pointer-events:none}
 .rt>*{pointer-events:auto}
 .rt .bk{width:44px;height:44px;display:grid;place-items:center;font:400 34px/1 system-ui;color:#fff;margin-top:-4px}
@@ -58,7 +58,7 @@ background:#141014;color:#fff;overflow:auto}
 .eps .nt{text-align:center;padding:0 16px}
 
 /* màn cuối: giới thiệu, FAQ, phim khác (cuộn tự do trong màn) */
-.sl.info{display:block;height:auto;min-height:100dvh;background:var(--r-bg);padding-top:calc(var(--safe) + 52px);overflow:visible}
+.sl.info{display:block;height:auto;min-height:100dvh;background:var(--r-bg);padding-top:calc(64px + env(safe-area-inset-top));overflow:visible}
 .info .wrap{width:100%;min-width:0}
 .reel :focus-visible{outline-color:var(--r-acc2)}
 .info .it{font:800 22px/1.25 system-ui;text-align:center;margin-bottom:4px}
