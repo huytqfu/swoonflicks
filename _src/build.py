@@ -4,7 +4,8 @@ Chạy: py -3.14 hub/build.py
 - Concept brand v3c: đen hồng, Poppins, logo lockup "oo" móc xích + "Romance novels, now on screen" (sếp 14/10: bỏ vàng royal). CSS: hub/site.css.
 - Không hiện tên network (ReelShort/DramaCPS) cho người xem; f["app"] chỉ còn trong tracking nội bộ (sếp 14/10).
 - Tracking: hub/t.js (GA4 + Meta + TikTok, ID ở hub/config.json, trống = không tải). Nút ra app = link CPS gốc, không cloak.
-- Video: chỉ nhúng Shorts trên YouTube @swoonflicks của mình (map YT). Phim chưa có video thì hiện poster, không giả nút play.
+- Video: trang phim lướt dọc kiểu Reels (_src/reel.js + reel.css), tập lấy từ hub/episodes.json (make_episodes.py: Shorts YT kênh mình > iframe chính chủ RS Boost > chưa có nguồn).
+  Tập không có video = khoá mờ, bấm ra link app. Không ghi tên app trên trang trừ dòng "Continue Episode N on <app>" khi khách quay lại.
 - Build xoá thư mục sinh (có file .gen), img/, assets/; giữ .git + CNAME.
 """
 import csv, html, json, re, shutil
@@ -27,6 +28,7 @@ RS_LINK = {
 ORDER = ["dragons-bow-to-the-trash-638707", "mommy-i-m-not-lying-646011", "mech-god-from-the-dark-side-of-the-moon-635894",
          "the-unbound-rise-of-the-godslayer-647593", "i-spoke-baby-dragon-and-won-everyone-over-628653"]
 # Shorts đã đăng trên YouTube @swoonflicks (yt-dlp /shorts 13/10). TikTok tắt nhúng nên không dùng.
+# make_episodes.py đọc map này (ưu tiên YT) để sinh episodes.json.
 YT = {
     "the-unbound-rise-of-the-godslayer-647593": [("Part 1", "VOS5UiGpIV8"), ("Part 2", "ylUIh9I908I"), ("Part 3", "ZkCDRpUW8w8"),
                                                  ("Part 4", "FQGrMJvSNhA"), ("Part 5", "TH9eRUwcubs")],
@@ -150,24 +152,6 @@ def hub_page(films, path="/", src=""):
 {social()}{FOOT}</main>{JS_HUB}</body></html>'''
 
 
-JS_FILM = '''<script>(function(){var b=document.body.dataset,pl=document.querySelector('.pl'),P=null,cur='',marks={},tick;
-function T(n,p){if(window.SFT)SFT.track(n,Object.assign({film:b.film,title:b.title,app:b.app,video_id:cur},p||{}))}
-function poll(){clearInterval(tick);tick=setInterval(function(){if(!P||!P.getDuration)return;var d=P.getDuration(),t=P.getCurrentTime();if(!d)return;
-[25,50,75,95].forEach(function(m){var k=cur+m;if(!marks[k]&&t/d*100>=m){marks[k]=1;T('VideoProgress',{percent:m})}})},1000)}
-var st=document.querySelector('.pst');function fail(){st.innerHTML='Could not load the player. <button type="button" class="chip">Retry</button> <a href="https://www.youtube.com/shorts/'+cur+'" target="_blank" rel="noopener"><u>Open on YouTube</u></a>';
-st.querySelector('button').onclick=function(){var v=cur;P=null;var o=pl.querySelector('iframe,.vid');if(o)o.remove();start(v)}}
-function start(v){cur=v;if(P){P.loadVideoById(v);return}st.textContent='Loading free part…';var host=document.createElement('div');host.className='vid';
-[].forEach.call(pl.querySelectorAll('.play,.lbl'),function(x){x.remove()});pl.appendChild(host);
-var go=function(){P=new YT.Player(host,{host:'https://www.youtube-nocookie.com',videoId:v,playerVars:{autoplay:1,playsinline:1,rel:0,modestbranding:1},
-events:{onError:fail,onReady:function(e){var f=e.target.getIframe();f.title=b.title+' video';f.className='vid on';st.textContent='';f.focus()},onStateChange:function(s){if(s.data===1){if(!marks[cur+'p']){marks[cur+'p']=1;T('VideoPlay')}poll()}else clearInterval(tick)}}})};
-if(window.YT&&YT.Player)go();else{window.onYouTubeIframeAPIReady=go;var s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';s.onerror=fail;document.head.appendChild(s)}}
-var btn=pl&&pl.querySelector('.play');if(btn)btn.onclick=function(){start(btn.dataset.v)};
-document.querySelectorAll('.parts .chip').forEach(function(c){c.onclick=function(){document.querySelectorAll('.parts .chip').forEach(function(x){x.setAttribute('aria-pressed',x===c)});
-start(c.dataset.v);pl.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'})}});
-var bar=document.querySelector('.bar'),cta=document.querySelector('.cta');if(bar&&cta&&'IntersectionObserver'in window)
-new IntersectionObserver(function(es){bar.classList.toggle('on',es[0].intersectionRatio<.9)},{threshold:[0,.9,1]}).observe(cta)})()</script>'''
-
-
 def content(slug):
     # nội dung riêng từng phim: site/_src/content/<slug>.json (+ .seo.json), viết tay, có thể thiếu
     d = OUT / "_src" / "content"
@@ -175,28 +159,85 @@ def content(slug):
     return rd(f"{slug}.json"), rd(f"{slug}.seo.json")
 
 
+def episodes(f):
+    """Từ episodes.json: (tổng tập hoặc None, số tập free, [(n, nền, id|url|None)]). Nền: yt / rs (iframe RS Boost) / None (chưa có nguồn)."""
+    x = EPS.get(f["id"], {})
+    eps = [(e["n"], e.get("src"), e.get("id") or e.get("url")) for e in x.get("eps", [])]
+    return x.get("total"), x.get("free") or len(eps), eps
+
+
+LOCK = '<svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1zm2 0h6V7a3 3 0 0 0-6 0z"/></svg>'
+PLAY = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 0l9 5-9 5z"/></svg>'
+
+
 def film_page(f, films):
+    """Trang phim kiểu Reels: mỗi tập 1 màn, vuốt dọc. Tập free có nguồn thì phát (Shorts YT kênh mình, hoặc iframe chính chủ RS Boost);
+    tập free chưa có nguồn = poster + nút mở app (không giả play). Tập > free = khoá mờ, bấm ra link app.
+    Hết tập free: màn khoá + nút lớn; video YT cuối chạy hết thì đếm ngược rồi mở link.
+    Tên app chỉ hiện ở dòng "Continue Episode N on <app>" khi khách quay lại sau khi đã ra app (reel.js)."""
     syn = f["syn"]
     ct, seo = content(f["slug"])
-    yt = YT.get(f["id"], [])
-    if yt:
-        player = f'''<div class="pl"><img src="/img/{f['slug']}-h.webp" alt="" width="720" height="960" fetchpriority="high">
-<button type="button" class="play" data-v="{yt[0][1]}" aria-label="Play free {e(yt[0][0])}"><span class="btnp"><svg viewBox="0 0 10 10"><path d="M1 0l9 5-9 5z"/></svg></span></button>
-<span class="lbl">Free · {e(yt[0][0])}</span></div>'''
-        if len(yt) > 1:
-            player += '<div class="parts">' + "".join(
-                f'<button type="button" class="chip" data-v="{v}" aria-pressed="{str(i == 0).lower()}">{e(n)}</button>' for i, (n, v) in enumerate(yt)) + "</div>"
-    else:
-        player = f'''<div class="pl ps"><img src="/img/{f['slug']}-h.webp" alt="{e(f['title'])} poster" width="720" height="960" fetchpriority="high"></div>
-<p class="note" style="margin-top:10px">No free part on this site yet. Episodes are coming soon.</p>'''
-    aff = lambda place: (f'href="{e(f["link"])}" target="_blank" rel="nofollow sponsored noopener" data-aff="{place}" '
-                         f'data-film="{e(f["slug"])}" data-app="{e(f["app"])}" data-title="{e(f["title"])}"')
+    total, free, eps = episodes(f)
+    poster = f"/img/{f['slug']}-h.webp"
+    gate = free + 1  # tập trả phí đầu tiên = màn khoá
+    aff = lambda place, ep=None: (f'href="{e(f["link"])}" target="_blank" rel="nofollow sponsored noopener" data-aff="{place}" '
+                                  f'data-film="{e(f["slug"])}" data-app="{e(f["app"])}" data-title="{e(f["title"])}"' + (f' data-ep="{ep}"' if ep else ""))
+    # gộp các tập free liền nhau chưa có nguồn thành 1 màn
+    groups = []
+    for n, k, v in eps:
+        if not k and groups and not groups[-1][1]:
+            groups[-1][0].append(n)
+        else:
+            groups.append(([n], k, v))
+    slides = []
+    for i, (ns, k, v) in enumerate(groups):
+        n = ns[0]
+        lbl = f"Episode {n}" if len(ns) == 1 else f"Episodes {n}–{ns[-1]}"
+        cap = (f'<h1>{e(f["title"])}</h1>' if i == 0 else f'<p class="t">{e(f["title"])}</p>') + f'<p class="ep">{lbl}</p>'
+        lazy = '' if i == 0 else ' loading="lazy"'
+        if k:
+            slides.append(f'''<section class="sl fr" data-ep="{n}" data-k="{k}" data-v="{e(v)}" aria-label="{lbl}">
+<img class="bg" src="{poster}" alt="" width="720" height="960"{lazy}>
+<div class="stg"><img class="ps" src="{poster}" alt="" width="720" height="960"{' fetchpriority="high"' if i == 0 else lazy}>
+<button type="button" class="play" aria-label="Play episode {n}"><span>{PLAY}</span></button>
+<div class="cap">{cap}</div></div></section>''')
+        else:
+            slides.append(f'''<section class="sl lk st" data-ep="{n}" data-last="{ns[-1]}" aria-label="{lbl}">
+<img class="bg" src="{poster}" alt="" width="720" height="960"{' fetchpriority="high"' if i == 0 else lazy}>
+<div class="gt">{cap}<p class="cont" hidden></p><a class="unl" {aff("free", n)}>{'Start watching' if n == 1 else 'Watch ' + lbl} {EXT}</a>
+<p class="nt">Free in the official app · affiliate link</p></div></section>''')
+    slides.append(f'''<section class="sl lk gate" data-ep="{gate}" aria-label="Episode {gate}">
+<img class="bg" src="{poster}" alt="" width="720" height="960" loading="lazy">
+<div class="gt">{LOCK}<p class="t">{e(f["title"])}</p><p class="ep">Episode {gate}</p>
+<p class="cont" hidden></p>
+<a class="unl" {aff("gate", gate)}>Continue watching {EXT}</a>
+<p class="cdn" hidden>Opening in <b>5</b>s <button type="button" class="stay">Stay here</button></p>
+<p class="nt">Opens the official app · affiliate link</p>
+<button type="button" class="eps-o lnk">All episodes</button></div></section>''')
+    # lưới đủ tập: free có nguồn = bấm xem; free chưa nguồn = mở app; trả phí = mờ + khoá -> link app
+    src = {n: k for n, k, v in eps}
+    tiles = []
+    for n in range(1, (total or gate) + 1):
+        if n in src and src[n]:
+            tiles.append(f'<button type="button" class="ti fr" data-go="{n}"><b>{n}</b><span>Free</span></button>')
+        elif n in src:
+            tiles.append(f'<a class="ti fa" {aff("grid", n)} aria-label="Episode {n}, free in the app"><b>{n}</b><span>Free</span></a>')
+        else:
+            tiles.append(f'<a class="ti lk" {aff("grid", n)} aria-label="Episode {n}, locked"><b>{n}</b>{LOCK}</a>')
+    if total is None:
+        tiles.append(f'<a class="ti lk mo" {aff("grid")} aria-label="More episodes, locked">{LOCK}<span>More</span></a>')
+    grid = f'''<dialog class="eps" aria-label="Episodes"><div class="eh"><b>{e(f["title"])}</b><span>{f"{total} episodes" if total else ""}</span>
+<button type="button" class="x" aria-label="Close">×</button></div><div class="tg">{"".join(tiles)}</div>
+<p class="nt">Locked episodes open in the official app · affiliate link</p></dialog>'''
     more = "".join(card(o) for o in films if o is not f)
     ld = {"@context": "https://schema.org", "@type": "TVSeries", "name": f["title"], "description": cut(syn, 300),
           "image": f"{BASE}/img/og/{f['slug']}.jpg", "url": f"{BASE}/{f['slug']}/", "genre": f["genre"],
           "inLanguage": "en"}
+    if total:
+        ld["numberOfEpisodes"] = total
+    yt = [(n, v) for n, k, v in eps if k == "yt"]
     if yt:
-        ld["trailer"] = {"@type": "VideoObject", "name": f"{f['title']} {yt[0][0]}", "embedUrl": f"https://www.youtube.com/embed/{yt[0][1]}",
+        ld["trailer"] = {"@type": "VideoObject", "name": f"{f['title']} Episode {yt[0][0]}", "embedUrl": f"https://www.youtube.com/embed/{yt[0][1]}",
                          "thumbnailUrl": f"https://i.ytimg.com/vi/{yt[0][1]}/hqdefault.jpg", "description": cut(syn, 200)}
         if yt[0][1] in YT_DATE:
             ld["trailer"]["uploadDate"] = YT_DATE[yt[0][1]]
@@ -208,7 +249,8 @@ def film_page(f, films):
     if faq:  # FAQPage khớp đúng chữ hiển thị
         lds.append({"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
             {"@type": "Question", "name": x["q"], "acceptedAnswer": {"@type": "Answer", "text": x["a"]}} for x in faq]})
-    extra = f'<script type="application/ld+json">{json.dumps(lds, ensure_ascii=False)}</script>'
+    extra = ('<link rel="stylesheet" href="/assets/reel.css">' + ('<link rel="preconnect" href="https://www.youtube-nocookie.com">' if yt else "") +
+             f'<script type="application/ld+json">{json.dumps(lds, ensure_ascii=False)}</script>')
     title = seo.get("title") or f"{f['title']} · Watch free | Swoonflicks"
     about = ""
     if ct.get("intro"):
@@ -217,17 +259,16 @@ def film_page(f, films):
     faqh = ('<section class="syn faq"><h2>Questions</h2>' + "".join(
         f'<details><summary>{e(x["q"])}</summary><p>{e(x["a"])}</p></details>' for x in faq) + "</section>") if faq else ""
     return head(title, seo.get("description") or cut(syn, 155), f"/{f['slug']}/", f"/img/og/{f['slug']}.jpg", extra) + f'''
-<body data-film="{e(f['slug'])}" data-title="{e(f['title'])}" data-app="{e(f['app'])}"><main class="wrap">
-<div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a></div>
-<div class="ttl"><h1>{metal(f['title'])}</h1><p class="meta">{' · '.join(e(x) for x in f['genre'])}</p></div>
-{player}<p class="pst" role="status"></p>
-<a class="cta" {aff("main")}><span>Continue watching<small>Unlock the next episodes</small></span>{EXT}</a>
-<p class="note">Affiliate link: we may earn a commission.</p>
-{about}<details class="syn"><summary>The story</summary><p>{e(syn)}</p></details>
+<body class="reel" data-film="{e(f['slug'])}" data-title="{e(f['title'])}" data-app="{e(f['app'])}" data-total="{total or ''}">
+<header class="rt"><a class="bk" href="/" aria-label="All dramas">‹</a><span class="ct" aria-live="polite"></span>
+<button type="button" class="eps-o" aria-haspopup="dialog">Episodes</button></header>
+<main class="rl">{"".join(slides)}
+<section class="sl info"><div class="wrap"><h2 class="it">{e(f['title'])}</h2>
+{about}<details class="syn" open><summary>The story</summary><p>{e(syn)}</p></details>
 {faqh}
 <p class="h3">More dramas</p><div class="more">{more}</div>
-{social()}{FOOT}<div class="pad"></div></main>
-<div class="bar"><a class="cta" {aff("sticky")}><span>Continue watching</span>{EXT}</a></div>{JS_FILM}</body></html>'''
+{social()}{FOOT}</div></section></main>
+{grid}<script src="/assets/reel.js" defer></script></body></html>'''
 
 
 def privacy_page():
@@ -373,6 +414,8 @@ for f in films:
     if not f["genre"]:
         print(f"CẢNH BÁO: {f['id']} chưa có genre trong GENRE, sẽ biến mất khi lọc Thể loại")
 films.sort(key=lambda f: ORDER.index(f["id"]) if f["id"] in ORDER else len(ORDER))
+# tập free + nguồn nhúng từng phim, sinh bằng make_episodes.py (chạy trước build)
+EPS = json.loads((HUB / "episodes.json").read_text(encoding="utf-8"))
 
 # ---------- dọn bản cũ (giữ .git, CNAME) ----------
 for p in OUT.iterdir():
@@ -383,6 +426,8 @@ for p in ("index.html", "404.html", "sitemap.xml", "robots.txt", "llms.txt"):
 (OUT / "img" / "og").mkdir(parents=True, exist_ok=True)
 (OUT / "assets").mkdir(exist_ok=True)
 shutil.copy(HUB / "t.js", OUT / "assets" / "t.js")
+for x in ("reel.js", "reel.css"):  # player lướt dọc trang phim
+    shutil.copy(HUB / x, OUT / "assets" / x)
 
 # ---------- ảnh ----------
 logo = Image.open(SD / "brand" / "logo-mark-1024-transparent.png")
