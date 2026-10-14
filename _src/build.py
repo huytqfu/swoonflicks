@@ -5,7 +5,7 @@ Chạy: py -3.14 hub/build.py
 - Không hiện tên network (ReelShort/DramaCPS) cho người xem; f["app"] chỉ còn trong tracking nội bộ (sếp 14/10).
 - Tracking: hub/t.js (GA4 + Meta + TikTok, ID ở hub/config.json, trống = không tải). Nút ra app = link CPS gốc, không cloak.
 - Video: trang phim lướt dọc kiểu Reels (_src/reel.js + reel.css), tập lấy từ hub/episodes.json (make_episodes.py: Shorts YT kênh mình > iframe chính chủ RS Boost > chưa có nguồn).
-  Tập không có video = khoá mờ, bấm ra link app. Không ghi tên app trên trang trừ dòng "Continue Episode N on <app>" khi khách quay lại.
+  Lưới tập đồng đều, không lộ số tập free; chạm tập trả phí đầu thì tự nhảy link app (sếp 14/10). Không ghi tên app trên trang trừ dòng "Continue Episode N on <app>" khi khách quay lại.
 - Build xoá thư mục sinh (có file .gen), img/, assets/; giữ .git + CNAME.
 """
 import csv, html, json, re, shutil
@@ -46,8 +46,15 @@ GENRE = {
     "the-empresss-final-wish-6a06bb65": ["Royal", "Family"],
     "my-billionaire-boss-wont-let-me-quit-6a792e03": ["Romance"],  # tag RS: Romance, Billionaire, Workplace (material/rs/films/<slug>/info.json)
 }
-SOCIAL = [("TikTok", "https://www.tiktok.com/@swoonflicks"), ("Instagram", "https://www.instagram.com/swoonflicks"),
-          ("YouTube", "https://www.youtube.com/@swoonflicks"), ("Facebook", "https://www.facebook.com/swoonflicks")]
+# 6 kênh, handle chung @swoonflicks (sếp 14/10 02:21: đủ 6 nền, có logo + handle). Logo: Simple Icons (CC0).
+SOCIAL = [
+    ("TikTok", "https://www.tiktok.com/@swoonflicks", "M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"),
+    ("Instagram", "https://www.instagram.com/swoonflicks", "M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"),
+    ("YouTube", "https://www.youtube.com/@swoonflicks", "M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"),
+    ("Facebook", "https://www.facebook.com/swoonflicks", "M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"),
+    ("Threads", "https://www.threads.net/@swoonflicks", "M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"),
+    ("X", "https://x.com/swoonflicks", "M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"),
+]
 # Link bio từng nền: lưới poster, bấm poster phim nào ra thẳng link CPS gốc phim đó (sếp 14/10 02:04). Phim đang đăng xếp đầu:
 # config.json "bio_first" (slug). Link ads: /go/<slug>/ một phim một nút. Không nhúng phim, không tự chuyển. Nguồn gắn khi URL không mang utm.
 BIO = {"ig": "instagram", "tt": "tiktok", "yt": "youtube", "fb": "facebook"}
@@ -106,14 +113,15 @@ def head(title, desc, path, img=None, extra="", noindex=False, src="", lang="en"
 </head>'''
 
 
-FOOT = '''<p class="ft">Swoonflicks shares free episodes of short dramas we love.<br>
+FOOT = '''<p class="ft">Swoonflicks shares short dramas we love.<br>
 Some links are affiliate links: we may earn a commission when you keep watching, at no extra cost to you.<br>
 <a href="/privacy/">Privacy</a> · <a href="mailto:admin@swoonflicks.com">admin@swoonflicks.com</a></p>'''
 
 
 def social():
     return '<p class="h3">Follow for new parts</p><nav class="soc">' + "".join(
-        f'<a href="{u}" rel="noopener" target="_blank">{n}</a>' for n, u in SOCIAL) + "</nav>"
+        f'<a href="{u}" rel="noopener" target="_blank" aria-label="{n} @swoonflicks"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="{d}"/></svg>'
+        f'<span><b>{n}</b>@swoonflicks</span></a>' for n, u, d in SOCIAL) + "</nav>"
 
 
 def card(f, big=False, lazy=True):
@@ -121,7 +129,7 @@ def card(f, big=False, lazy=True):
     w, h = (720, 540) if big else (360, 480)
     return f'''<a class="cd{' big' if big else ''}" href="/{f['slug']}/" data-genre="{e('|'.join(f['genre']))}">
 <img src="{img}" alt="{e(f['title'])} poster" width="{w}" height="{h}"{' loading="lazy"' if lazy else ' fetchpriority="high"' if big else ''} decoding="async">
-<div class="in"><h2>{e(f['title'])}</h2><span class="go">Watch free {ARROW}</span></div></a>'''
+<div class="in"><h2>{e(f['title'])}</h2><span class="go">Watch now {ARROW}</span></div></a>'''
 
 
 JS_HUB = '''<script>(function(){var sel={genre:''},cards=[].slice.call(document.querySelectorAll('.grid .cd')),em=document.querySelector('.empty');
@@ -138,17 +146,17 @@ def hub_page(films, path="/", src=""):
     chip = lambda k, v, lbl, on=False: f'<button type="button" class="chip" data-k="{k}" data-v="{e(v)}" aria-pressed="{str(on).lower()}">{e(lbl)}</button>'
     flt = ('<div class="flt"><div class="chips" role="group" aria-label="Filter by genre"><b aria-hidden="true">Genre</b>' + chip("genre", "", "All", True) + "".join(chip("genre", g, g) for g in genres) + "</div></div>")
     grid = "\n".join(card(f, big=(i == 0 and not ig), lazy=(i > 3)) for i, f in enumerate(films))
-    desc = "Free episodes of the short dramas everyone is binging. Pick a drama and binge every free episode."
+    desc = "The short dramas everyone is binging. Pick a drama and start watching."
     ld = [{"@context": "https://schema.org", "@type": "WebSite", "name": "Swoonflicks", "url": f"{BASE}/", "description": desc},
           {"@context": "https://schema.org", "@type": "Organization", "name": "Swoonflicks", "url": f"{BASE}/",
-           "logo": f"{BASE}/img/logo-128.png", "sameAs": [u for _, u in SOCIAL]},
+           "logo": f"{BASE}/img/logo-128.png", "sameAs": [u for _, u, _ in SOCIAL]},
           {"@context": "https://schema.org", "@type": "ItemList", "itemListElement": [
               {"@type": "ListItem", "position": i + 1, "url": f"{BASE}/{f['slug']}/", "name": f["title"]} for i, f in enumerate(films)]}]
     extra = f'<script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>' if path == "/" else ""
-    return head("Swoonflicks · Free short drama episodes", desc, "/", "/img/og/home.jpg", extra, noindex=(path != "/"), src=src) + f'''
+    return head("Swoonflicks · Short dramas to binge", desc, "/", "/img/og/home.jpg", extra, noindex=(path != "/"), src=src) + f'''
 <body><main class="wrap">
 <header class="hd{' sm' if ig else ''}"><h1><img class="lk" src="/img/lockup.png" alt="Swoonflicks · Romance novels, now on screen" width="681" height="150"></h1>
-<p class="tag">{"Find the drama you saw." if ig else "Tap a drama and watch every free episode."}</p></header>
+<p class="tag">{"Find the drama you saw." if ig else "Tap a drama and start watching."}</p></header>
 {flt}<div class="grid">{grid}</div><div class="empty" hidden><p>No drama in this genre yet.</p><button type="button" class="chip clr">Show all</button></div>
 {social()}{FOOT}</main>{JS_HUB}</body></html>'''
 
@@ -173,8 +181,8 @@ PLAY = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 0l9 5-9 5z"/></s
 
 def film_page(f, films):
     """Trang phim kiểu Reels: mỗi tập 1 màn, vuốt dọc. Tập free có nguồn thì phát (Shorts YT kênh mình, hoặc iframe chính chủ RS Boost);
-    tập free chưa có nguồn = poster + nút mở app (không giả play). Tập > free = khoá mờ, bấm ra link app.
-    Hết tập free: màn khoá + nút lớn; video YT cuối chạy hết thì đếm ngược rồi mở link.
+    tập free chưa có nguồn = poster + nút mở app (không giả play). Không lộ số tập free ở đâu (sếp 14/10 02:21).
+    Hết tập free: màn khoá + nút lớn, khách tự bấm (không đếm ngược, không tự chuyển).
     Tên app chỉ hiện ở dòng "Continue Episode N on <app>" khi khách quay lại sau khi đã ra app (reel.js)."""
     syn = f["syn"]
     ct, seo = content(f["slug"])
@@ -206,7 +214,7 @@ def film_page(f, films):
             slides.append(f'''<section class="sl lk st" data-ep="{n}" data-last="{ns[-1]}" aria-label="{lbl}">
 <img class="bg" src="{poster}" alt="" width="720" height="960"{' fetchpriority="high"' if i == 0 else lazy}>
 <div class="gt">{cap}<p class="cont" hidden></p><a class="unl" {aff("free", n)}>{'Start watching' if n == 1 else 'Watch ' + lbl} {EXT}</a>
-<p class="nt">Free in the official app · affiliate link</p></div></section>''')
+<p class="nt">Opens the official app · affiliate link</p></div></section>''')
     slides.append(f'''<section class="sl lk gate" data-ep="{gate}" aria-label="Episode {gate}">
 <img class="bg" src="{poster}" alt="" width="720" height="960" loading="lazy">
 <div class="gt">{LOCK}<p class="t">{e(f["title"])}</p><p class="ep">Episode {gate}</p>
@@ -214,21 +222,21 @@ def film_page(f, films):
 <a class="unl" {aff("gate", gate)}>Continue watching {EXT}</a>
 <p class="nt">Opens the official app · affiliate link</p>
 <button type="button" class="eps-o lnk">All episodes</button></div></section>''')
-    # lưới đủ tập: free có nguồn = bấm xem; free chưa nguồn = mở app; trả phí = mờ + khoá -> link app
+    # lưới đủ tập, mọi ô trông như nhau (không nhãn Free, không ổ khoá: sếp 14/10 không lộ số tập free); có nguồn = bấm xem, còn lại -> link app
     src = {n: k for n, k, v in eps}
     tiles = []
     for n in range(1, (total or gate) + 1):
         if n in src and src[n]:
-            tiles.append(f'<button type="button" class="ti fr" data-go="{n}"><b>{n}</b><span>Free</span></button>')
+            tiles.append(f'<button type="button" class="ti" data-go="{n}"><b>{n}</b></button>')
         elif n in src:
-            tiles.append(f'<a class="ti fa" {aff("grid", n)} aria-label="Episode {n}, free in the app"><b>{n}</b><span>Free</span></a>')
+            tiles.append(f'<a class="ti" {aff("grid", n)} aria-label="Episode {n}"><b>{n}</b></a>')
         else:
-            tiles.append(f'<a class="ti lk" {aff("grid", n)} aria-label="Episode {n}, locked"><b>{n}</b>{LOCK}</a>')
+            tiles.append(f'<a class="ti" {aff("grid", n)} aria-label="Episode {n}"><b>{n}</b></a>')
     if total is None:
-        tiles.append(f'<a class="ti lk mo" {aff("grid")} aria-label="More episodes, locked">{LOCK}<span>More</span></a>')
+        tiles.append(f'<a class="ti mo" {aff("grid")} aria-label="More episodes"><span>More</span></a>')
     grid = f'''<dialog class="eps" aria-label="Episodes"><div class="eh"><b>{e(f["title"])}</b><span>{f"{total} episodes" if total else ""}</span>
 <button type="button" class="x" aria-label="Close">×</button></div><div class="tg">{"".join(tiles)}</div>
-<p class="nt">Locked episodes open in the official app · affiliate link</p></dialog>'''
+<p class="nt">Some episodes open in the official app · affiliate link</p></dialog>'''
     more = "".join(card(o) for o in films if o is not f)
     ld = {"@context": "https://schema.org", "@type": "TVSeries", "name": f["title"], "description": cut(syn, 300),
           "image": f"{BASE}/img/og/{f['slug']}.jpg", "url": f"{BASE}/{f['slug']}/", "genre": f["genre"],
@@ -251,7 +259,7 @@ def film_page(f, films):
             {"@type": "Question", "name": x["q"], "acceptedAnswer": {"@type": "Answer", "text": x["a"]}} for x in faq]})
     extra = ('<link rel="stylesheet" href="/assets/reel.css">' + ('<link rel="preconnect" href="https://www.youtube-nocookie.com">' if yt else "") +
              f'<script type="application/ld+json">{json.dumps(lds, ensure_ascii=False)}</script>')
-    title = seo.get("title") or f"{f['title']} · Watch free | Swoonflicks"
+    title = seo.get("title") or f"{f['title']} · Watch now | Swoonflicks"
     about = ""
     if ct.get("intro"):
         about = f'<section class="syn ab"><h2>Why watch</h2><p>{e(ct["intro"])}</p>' + (
@@ -295,7 +303,7 @@ def one_page(f, path, src=""):
 <a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a>
 <a class="po" {aff}><img src="/img/{f['slug']}-h.webp" alt="{e(f['title'])} poster" width="720" height="960" fetchpriority="high"></a>
 <h1 class="m">{e(f['title'])}</h1>
-<a class="cta" {aff}><span>Watch the full drama<small>Episode 1 is free</small></span>{EXT}</a>
+<a class="cta" {aff}><span>Watch the full drama</span>{EXT}</a>
 <p class="note">Opens the official app · affiliate link</p>
 <a class="more1" href="/">More dramas on Swoonflicks</a>
 </main></body></html>'''
@@ -305,13 +313,13 @@ def privacy_page():
     return head("Privacy · Swoonflicks", "How Swoonflicks uses cookies and measurement.", "/privacy/") + '''
 <body><main class="wrap doc"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a></div>
 <h1>Privacy</h1>
-<p>Swoonflicks is a fan site that shares free episodes of short dramas and links to the apps where you can watch the rest.</p>
+<p>Swoonflicks is a fan site that shares episodes of short dramas and links to the apps where you can watch the rest.</p>
 <h2>What we measure</h2>
-<ul><li>Which drama pages you open, whether you play the free episode and how far you watch.</li>
+<ul><li>Which drama pages you open, whether you play an episode and how far you watch.</li>
 <li>Whether you tap a link to a drama app, and which page or social profile brought you here (from the link's utm or click id).</li></ul>
 <h2>Tools we use</h2>
 <p>When enabled, Google Analytics, the Meta Pixel and the TikTok Pixel receive these events so we can count visits and show
-our videos to people who are likely to enjoy them. Free episodes play through YouTube's privacy-enhanced mode (youtube-nocookie.com)
+our videos to people who are likely to enjoy them. Episodes play through YouTube's privacy-enhanced mode (youtube-nocookie.com)
 and only load when you press play; pressing play also loads YouTube's player script from youtube.com.</p>
 <h2>Your choice</h2>
 <p>Visitors in the EU and UK are asked before any of these tools load. You can change your answer at any time:
@@ -521,7 +529,7 @@ write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="htt
       "".join(f"<url><loc>{BASE}{u}</loc><lastmod>{date.today().isoformat()}</lastmod></url>" for u in urls) + "</urlset>\n")
 write("robots.txt", f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")
 # llms.txt: bản đồ markdown cho bot AI (rẻ, không kỳ vọng thứ hạng)
-write("llms.txt", "# Swoonflicks\n\n> Romance novels, now on screen: free episodes of English short dramas.\n\n## Dramas\n" +
+write("llms.txt", "# Swoonflicks\n\n> Romance novels, now on screen: English short dramas to binge.\n\n## Dramas\n" +
       "".join(f"- [{f['title']}]({BASE}/{f['slug']}/): {', '.join(f['genre'])} drama\n" for f in films) +
       f"\n## Creators\n- [Invitation codes]({BASE}/invite/): creator sign-up code for short drama affiliate programs\n" +
       ("\n## Guides\n" + "".join(f"- [{g['h1']}]({BASE}{g['path']}) ({g.get('lang', 'en')}): {g['description']}\n" for g in GUIDES) if GUIDES else ""))

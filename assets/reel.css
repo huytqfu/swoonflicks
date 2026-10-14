@@ -51,12 +51,8 @@ background:#141014;color:#fff;overflow:auto}
 .eh b{flex:1;font:800 15px/1.25 system-ui}.eh span{color:var(--r-mut);font-size:12px}
 .eh .x{width:44px;height:44px;border:0;background:none;color:#fff;font-size:28px;line-height:1}
 .tg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:14px 16px 4px}
-.ti{position:relative;aspect-ratio:1;min-width:0;height:auto;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:800 16px system-ui;border:0}
-.ti.fr{background:var(--r-acc);color:#fff}.ti.fr span{font:700 9px system-ui;letter-spacing:.1em;text-transform:uppercase}
-.ti.lk{background:#2a2128;color:rgba(255,255,255,.45)}
-.ti.fa{background:rgba(255,79,139,.18);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,79,139,.6)}.ti.fa span{font:700 9px system-ui;letter-spacing:.1em;text-transform:uppercase}
-.ti.lk b{filter:blur(1.5px)}
-.ti .lock{width:14px;height:14px;fill:rgba(255,255,255,.8)}
+.ti{position:relative;aspect-ratio:1;min-width:0;height:auto;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:800 16px system-ui;border:0;background:#2a2128;color:#fff}
+/* mọi ô như nhau: không nhãn Free, không ổ khoá, không mờ (sếp 14/10 02:21) */
 .ti.mo span{font:700 10px system-ui;text-transform:uppercase}
 .ti.cur{box-shadow:0 0 0 2px #fff}
 .eps .nt{text-align:center;padding:0 16px}

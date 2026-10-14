@@ -1,14 +1,14 @@
 /* Player lướt dọc trang phim (build copy sang /assets/reel.js). Mỗi .sl là 1 màn; .fr = tập có video, .lk.st = tập free chưa có nguồn,
    .gate = màn khoá (tập trả phí đầu), .info = giới thiệu.
    - Vào màn tập free: lần đầu bấm play, sau đó lướt tới đâu tự phát tới đó; chỉ 1 video sống 1 lúc.
-   - Hết video tự lướt sang tập kế; hết tập free (video cuối chạy xong) thì màn khoá đếm ngược 5s rồi mở link app, khách bấm "Stay here" là thôi.
-   - Bấm link app (nút khoá, ô tập khoá, đếm ngược) thì nhớ tập đó; khách quay lại site thì nhảy về màn khoá, hiện "Continue Episode N on <app>".
+   - Hết video tự lướt sang tập kế; lướt (hoặc video cuối chạy hết) tới màn trả phí đầu thì nhảy thẳng link app, không đếm ngược (sếp 14/10 02:28).
+   - Ra link app (tự nhảy, nút, ô tập trong lưới) thì nhớ tập đó; khách quay lại site thì nhảy về màn khoá, hiện "Continue Episode N on <app>".
    - Nguồn: yt = Shorts kênh mình (API, đọc được tiến độ + hết video); rs = iframe chính chủ RS Boost (không đọc được gì, khách tự lướt).
-   - Sự kiện qua SFT (t.js): VideoPlay, VideoProgress (chỉ YouTube đọc được), ClickAffiliate (t.js tự bắt a[data-aff]; đếm ngược bắn tay). */
+   - Sự kiện qua SFT (t.js): VideoPlay, VideoProgress (chỉ YouTube đọc được), ClickAffiliate (t.js tự bắt a[data-aff]; tự nhảy bắn tay, placement auto). */
 (function (W, D) {
   var B = D.body.dataset, feed = D.querySelector('.rl'), S = [].slice.call(D.querySelectorAll('.rl > .sl')), ct = D.querySelector('.rt .ct'),
     gate = D.querySelector('.sl.gate'), dlg = D.querySelector('.eps'), link = gate && gate.querySelector('.unl'),
-    act = null, gest = false, P = null, cur = '', marks = {}, tick, KEY = 'sf_cont',
+    act = null, gest = false, hold = false, P = null, cur = '', marks = {}, tick, KEY = 'sf_cont',
     RM = W.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
   if (!feed) return;
   function T(n, p) { if (W.SFT) SFT.track(n, Object.assign({ film: B.film, title: B.title, app: B.app }, p || {})) }
@@ -90,6 +90,7 @@
     D.body.classList.toggle('at-info', s.classList.contains('info'));
     var n = s.dataset.ep;
     ct.textContent = n ? 'EP ' + n + (B.total ? ' / ' + B.total : '') : '';
+    if (s !== gate) hold = false; else if (!hold) jump();
     if (s.classList.contains('fr') && gest) play(s);
   }
   if ('IntersectionObserver' in W) {
@@ -98,7 +99,15 @@
   }
   S.forEach(function (s) { var b = s.querySelector('.play'); if (b) b.onclick = function () { act = s; play(s) } });
 
-  // hết tập free: chỉ cuộn tới màn khoá, khách tự bấm nút ra app (không tự chuyển: điều khoản network cấm forced redirect)
+  // hết tập free: chạm màn trả phí đầu là nhảy thẳng link CPS gốc (sếp 14/10 02:28: không đếm ngược, không chờ).
+  // Khách quay lại site thì đứng ở màn này với dòng "Continue Episode N on <app>" (hold), lướt ra rồi vào lại mới nhảy tiếp.
+  function jump() {
+    if (!link) return;
+    hold = true;
+    T('ClickAffiliate', { placement: 'auto', link_url: link.href, episode: +link.dataset.ep || undefined });
+    remember(link.dataset.ep);
+    setTimeout(function () { location.href = link.href }, 150);
+  }
 
   // ---- nhớ tập đã ra app, quay lại thì nói rõ đang xem tiếp ở app nào ----
   function remember(ep) { try { localStorage.setItem(KEY, JSON.stringify({ film: B.film, ep: ep || '', t: Date.now() })) } catch (e) {} }
@@ -109,6 +118,7 @@
   function back(jump) {
     var c; try { c = JSON.parse(localStorage.getItem(KEY) || 'null') } catch (e) {}
     if (!c || c.film !== B.film || Date.now() - c.t > 7 * 864e5 || !gate) return;
+    hold = true;
     // tập free chưa có nguồn (màn .st) thì hiện ở chính màn đó; tập trả phí thì đổi số tập của màn khoá
     var ep = +c.ep, at = gate;
     S.forEach(function (s) { if (s.classList.contains('st') && ep >= +s.dataset.ep && ep <= +s.dataset.last) at = s });

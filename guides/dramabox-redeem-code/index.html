@@ -64,8 +64,12 @@ background:rgba(11,7,9,.72);color:var(--txt);padding:5px 7px;border-radius:6px}
 
 /* mạng xã hội + chân trang */
 .h3{font:700 12px/1 system-ui;letter-spacing:.2em;text-transform:uppercase;color:var(--pink);text-align:center;margin-top:28px}
-.soc{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:12px 0 4px}
-.soc a{font-weight:600;font-size:13px;padding:9px 14px;border-radius:999px;background:var(--card);box-shadow:0 0 0 1px var(--line)}
+.soc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 4px}
+@media(min-width:520px){.soc{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.soc a{display:flex;align-items:center;gap:10px;min-height:48px;padding:8px 12px;border-radius:14px;background:var(--card);box-shadow:0 0 0 1px var(--line)}
+.soc svg{flex:none;width:20px;height:20px;fill:currentColor}
+.soc span{display:flex;flex-direction:column;min-width:0;font-size:11px;line-height:1.3;color:var(--mut)}
+.soc b{color:var(--txt);font-size:13px;font-weight:600}
 .ft{text-align:center;color:var(--mut);font-size:12px;line-height:1.7;padding:22px 0 40px}
 .ft a{text-decoration:underline}
 
@@ -132,9 +136,9 @@ border-radius:14px;padding:14px;font-size:13px;box-shadow:0 10px 30px #000}
 .faq summary{font:600 15px/1.35 system-ui;color:#f6f4f7;cursor:pointer;min-height:24px;text-transform:none;letter-spacing:0;display:block}
 
 /* trang một nút (link bio / ads): poster + nút ra app, không nhúng phim */
-.one main{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding-top:16px;padding-bottom:24px;text-align:center}
-.one .brand img{height:26px;width:auto}
-.one .po{width:min(78%,300px,calc(46svh * 3 / 4));border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px var(--line),0 18px 40px rgba(0,0,0,.6)}
+.one main{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:12px;padding-top:16px;padding-bottom:24px;text-align:center}
+.one .brand{flex:none;position:relative;z-index:1}.one .brand img{height:26px;width:auto}
+.one .po{flex:none;width:min(78%,300px,calc(42svh * 3 / 4));border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px var(--line),0 18px 40px rgba(0,0,0,.6)}
 .one .po img{width:100%;height:auto;aspect-ratio:3/4;object-fit:cover}
 .one h1{font-size:clamp(20px,6vw,28px);text-wrap:balance;max-width:20em}
 .one .cta{max-width:420px;margin:6px 0 0}
@@ -146,7 +150,7 @@ border-radius:14px;padding:14px;font-size:13px;box-shadow:0 10px 30px #000}
 <h1>DramaBox redeem codes: what is real</h1><p>Search for DramaBox codes and you will find pages full of codes, generators and masked codes. Here is what we could check.</p>
 <h2>What we could verify</h2><p>As of the date below, we could not find an official DramaBox help page about redeem or gift codes. Third-party pages describe a redemption option in the app settings during promotions, but we could not confirm it from DramaBox itself.</p><h2>How to spot a fake code page</h2><ul><li>The code is hidden behind question marks, a countdown or a &quot;verify you are human&quot; step.</li><li>It promises a round number of free coins with no date and no source.</li><li>It asks you to install another app, enter your login or complete offers.</li><li>It links to modded or hacked versions of the app.</li></ul><h2>If DramaBox runs a code promotion</h2><p>Real promotions usually come through DramaBox&#x27;s own app notices or official social accounts. Use codes only from there.</p><h2>Creators</h2><p>DramaBox dramas can be promoted through affiliate networks such as DramaCPS, which does not use invitation codes. For ReelShort, see our RS Boost invite code page.</p><ul><li><a href="/invite/rs-boost/"><u>RS Boost invite code for creators</u></a></li></ul><section class="syn faq"><h2>Questions</h2><details><summary>Does DramaBox have redeem codes?</summary><p>We could not confirm it from an official DramaBox source. Only use codes DramaBox posts itself.</p></details><details><summary>Are DramaBox coin generators real?</summary><p>No. Treat them as scams.</p></details><details><summary>Does Swoonflicks give DramaBox codes?</summary><p>No. We do not hand out viewer codes or coins.</p></details></section><h2>Related guides</h2><ul><li><a href="/guides/reelshort-invitation-code/"><u>ReelShort invitation code: how it really works</u></a></li></ul><h2>Sources</h2><ul><li><a href="https://dramacps.com/news/dramabox-affiliate-program" rel="noopener" target="_blank"><u>https://dramacps.com/news/dramabox-affiliate-program</u></a></li></ul>
 <p class="note">Last checked: 2026-10-14</p>
-<p class="ft">Swoonflicks shares free episodes of short dramas we love.<br>
+<p class="ft">Swoonflicks shares short dramas we love.<br>
 Some links are affiliate links: we may earn a commission when you keep watching, at no extra cost to you.<br>
 <a href="/privacy/">Privacy</a> · <a href="mailto:admin@swoonflicks.com">admin@swoonflicks.com</a></p></main>
 <script>document.addEventListener('click',function(e){var b=e.target.closest('[data-copy]');if(b){
