@@ -201,8 +201,9 @@ def film_page(f, films):
     slides = []
     for i, (ns, k, v) in enumerate(groups):
         n = ns[0]
-        lbl = f"Episode {n}" if len(ns) == 1 else f"Episodes {n}–{ns[-1]}"
-        cap = (f'<h1>{e(f["title"])}</h1>' if i == 0 else f'<p class="t">{e(f["title"])}</p>') + f'<p class="ep">{lbl}</p>'
+        lbl = f"Episode {n}"
+        ttl = f'<h1>{e(f["title"])}</h1>' if i == 0 else f'<p class="t">{e(f["title"])}</p>'
+        cap = ttl + f'<p class="ep">{lbl}</p>'
         lazy = '' if i == 0 else ' loading="lazy"'
         if k:
             slides.append(f'''<section class="sl fr" data-ep="{n}" data-k="{k}" data-v="{e(v)}" aria-label="{lbl}">
@@ -211,38 +212,20 @@ def film_page(f, films):
 <button type="button" class="play" aria-label="Play episode {n}"><span>{PLAY}</span></button>
 <div class="cap">{cap}</div></div></section>''')
         else:
-            slides.append(f'''<section class="sl lk st" data-ep="{n}" data-last="{ns[-1]}" aria-label="{lbl}">
+            slides.append(f'''<section class="sl lk st" data-ep="{n}" data-last="{ns[-1]}" aria-label="{e(f["title"])}">
 <img class="bg" src="{poster}" alt="" width="720" height="960"{' fetchpriority="high"' if i == 0 else lazy}>
-<div class="gt">{cap}<p class="cont" hidden></p><a class="unl" {aff("free", n)}>{'Start watching' if n == 1 else 'Watch ' + lbl} {EXT}</a>
+<div class="gt">{ttl}<p class="cont" hidden></p><a class="unl" {aff("free", n)}>Watch in the official app {EXT}</a>
 <p class="nt">Opens the official app · affiliate link</p></div></section>''')
-    slides.append(f'''<section class="sl lk gate" data-ep="{gate}" aria-label="Episode {gate}">
+    if any(k for n, k, v in eps): slides.append(f'''<section class="sl lk gate" data-ep="{gate}" aria-label="Keep watching">
 <img class="bg" src="{poster}" alt="" width="720" height="960" loading="lazy">
-<div class="gt">{LOCK}<p class="t">{e(f["title"])}</p><p class="ep">Episode {gate}</p>
+<div class="gt">{LOCK}<p class="t">{e(f["title"])}</p>
 <p class="cont" hidden></p>
 <a class="unl" {aff("gate", gate)}>Continue watching {EXT}</a>
-<p class="nt">Opens the official app · affiliate link</p>
-<button type="button" class="eps-o lnk">All episodes</button></div></section>''')
-    # lưới đủ tập, mọi ô trông như nhau (không nhãn Free, không ổ khoá: sếp 14/10 không lộ số tập free); có nguồn = bấm xem, còn lại -> link app
-    src = {n: k for n, k, v in eps}
-    tiles = []
-    for n in range(1, (total or gate) + 1):
-        if n in src and src[n]:
-            tiles.append(f'<button type="button" class="ti" data-go="{n}"><b>{n}</b></button>')
-        elif n in src:
-            tiles.append(f'<a class="ti" {aff("grid", n)} aria-label="Episode {n}"><b>{n}</b></a>')
-        else:
-            tiles.append(f'<a class="ti" {aff("grid", n)} aria-label="Episode {n}"><b>{n}</b></a>')
-    if total is None:
-        tiles.append(f'<a class="ti mo" {aff("grid")} aria-label="More episodes"><span>More</span></a>')
-    grid = f'''<dialog class="eps" aria-label="Episodes"><div class="eh"><b>{e(f["title"])}</b><span>{f"{total} episodes" if total else ""}</span>
-<button type="button" class="x" aria-label="Close">×</button></div><div class="tg">{"".join(tiles)}</div>
-<p class="nt">Some episodes open in the official app · affiliate link</p></dialog>'''
+<p class="nt">Opens the official app · affiliate link</p></div></section>''')
     more = "".join(card(o) for o in films if o is not f)
     ld = {"@context": "https://schema.org", "@type": "TVSeries", "name": f["title"], "description": cut(syn, 300),
           "image": f"{BASE}/img/og/{f['slug']}.jpg", "url": f"{BASE}/{f['slug']}/", "genre": f["genre"],
           "inLanguage": "en"}
-    if total:
-        ld["numberOfEpisodes"] = total
     yt = [(n, v) for n, k, v in eps if k == "yt"]
     if yt:
         ld["trailer"] = {"@type": "VideoObject", "name": f"{f['title']} Episode {yt[0][0]}", "embedUrl": f"https://www.youtube.com/embed/{yt[0][1]}",
@@ -267,16 +250,15 @@ def film_page(f, films):
     faqh = ('<section class="syn faq"><h2>Questions</h2>' + "".join(
         f'<details><summary>{e(x["q"])}</summary><p>{e(x["a"])}</p></details>' for x in faq) + "</section>") if faq else ""
     return head(title, seo.get("description") or cut(syn, 155), f"/{f['slug']}/", f"/img/og/{f['slug']}.jpg", extra) + f'''
-<body class="reel" data-film="{e(f['slug'])}" data-title="{e(f['title'])}" data-app="{e(f['app'])}" data-total="{total or ''}">
-<header class="rt"><a class="bk" href="/" aria-label="All dramas">‹</a><span class="ct" aria-live="polite"></span>
-<button type="button" class="eps-o" aria-haspopup="dialog">Episodes</button></header>
+<body class="reel" data-film="{e(f['slug'])}" data-title="{e(f['title'])}" data-app="{e(f['app'])}">
+<header class="rt"><a class="bk" href="/" aria-label="All dramas">‹</a><span class="ct" aria-live="polite"></span></header>
 <main class="rl">{"".join(slides)}
 <section class="sl info"><div class="wrap"><h2 class="it">{e(f['title'])}</h2>
 {about}<details class="syn" open><summary>The story</summary><p>{e(syn)}</p></details>
 {faqh}
 <p class="h3">More dramas</p><div class="more">{more}</div>
 {social()}{FOOT}</div></section></main>
-{grid}<script src="/assets/reel.js" defer></script></body></html>'''
+<script src="/assets/reel.js" defer></script></body></html>'''
 
 
 def bio_page(films, path, src):
