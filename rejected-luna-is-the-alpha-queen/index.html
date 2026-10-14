@@ -136,8 +136,9 @@ border-radius:14px;padding:14px;font-size:13px;box-shadow:0 10px 30px #000}
 .faq summary{font:600 15px/1.35 system-ui;color:#f6f4f7;cursor:pointer;min-height:24px;text-transform:none;letter-spacing:0;display:block}
 
 /* trang một nút (link bio / ads): poster + nút ra app, không nhúng phim */
-.one main{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:12px;padding-top:16px;padding-bottom:24px;text-align:center}
-.one .brand{flex:none;position:relative;z-index:1;margin:8px 0 22px}.one .brand img{height:26px;width:auto}
+.one main{min-height:100svh;display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:0;padding-bottom:24px;text-align:center}
+.one .brand{flex:none;align-self:stretch;display:flex;justify-content:center;padding:14px 0;border-bottom:1px solid var(--line);margin:0 0 auto}.one .brand img{height:26px;width:auto}
+.one .po{margin-top:32px}.one .more1{margin-bottom:auto}
 .one .po{flex:none;width:min(78%,300px,calc(38svh * 3 / 4));border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px var(--line),0 18px 40px rgba(0,0,0,.6)}
 .one .po img{width:100%;height:auto;aspect-ratio:3/4;object-fit:cover}
 .one h1{font-size:clamp(20px,6vw,28px);text-wrap:balance;max-width:20em}
