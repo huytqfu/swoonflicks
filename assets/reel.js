@@ -1,11 +1,13 @@
-/* Player lướt dọc trang phim (build copy sang /assets/reel.js). Mỗi .sl là 1 màn; .fr = tập có video, .lk = màn khoá, .info = giới thiệu.
+/* Player lướt dọc trang phim (build copy sang /assets/reel.js). Mỗi .sl là 1 màn; .fr = tập có video, .lk.st = tập free chưa có nguồn,
+   .gate = màn khoá (tập trả phí đầu), .info = giới thiệu.
    - Vào màn tập free: lần đầu bấm play, sau đó lướt tới đâu tự phát tới đó; chỉ 1 video sống 1 lúc.
    - Hết video tự lướt sang tập kế; hết tập free (video cuối chạy xong) thì màn khoá đếm ngược 5s rồi mở link app, khách bấm "Stay here" là thôi.
    - Bấm link app (nút khoá, ô tập khoá, đếm ngược) thì nhớ tập đó; khách quay lại site thì nhảy về màn khoá, hiện "Continue Episode N on <app>".
+   - Nguồn: yt = Shorts kênh mình (API, đọc được tiến độ + hết video); rs = iframe chính chủ RS Boost (không đọc được gì, khách tự lướt).
    - Sự kiện qua SFT (t.js): VideoPlay, VideoProgress (chỉ YouTube đọc được), ClickAffiliate (t.js tự bắt a[data-aff]; đếm ngược bắn tay). */
 (function (W, D) {
   var B = D.body.dataset, feed = D.querySelector('.rl'), S = [].slice.call(D.querySelectorAll('.rl > .sl')), ct = D.querySelector('.rt .ct'),
-    gate = D.querySelector('.sl.lk'), dlg = D.querySelector('.eps'), link = gate && gate.querySelector('.unl'),
+    gate = D.querySelector('.sl.gate'), dlg = D.querySelector('.eps'), link = gate && gate.querySelector('.unl'),
     act = null, gest = false, P = null, cur = '', marks = {}, tick, cdT, auto = false, KEY = 'sf_cont',
     RM = W.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
   if (!feed) return;
@@ -68,10 +70,10 @@
             } } });
       });
     } else {
-      // IG/FB: iframe nhúng chính thức, khách bấm play trong khung; không đọc được tiến độ nên không bắn VideoPlay
+      // rs: iframe chính chủ RS Boost (url có cps_id + code của sếp); khách bấm play trong khung, không đọc được tiến độ nên không bắn VideoPlay
+      if (!/^https:\/\/www\.reelshort\.com\//.test(v)) return fail(s);
       var f = D.createElement('iframe');
-      f.src = k === 'ig' ? 'https://www.instagram.com/reel/' + encodeURIComponent(v) + '/embed/'
-        : 'https://www.facebook.com/plugins/video.php?show_text=false&href=' + encodeURIComponent(v);
+      f.src = v;
       f.title = B.title + ' episode ' + ep; f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen'; f.setAttribute('allowfullscreen', '');
       stg.appendChild(f);
     }
@@ -124,14 +126,18 @@
   function back(jump) {
     var c; try { c = JSON.parse(localStorage.getItem(KEY) || 'null') } catch (e) {}
     if (!c || c.film !== B.film || Date.now() - c.t > 7 * 864e5 || !gate) return;
-    var box = gate.querySelector('.cont');
-    if (c.ep) {
-      gate.dataset.ep = c.ep; link.dataset.ep = c.ep;
-      gate.querySelector('.ep').textContent = 'Episode ' + c.ep;
+    // tập free chưa có nguồn (màn .st) thì hiện ở chính màn đó; tập trả phí thì đổi số tập của màn khoá
+    var ep = +c.ep, at = gate;
+    S.forEach(function (s) { if (s.classList.contains('st') && ep >= +s.dataset.ep && ep <= +s.dataset.last) at = s });
+    if (at === gate && ep && ep >= +gate.dataset.ep) {
+      gate.dataset.ep = ep; link.dataset.ep = ep;
+      gate.querySelector('.ep').textContent = 'Episode ' + ep;
     }
-    box.textContent = (c.ep ? 'Continue Episode ' + c.ep : 'Continue watching') + ' on ' + B.app;
+    [].forEach.call(D.querySelectorAll('.cont'), function (x) { x.hidden = true });
+    var box = at.querySelector('.cont');
+    box.textContent = (ep ? 'Continue Episode ' + ep : 'Continue watching') + ' on ' + B.app;
     box.hidden = false;
-    if (jump) { go(gate, true); if (act === gate) ct.textContent = c.ep ? 'EP ' + c.ep + (B.total ? ' / ' + B.total : '') : '' }
+    if (jump) { go(at, true); if (act === at) ct.textContent = 'EP ' + at.dataset.ep + (B.total ? ' / ' + B.total : '') }
   }
   back(true);
   W.addEventListener('pageshow', function (e) { if (e.persisted) back(true) });

@@ -3,7 +3,7 @@
 Chạy: py -3.14 hub/build.py
 - Concept: Playfair Display 900 ánh kim viền nâu đen, "FREE EPISODES" Cinzel kẹp 2 lằn (cover kênh). CSS: hub/site.css (nhúng inline).
 - Tracking: hub/t.js (GA4 + Meta + TikTok, ID ở hub/config.json, trống = không tải). Nút ra app = link CPS gốc, không cloak.
-- Video: trang phim lướt dọc kiểu Reels (_src/reel.js + reel.css), tập lấy từ _src/episodes.json (Shorts YT kênh mình; IG/FB nếu có mã).
+- Video: trang phim lướt dọc kiểu Reels (_src/reel.js + reel.css), tập lấy từ hub/episodes.json (make_episodes.py: Shorts YT kênh mình > iframe chính chủ RS Boost > chưa có nguồn).
   Tập không có video = khoá mờ, bấm ra link app. Không ghi tên app trên trang trừ dòng "Continue Episode N on <app>" khi khách quay lại.
 - Build xoá thư mục sinh (có file .gen), img/, assets/; giữ .git + CNAME.
 """
@@ -26,6 +26,13 @@ RS_LINK = {
 # Thứ tự: phim đang đăng gần nhất lên đầu
 ORDER = ["dragons-bow-to-the-trash-638707", "mommy-i-m-not-lying-646011", "mech-god-from-the-dark-side-of-the-moon-635894",
          "the-unbound-rise-of-the-godslayer-647593", "i-spoke-baby-dragon-and-won-everyone-over-628653"]
+# Shorts đã đăng trên YouTube @swoonflicks (yt-dlp /shorts 13/10). TikTok tắt nhúng nên không dùng.
+# make_episodes.py đọc map này (ưu tiên YT) để sinh episodes.json.
+YT = {
+    "the-unbound-rise-of-the-godslayer-647593": [("Part 1", "VOS5UiGpIV8"), ("Part 2", "ylUIh9I908I"), ("Part 3", "ZkCDRpUW8w8"),
+                                                 ("Part 4", "FQGrMJvSNhA"), ("Part 5", "TH9eRUwcubs")],
+    "rejected-luna-is-the-alpha-queen-69fa0a97": [("Part 10", "cx-rFqh4x4w")],
+}
 # ngày đăng YT (lấy từ itemprop uploadDate trang video) cho VideoObject.uploadDate
 YT_DATE = {"VOS5UiGpIV8": "2026-10-07T10:38:03-07:00", "cx-rFqh4x4w": "2026-10-02T12:17:04-07:00"}
 GENRE = {
@@ -156,15 +163,10 @@ def content(slug):
 
 
 def episodes(f):
-    """Tập của phim từ _src/episodes.json: (tổng tập hoặc None, {số tập: (nền, id)}). Ưu tiên yt > ig > fb."""
-    x = EPS.get(f["slug"], {})
-    vids = {}
-    for n, v in x.get("eps", {}).items():
-        for k in ("yt", "ig", "fb"):
-            if v.get(k):
-                vids[int(n)] = (k, v[k])
-                break
-    return x.get("total"), dict(sorted(vids.items()))
+    """Từ episodes.json: (tổng tập hoặc None, số tập free, [(n, nền, id|url|None)]). Nền: yt / rs (iframe RS Boost) / None (chưa có nguồn)."""
+    x = EPS.get(f["id"], {})
+    eps = [(e["n"], e.get("src"), e.get("id") or e.get("url")) for e in x.get("eps", [])]
+    return x.get("total"), x.get("free") or len(eps), eps
 
 
 LOCK = '<svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1zm2 0h6V7a3 3 0 0 0-6 0z"/></svg>'
@@ -172,46 +174,61 @@ PLAY = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 0l9 5-9 5z"/></s
 
 
 def film_page(f, films):
-    """Trang phim kiểu Reels: mỗi tập 1 màn, vuốt dọc. Tập có video trên kênh mình thì phát (Shorts YT; IG/FB nếu có mã),
-    tập không có video = khoá mờ, bấm ra link app. Hết tập free: màn khoá + nút lớn; xem hết tự động thì đếm ngược rồi mở link.
+    """Trang phim kiểu Reels: mỗi tập 1 màn, vuốt dọc. Tập free có nguồn thì phát (Shorts YT kênh mình, hoặc iframe chính chủ RS Boost);
+    tập free chưa có nguồn = poster + nút mở app (không giả play). Tập > free = khoá mờ, bấm ra link app.
+    Hết tập free: màn khoá + nút lớn; video YT cuối chạy hết thì đếm ngược rồi mở link.
     Tên app chỉ hiện ở dòng "Continue Episode N on <app>" khi khách quay lại sau khi đã ra app (reel.js)."""
     syn = f["syn"]
     ct, seo = content(f["slug"])
-    total, vids = episodes(f)
+    total, free, eps = episodes(f)
     poster = f"/img/{f['slug']}-h.webp"
-    last = max(vids) if vids else 0
-    gate = last + 1  # tập kế sau tập free cuối = màn khoá
-    first = not vids  # phim chưa có video: màn đầu là tập 1, không khoá
-    numbered = first or (total is not None and gate <= total)  # tổng tập chưa rõ thì không đánh số tập khoá
+    gate = free + 1  # tập trả phí đầu tiên = màn khoá
     aff = lambda place, ep=None: (f'href="{e(f["link"])}" target="_blank" rel="nofollow sponsored noopener" data-aff="{place}" '
                                   f'data-film="{e(f["slug"])}" data-app="{e(f["app"])}" data-title="{e(f["title"])}"' + (f' data-ep="{ep}"' if ep else ""))
+    # gộp các tập free liền nhau chưa có nguồn thành 1 màn
+    groups = []
+    for n, k, v in eps:
+        if not k and groups and not groups[-1][1]:
+            groups[-1][0].append(n)
+        else:
+            groups.append(([n], k, v))
     slides = []
-    for i, (n, (k, v)) in enumerate(vids.items()):
-        cap = (f'<h1>{e(f["title"])}</h1>' if i == 0 else f'<p class="t">{e(f["title"])}</p>') + f'<p class="ep">Episode {n}</p>'
-        slides.append(f'''<section class="sl fr" data-ep="{n}" data-k="{k}" data-v="{e(v)}" aria-label="Episode {n}">
-<img class="bg" src="{poster}" alt="" width="720" height="960"{'' if i == 0 else ' loading="lazy"'}>
-<div class="stg"><img class="ps" src="{poster}" alt="" width="720" height="960"{' fetchpriority="high"' if i == 0 else ' loading="lazy"'}>
+    for i, (ns, k, v) in enumerate(groups):
+        n = ns[0]
+        lbl = f"Episode {n}" if len(ns) == 1 else f"Episodes {n}–{ns[-1]}"
+        cap = (f'<h1>{e(f["title"])}</h1>' if i == 0 else f'<p class="t">{e(f["title"])}</p>') + f'<p class="ep">{lbl}</p>'
+        lazy = '' if i == 0 else ' loading="lazy"'
+        if k:
+            slides.append(f'''<section class="sl fr" data-ep="{n}" data-k="{k}" data-v="{e(v)}" aria-label="{lbl}">
+<img class="bg" src="{poster}" alt="" width="720" height="960"{lazy}>
+<div class="stg"><img class="ps" src="{poster}" alt="" width="720" height="960"{' fetchpriority="high"' if i == 0 else lazy}>
 <button type="button" class="play" aria-label="Play episode {n}"><span>{PLAY}</span></button>
 <div class="cap">{cap}</div></div></section>''')
-    lbl = f"Episode {gate}" if numbered else "Next episodes"
-    slides.append(f'''<section class="sl lk{' st' if first else ''}" data-ep="{gate if numbered else ''}" aria-label="{e(lbl)}">
-<img class="bg" src="{poster}" alt="" width="720" height="960"{' fetchpriority="high"' if first else ' loading="lazy"'}>
-<div class="gt">{'' if first else LOCK}{f'<h1>{e(f["title"])}</h1>' if first else f'<p class="t">{e(f["title"])}</p>'}<p class="ep">{e(lbl)}</p>
+        else:
+            slides.append(f'''<section class="sl lk st" data-ep="{n}" data-last="{ns[-1]}" aria-label="{lbl}">
+<img class="bg" src="{poster}" alt="" width="720" height="960"{' fetchpriority="high"' if i == 0 else lazy}>
+<div class="gt">{cap}<p class="cont" hidden></p><a class="unl" {aff("free", n)}>{'Start watching' if n == 1 else 'Watch ' + lbl} {EXT}</a>
+<p class="nt">Free in the official app · affiliate link</p></div></section>''')
+    slides.append(f'''<section class="sl lk gate" data-ep="{gate}" aria-label="Episode {gate}">
+<img class="bg" src="{poster}" alt="" width="720" height="960" loading="lazy">
+<div class="gt">{LOCK}<p class="t">{e(f["title"])}</p><p class="ep">Episode {gate}</p>
 <p class="cont" hidden></p>
-<a class="unl" {aff("gate", gate if numbered else None)}>{'Start watching' if first else 'Continue watching'} {EXT}</a>
+<a class="unl" {aff("gate", gate)}>Continue watching {EXT}</a>
 <p class="cdn" hidden>Opening in <b>5</b>s <button type="button" class="stay">Stay here</button></p>
 <p class="nt">Opens the official app · affiliate link</p>
 <button type="button" class="eps-o lnk">All episodes</button></div></section>''')
-    # lưới đủ tập: có video = bấm xem, còn lại mờ + khoá -> link app
-    n_all = total or last
+    # lưới đủ tập: free có nguồn = bấm xem; free chưa nguồn = mở app; trả phí = mờ + khoá -> link app
+    src = {n: k for n, k, v in eps}
     tiles = []
-    for n in range(1, n_all + 1):
-        if n in vids:
+    for n in range(1, (total or gate) + 1):
+        if n in src and src[n]:
             tiles.append(f'<button type="button" class="ti fr" data-go="{n}"><b>{n}</b><span>Free</span></button>')
+        elif n in src:
+            tiles.append(f'<a class="ti fa" {aff("grid", n)} aria-label="Episode {n}, free in the app"><b>{n}</b><span>Free</span></a>')
         else:
             tiles.append(f'<a class="ti lk" {aff("grid", n)} aria-label="Episode {n}, locked"><b>{n}</b>{LOCK}</a>')
     if total is None:
-        tiles.append(f'<a class="ti lk more" {aff("grid")} aria-label="More episodes, locked">{LOCK}<span>More</span></a>')
+        tiles.append(f'<a class="ti lk mo" {aff("grid")} aria-label="More episodes, locked">{LOCK}<span>More</span></a>')
     grid = f'''<dialog class="eps" aria-label="Episodes"><div class="eh"><b>{e(f["title"])}</b><span>{f"{total} episodes" if total else ""}</span>
 <button type="button" class="x" aria-label="Close">×</button></div><div class="tg">{"".join(tiles)}</div>
 <p class="nt">Locked episodes open in the official app · affiliate link</p></dialog>'''
@@ -221,7 +238,7 @@ def film_page(f, films):
           "inLanguage": "en", "publisher": {"@type": "Organization", "name": f["app"]}}
     if total:
         ld["numberOfEpisodes"] = total
-    yt = [(n, v) for n, (k, v) in vids.items() if k == "yt"]
+    yt = [(n, v) for n, k, v in eps if k == "yt"]
     if yt:
         ld["trailer"] = {"@type": "VideoObject", "name": f"{f['title']} Episode {yt[0][0]}", "embedUrl": f"https://www.youtube.com/embed/{yt[0][1]}",
                          "thumbnailUrl": f"https://i.ytimg.com/vi/{yt[0][1]}/hqdefault.jpg", "description": cut(syn, 200)}
@@ -400,9 +417,8 @@ for f in films:
     if not f["genre"]:
         print(f"CẢNH BÁO: {f['id']} chưa có genre trong GENRE, sẽ biến mất khi lọc Thể loại")
 films.sort(key=lambda f: ORDER.index(f["id"]) if f["id"] in ORDER else len(ORDER))
-# tập + video đã đăng của từng phim (sửa ở _src/episodes.json); YT = phim có Shorts, thẻ hub ghi "Watch free"
-EPS = json.loads((OUT / "_src" / "episodes.json").read_text(encoding="utf-8"))
-YT = {f["id"]: 1 for f in films if any(v.get("yt") for v in EPS.get(f["slug"], {}).get("eps", {}).values())}
+# tập free + nguồn nhúng từng phim, sinh bằng make_episodes.py (chạy trước build)
+EPS = json.loads((HUB / "episodes.json").read_text(encoding="utf-8"))
 
 # ---------- dọn bản cũ (giữ .git, CNAME) ----------
 for p in OUT.iterdir():
@@ -413,8 +429,8 @@ for p in ("index.html", "404.html", "sitemap.xml", "robots.txt", "llms.txt"):
 (OUT / "img" / "og").mkdir(parents=True, exist_ok=True)
 (OUT / "assets").mkdir(exist_ok=True)
 shutil.copy(HUB / "t.js", OUT / "assets" / "t.js")
-for x in ("reel.js", "reel.css"):  # player lướt dọc trang phim, sửa thẳng ở _src/
-    shutil.copy(OUT / "_src" / x, OUT / "assets" / x)
+for x in ("reel.js", "reel.css"):  # player lướt dọc trang phim
+    shutil.copy(HUB / x, OUT / "assets" / x)
 
 # ---------- ảnh ----------
 logo = Image.open(SD / "brand" / "logo-mark-1024-transparent.png")

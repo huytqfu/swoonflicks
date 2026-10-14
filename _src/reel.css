@@ -7,7 +7,7 @@ html:has(body.reel){height:100%;overflow:hidden;scroll-behavior:auto}
 .sl{position:relative;height:100vh;height:100dvh;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden;display:grid;place-items:center;background:#000}
 .sl .bg{position:absolute;inset:-40px;width:calc(100% + 80px);height:calc(100% + 80px);max-width:none;object-fit:cover;filter:blur(28px) brightness(.45);transform:scale(1.05)}
 
-/* tập free: khung 9:16 giữa màn, poster + nút play, iframe thay vào khi phát */
+/* tập free: khung 9:16 giữa màn, poster + nút play, iframe (YouTube / RS Boost) thay vào khi phát */
 .stg{position:relative;height:100%;max-width:100%;aspect-ratio:9/16;background:#000}
 @media(max-aspect-ratio:9/16){.stg{width:100%;height:auto}}
 .stg .ps{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -52,13 +52,14 @@ background:#141014;color:#fff;overflow:auto}
 .eh{position:sticky;top:0;display:flex;align-items:center;gap:10px;padding:14px 16px;background:#141014;border-bottom:1px solid #2a2128}
 .eh b{flex:1;font:800 15px/1.25 system-ui}.eh span{color:var(--r-mut);font-size:12px}
 .eh .x{width:44px;height:44px;border:0;background:none;color:#fff;font-size:28px;line-height:1}
-.tg{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:14px 16px 4px}
-.ti{position:relative;aspect-ratio:1;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:800 16px system-ui;border:0}
+.tg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:14px 16px 4px}
+.ti{position:relative;aspect-ratio:1;min-width:0;height:auto;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:800 16px system-ui;border:0}
 .ti.fr{background:var(--r-acc);color:#fff}.ti.fr span{font:700 9px system-ui;letter-spacing:.1em;text-transform:uppercase}
 .ti.lk{background:#2a2128;color:rgba(255,255,255,.45)}
+.ti.fa{background:rgba(255,79,139,.18);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,79,139,.6)}.ti.fa span{font:700 9px system-ui;letter-spacing:.1em;text-transform:uppercase}
 .ti.lk b{filter:blur(1.5px)}
 .ti .lock{width:14px;height:14px;fill:rgba(255,255,255,.8)}
-.ti.more span{font:700 10px system-ui;text-transform:uppercase}
+.ti.mo span{font:700 10px system-ui;text-transform:uppercase}
 .ti.cur{box-shadow:0 0 0 2px #fff}
 .eps .nt{text-align:center;padding:0 16px}
 
