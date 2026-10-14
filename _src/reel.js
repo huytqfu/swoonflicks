@@ -1,7 +1,7 @@
 /* Player lướt dọc trang phim (build copy sang /assets/reel.js). Mỗi .sl là 1 màn; .fr = tập có video, .lk.st = tập free chưa có nguồn,
    .gate = màn khoá (tập trả phí đầu), .info = giới thiệu.
    - Vào màn tập free: lần đầu bấm play, sau đó lướt tới đâu tự phát tới đó; chỉ 1 video sống 1 lúc.
-   - Hết video tự lướt sang tập kế; lướt (hoặc video cuối chạy hết) tới màn trả phí đầu thì nhảy thẳng link app, không đếm ngược (sếp 14/10 02:28).
+   - Hết video tự lướt sang tập kế; riêng tập free cuối chạy hết thì đứng yên, khách tự lướt (hoặc bấm nút) mới nhảy link app (sếp 14/10 16:36: chỉ nhảy khi khách lướt hoặc bấm).
    - Ra link app (tự nhảy, nút, ô tập trong lưới) thì nhớ tập đó; khách quay lại site thì nhảy về màn khoá, hiện "Continue Episode N on <app>".
    - Nguồn: yt = Shorts kênh mình (API, đọc được tiến độ + hết video); rs = iframe chính chủ RS Boost (không đọc được gì, khách tự lướt).
    - Sự kiện qua SFT (t.js): VideoPlay, VideoProgress (chỉ YouTube đọc được), ClickAffiliate (t.js tự bắt a[data-aff]; tự nhảy bắn tay, placement auto). */
@@ -80,7 +80,7 @@
   }
   function next(s) {
     var n = S[S.indexOf(s) + 1];
-    go(n);
+    if (n !== gate) go(n);
   }
 
   // ---- màn đang xem ----
