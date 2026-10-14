@@ -1,0 +1,29 @@
+# Worker nhận form "xin mã mời qua email" của swoonflicks.com (trang /invite/, /invite/rs-boost/, /es/, /pt/).
+# Deploy: xem worker/README.md. Secrets (RESEND_API_KEY, TURNSTILE_SECRET) đặt bằng `wrangler secret put`, KHÔNG ghi vào file này.
+name = "swoonflicks-invite"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+# Tên miền riêng cho API: Cloudflare tự tạo DNS + cert (zone swoonflicks.com đã nằm trên Cloudflare).
+[[routes]]
+pattern = "api.swoonflicks.com"
+custom_domain = true
+
+[vars]
+# Mã mời gửi đi (không phải bí mật, chỉ giấu khỏi HTML trang; đổi ở đây nếu RS Boost cấp mã mới)
+INVITE_CODE = "jCsNUgQuecHY"
+INVITE_PROGRAM = "RS Boost"
+SIGNUP_URL = "https://cps.reelshort.com/user/register"
+# Người gửi: subdomain đã verify trên Resend (DNS theo README). Reply về hộp partner@ (forward Gmail).
+MAIL_FROM = "Swoonflicks <invite@send.swoonflicks.com>"
+MAIL_REPLY_TO = "partner@swoonflicks.com"
+# Origin được phép gọi API (CORS), cách nhau bằng dấu phẩy
+ALLOWED_ORIGINS = "https://swoonflicks.com,https://www.swoonflicks.com"
+# Giới hạn chống spam, mỗi ngày (reset theo TTL 24h)
+MAX_PER_EMAIL = "2"
+MAX_PER_IP = "6"
+
+# KV: đếm giới hạn + lưu danh sách người đã xin mã. Tạo bằng `wrangler kv namespace create INVITES` rồi dán id vào đây.
+[[kv_namespaces]]
+binding = "INVITES"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
