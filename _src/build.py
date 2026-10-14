@@ -400,7 +400,14 @@ def guide_page(g, films):
     rel = [x for x in GUIDES if x["path"] in g.get("related", [])]
     relh = (f'<h2>{e(u["rel"])}</h2><ul>' + "".join(f'<li><a href="{e(x["path"])}"><u>{e(x["h1"])}</u></a></li>' for x in rel) + "</ul>") if rel else ""
     srcs = g.get("sources", [])
-    srch = (f'<h2>{e(u["src"])}</h2><ul>' + "".join(f'<li><a href="{e(x)}" rel="noopener" target="_blank"><u>{e(x)}</u></a></li>' for x in srcs) + "</ul>") if srcs else ""
+    srch = (f'<h2>{e(u["src"])}</h2><ul style="overflow-wrap:anywhere">' + "".join(f'<li><a href="{e(x)}" rel="noopener" target="_blank"><u>{e(x)}</u></a></li>' for x in srcs) + "</ul>") if srcs else ""
+    # "watch": [slug...] = lưới poster ra thẳng link CPS gốc, cùng tab, giống trang bio (bắn ClickAffiliate placement=guide)
+    wl = [f for s in g.get("watch", []) for f in films if f["slug"] == s]
+    watchh = (f'<h2>{e(g.get("watch_h2", "Start watching"))}</h2><div class="more">' + "".join(
+        f'''<a class="cd" href="{e(f["link"])}" rel="nofollow sponsored noopener" data-aff="guide" data-film="{e(f["slug"])}" data-app="{e(f["app"])}" data-title="{e(f["title"])}">
+<img src="/img/{f['slug']}.webp" alt="{e(f['title'])} poster" width="360" height="480" loading="lazy" decoding="async">
+<div class="in"><h2>{e(f['title'])}</h2><span class="go">Watch now {ARROW}</span></div></a>''' for f in wl) +
+              '</div><p class="note">Each poster opens the official app · affiliate link</p>') if wl else ""
     fl = [f for f in films if f["app"] == g.get("films_app")] if g.get("films_app") else []
     moreh = (f'<p class="h3">{e(u["more"])}</p><div class="more">' + "".join(card(f) for f in fl) + "</div>") if fl else ""
     alt = g.get("alternates", {})
@@ -420,7 +427,7 @@ def guide_page(g, films):
     return head(g["title"], g["description"], g["path"], "/img/og/home.jpg", extra, lang=lang) + f'''
 <body><main class="wrap doc"><div class="top"><a class="back" href="/">{e(u["back"])}</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a></div>
 <h1>{e(g["h1"])}</h1>{f'<p>{e(g["lead"])}</p>' if g.get("lead") else ""}
-{codebox}{body}{faqh}{relh}{srch}
+{codebox}{body}{watchh}{faqh}{relh}{srch}
 {f'<p class="note">{e(u["checked"])}: {e(g["checked"])}</p>' if g.get("checked") else ""}
 {moreh}{FOOT}</main>
 <script>document.addEventListener('click',function(e){{var b=e.target.closest('[data-copy]');if(b){{

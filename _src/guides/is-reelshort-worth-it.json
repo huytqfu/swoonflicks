@@ -1,0 +1,98 @@
+{
+ "path": "/guides/is-reelshort-worth-it/",
+ "lang": "en",
+ "checked": "2026-10-14",
+ "title": "Is ReelShort Worth Paying For? An Honest Take",
+ "description": "Is ReelShort worth paying for? When coins or the weekly subscription make sense, when they do not, and what to check before you pay.",
+ "h1": "Is ReelShort worth paying for?",
+ "lead": "Yes, if one drama has you hooked and you will watch a lot of it in a few days. No, if you only dip in now and then. And a weekly pass is only worth it if you remember to cancel the renewal.",
+ "sections": [
+  {
+   "h2": "How paying works on ReelShort",
+   "p": [
+    "You can unlock episodes with coins, or buy a subscription. ReelShort's App Store listing (Brazil store, checked on the date below) describes the subscription as weekly, valid for 7 days, renewing automatically until you cancel, and letting you watch all stories without paying per episode while it is active. It also says prices vary by region.",
+    "We could not load the US listing when we checked, so we do not quote a price here. Open the In-App Purchases list on your own store page to see what you would pay."
+   ],
+   "links": [
+    {
+     "text": "ReelShort on the App Store (Brazil)",
+     "href": "https://apps.apple.com/BR/app/id1636235979"
+    }
+   ]
+  },
+  {
+   "h2": "When paying makes sense",
+   "ul": [
+    "You are hooked on one story and want the ending this weekend, not next month.",
+    "You plan to try several dramas in a few days, which is where a weekly pass beats buying coins episode by episode.",
+    "You are tired of check-in coins and ad breaks and would rather just watch."
+   ]
+  },
+  {
+   "h2": "When it does not",
+   "ul": [
+    "You watch a few minutes now and then. Free episodes and check-in coins may be enough.",
+    "You will forget to cancel. An auto-renewing pass you forget about is the most expensive option.",
+    "You have not finished the free episodes yet. Wait until you know you like the story."
+   ]
+  },
+  {
+   "h2": "Before you pay",
+   "steps": [
+    "Watch the free episodes first.",
+    "Check the price in your store's In-App Purchases list, not on a blog.",
+    "Choose coins for one drama, a weekly pass for a binge.",
+    "If you buy a pass, turn off renewal right after you buy it."
+   ],
+   "links": [
+    {
+     "text": "Apple: cancel a subscription",
+     "href": "https://support.apple.com/en-us/HT202039"
+    },
+    {
+     "text": "Google Play: cancel a subscription",
+     "href": "https://support.google.com/googleplay/answer/7018481"
+    }
+   ]
+  }
+ ],
+ "watch": [
+  "my-billionaire-boss-wont-let-me-quit",
+  "rejected-luna-is-the-alpha-queen",
+  "the-empresss-final-wish"
+ ],
+ "watch_h2": "Worth the pass: dramas we share",
+ "faq": [
+  {
+   "q": "Is ReelShort free?",
+   "a": "You can start series free and earn some coins through check-ins and tasks. To keep watching you unlock episodes with coins or buy a subscription."
+  },
+  {
+   "q": "How long does a ReelShort subscription last?",
+   "a": "ReelShort's App Store listing in Brazil describes it as weekly, valid for 7 days. Check the plan shown in your own app before you buy."
+  },
+  {
+   "q": "Does the ReelShort subscription renew automatically?",
+   "a": "Yes, according to its App Store listing, until you cancel at least 24 hours before the next renewal."
+  },
+  {
+   "q": "Can I cancel and keep watching until the week ends?",
+   "a": "On Google Play, yes: Google says you keep access for the time you already paid for. On iPhone, a cancelled subscription shows its end date in Settings, Subscriptions."
+  },
+  {
+   "q": "Is ReelShort worth it compared with hunting for free uploads?",
+   "a": "If you value your time and your phone's safety, usually yes for a drama you really want to finish. Free re-uploads are often incomplete and some carry malware risk."
+  }
+ ],
+ "related": [
+  "/guides/stop-hunting-free-episodes/",
+  "/guides/weekend-short-drama-binge/",
+  "/guides/weekly-pass-vs-coins/"
+ ],
+ "sources": [
+  "https://apps.apple.com/BR/app/id1636235979",
+  "https://www.reelshort.com/fandom/how-to-earn-free-coins-on-reelshort-01-25-3faa2218/",
+  "https://support.apple.com/en-us/HT202039",
+  "https://support.google.com/googleplay/answer/7018481"
+ ]
+}

@@ -1,0 +1,86 @@
+{
+ "path": "/guides/weekend-short-drama-binge/",
+ "lang": "en",
+ "checked": "2026-10-14",
+ "title": "Weekend Short Drama Binge Plan: Pay Once, No Regret",
+ "description": "A simple weekend plan for vertical dramas: pick one story Friday, start free, pay once on Saturday, turn off renewal, and finish by Sunday.",
+ "h1": "How to binge a vertical drama in one weekend",
+ "lead": "Pick one drama on Friday and start it free. Pay once on Saturday only if you want the ending, turn off renewal right away, and finish on Sunday. No hunting, no pop-ups, no surprise charge next week.",
+ "sections": [
+  {
+   "h2": "Friday night: pick one story",
+   "p": [
+    "Choose by trope, not by thumbnail: fake marriage, werewolf revenge, palace intrigue, a CEO who will not let go. One drama at a time keeps the weekend about the story instead of the menu."
+   ]
+  },
+  {
+   "h2": "Start free",
+   "p": [
+    "Watch the opening on Swoonflicks or in the app. If you are not hooked by the time the free episodes end, drop it and pick another. You have spent nothing."
+   ]
+  },
+  {
+   "h2": "Saturday: pay once",
+   "p": [
+    "Hooked? Buy one coin pack if you only want this drama, or one weekly pass if you want to try a few. Check the price in your own app store, since it varies by country."
+   ]
+  },
+  {
+   "h2": "Turn off renewal right away",
+   "p": [
+    "A weekly pass renews until you cancel. Cancel the renewal the moment you buy. Google says you keep access for the time you already paid for, so you lose nothing by cancelling early."
+   ],
+   "links": [
+    {
+     "text": "Apple: cancel a subscription",
+     "href": "https://support.apple.com/en-us/HT202039"
+    },
+    {
+     "text": "Google Play: cancel a subscription",
+     "href": "https://support.google.com/googleplay/answer/7018481"
+    }
+   ]
+  },
+  {
+   "h2": "Sunday: finish and move on",
+   "p": [
+    "Watch the ending, then follow us for the next pick. No lingering subscription, no tabs full of broken free links."
+   ]
+  }
+ ],
+ "watch": [
+  "my-billionaire-boss-wont-let-me-quit",
+  "rejected-luna-is-the-alpha-queen",
+  "the-empresss-final-wish",
+  "mommy-i-m-not-lying",
+  "dragons-bow-to-the-trash"
+ ],
+ "watch_h2": "This weekend's picks",
+ "faq": [
+  {
+   "q": "What is a good short drama to binge this weekend?",
+   "a": "If you like romance, start with My Billionaire Boss Won't Let Me Quit or Rejected Luna Is the Alpha Queen. For palace drama, try The Empress's Final Wish."
+  },
+  {
+   "q": "Should I buy coins or a weekly pass for a weekend binge?",
+   "a": "Coins if you only want one drama, a weekly pass if you want to try several. Compare both in your app store before buying."
+  },
+  {
+   "q": "How do I avoid being charged again next week?",
+   "a": "Cancel the renewal right after you buy. On Google Play you keep access until the paid period ends. On iPhone, go to Settings, your name, Subscriptions."
+  },
+  {
+   "q": "Can I watch vertical dramas on a laptop?",
+   "a": "Swoonflicks pages work in any browser. The full series continues in the official app."
+  }
+ ],
+ "related": [
+  "/guides/stop-hunting-free-episodes/",
+  "/guides/is-reelshort-worth-it/",
+  "/guides/weekly-pass-vs-coins/"
+ ],
+ "sources": [
+  "https://support.apple.com/en-us/HT202039",
+  "https://support.google.com/googleplay/answer/7018481"
+ ]
+}
