@@ -70,6 +70,13 @@
               if (x.data === 0) next(s);
             } } });
       });
+    } else if (k === 'fb') {
+      // fb: reel đã đăng trên page Swoonflicks, nhúng plugin video chính chủ Facebook; không đọc được tiến độ như rs
+      if (!/^\d+$/.test(v)) return fail(s);
+      var g = D.createElement('iframe');
+      g.src = 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent('https://www.facebook.com/reel/' + v) + '&show_text=false&autoplay=true&width=360';
+      g.title = B.title + ' episode ' + ep; g.allow = 'autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share; fullscreen'; g.setAttribute('allowfullscreen', '');
+      stg.appendChild(g);
     } else {
       // rs: iframe chính chủ RS Boost (url có cps_id + code của sếp); khách bấm play trong khung, không đọc được tiến độ nên không bắn VideoPlay
       if (!/^https:\/\/www\.reelshort\.com\//.test(v)) return fail(s);

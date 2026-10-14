@@ -34,6 +34,16 @@ YT = {
                                                  ("Part 4", "FQGrMJvSNhA"), ("Part 5", "TH9eRUwcubs")],
     "rejected-luna-is-the-alpha-queen-69fa0a97": [("Part 10", "cx-rFqh4x4w")],
 }
+# Reel đã đăng trên Facebook page Swoonflicks (khớp từng part theo thời lượng file cover1s, 15/10). Phim không có YT thì nhúng FB.
+FB = {
+    "dragons-bow-to-the-trash-638707": [("Part 1", "1423036206465271"), ("Part 2", "1872977197448669"), ("Part 3", "4480313915557540"),
+                                        ("Part 4", "1833326407800135"), ("Part 5", "1044737648579320"), ("Part 6", "1651877269613273"),
+                                        ("Part 7", "1722076808886711"), ("Part 8", "1473716274570276")],
+    "i-spoke-baby-dragon-and-won-everyone-over-628653": [("Part 1", "1602789194668454"), ("Part 2", "1465630305628418"),
+                                                         ("Part 3", "1153516677352078"), ("Part 4", "1989116111759289"),
+                                                         ("Part 5", "975770858912779"), ("Part 6", "1655711112779827"),
+                                                         ("Part 7", "1425684949675447")],
+}
 # ngày đăng YT (lấy từ itemprop uploadDate trang video) cho VideoObject.uploadDate
 YT_DATE = {"VOS5UiGpIV8": "2026-10-07T10:38:03-07:00", "cx-rFqh4x4w": "2026-10-02T12:17:04-07:00"}
 GENRE = {
@@ -125,8 +135,8 @@ def social():
 
 
 def card(f, big=False, lazy=True):
-    img = f"/img/{f['slug']}-w.webp" if big else f"/img/{f['slug']}.webp"
-    w, h = (720, 540) if big else (360, 480)
+    img = f"/img/{f['slug']}-h.webp" if big else f"/img/{f['slug']}.webp"  # thẻ to = poster 3:4 nguyên khung, không cắt tên phim (sếp 15/10)
+    w, h = (720, 960) if big else (360, 480)
     return f'''<a class="cd{' big' if big else ''}" href="/{f['slug']}/" data-genre="{e('|'.join(f['genre']))}">
 <img src="{img}" alt="{e(f['title'])} poster" width="{w}" height="{h}"{' loading="lazy"' if lazy else ' fetchpriority="high"' if big else ''} decoding="async">
 <div class="in"><h2>{e(f['title'])}</h2><span class="go">Watch now {ARROW}</span></div></a>'''
