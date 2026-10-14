@@ -48,7 +48,8 @@ GENRE = {
 }
 SOCIAL = [("TikTok", "https://www.tiktok.com/@swoonflicks"), ("Instagram", "https://www.instagram.com/swoonflicks"),
           ("YouTube", "https://www.youtube.com/@swoonflicks"), ("Facebook", "https://www.facebook.com/swoonflicks")]
-# Bản hub cho link bio từng nền: cùng nội dung, gắn nguồn khi URL không mang utm (ig.swoonflicks.com redirect có utm_source=instagram)
+# Link bio từng nền: lưới poster, bấm poster phim nào ra thẳng link CPS gốc phim đó (sếp 14/10 02:04). Phim đang đăng xếp đầu:
+# config.json "bio_first" (slug). Link ads: /go/<slug>/ một phim một nút. Không nhúng phim, không tự chuyển. Nguồn gắn khi URL không mang utm.
 BIO = {"ig": "instagram", "tt": "tiktok", "yt": "youtube", "fb": "facebook"}
 
 e = html.escape
@@ -271,6 +272,36 @@ def film_page(f, films):
 {grid}<script src="/assets/reel.js" defer></script></body></html>'''
 
 
+def bio_page(films, path, src):
+    """Link-in-bio: lưới poster, mỗi poster là link affiliate gốc của phim đó (bắn ClickAffiliate kèm slug)."""
+    k = path.strip("/")
+    tiles = "\n".join(f'''<a class="cd" href="{e(f["link"])}" target="_blank" rel="nofollow sponsored noopener" data-aff="{k}" data-film="{e(f["slug"])}" data-app="{e(f["app"])}" data-title="{e(f["title"])}">
+<img src="/img/{f['slug']}.webp" alt="{e(f['title'])} poster" width="360" height="480"{'' if i < 4 else ' loading="lazy"'} decoding="async">
+<div class="in"><h2>{e(f['title'])}</h2><span class="go">Watch now {ARROW}</span></div></a>''' for i, f in enumerate(films))
+    return head("Swoonflicks · Watch the drama", "Tap a drama to keep watching.", path, "/img/og/home.jpg", noindex=True, src=src) + f'''
+<body class="bio"><main class="wrap">
+<header class="hd sm"><h1><img class="lk" src="/img/lockup.png" alt="Swoonflicks · Romance novels, now on screen" width="681" height="150"></h1>
+<p class="tag">Tap the drama you saw to keep watching.</p></header>
+<div class="grid">{tiles}</div>
+<p class="note">Each poster opens the official app · affiliate link</p>
+{social()}{FOOT}</main></body></html>'''
+
+
+def one_page(f, path, src=""):
+    """Trang một nút: poster + tên phim + nút to ra link affiliate gốc (bắn ClickAffiliate qua data-aff). Khách tự bấm, không redirect."""
+    aff = (f'href="{e(f["link"])}" target="_blank" rel="nofollow sponsored noopener" data-aff="go" '
+           f'data-film="{e(f["slug"])}" data-app="{e(f["app"])}" data-title="{e(f["title"])}"')
+    return head(f"{f['title']} · Watch now | Swoonflicks", cut(f["syn"], 155), path, f"/img/og/{f['slug']}.jpg", noindex=True, src=src) + f'''
+<body class="one" data-film="{e(f['slug'])}" data-title="{e(f['title'])}" data-app="{e(f['app'])}"><main class="wrap">
+<a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a>
+<a class="po" {aff}><img src="/img/{f['slug']}-h.webp" alt="{e(f['title'])} poster" width="720" height="960" fetchpriority="high"></a>
+<h1 class="m">{e(f['title'])}</h1>
+<a class="cta" {aff}><span>Watch the full drama<small>Episode 1 is free</small></span>{EXT}</a>
+<p class="note">Opens the official app · affiliate link</p>
+<a class="more1" href="/">More dramas on Swoonflicks</a>
+</main></body></html>'''
+
+
 def privacy_page():
     return head("Privacy · Swoonflicks", "How Swoonflicks uses cookies and measurement.", "/privacy/") + '''
 <body><main class="wrap doc"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a></div>
@@ -466,8 +497,12 @@ def write(rel, text, gen=False):
 
 
 write("index.html", hub_page(films))
+bio = sorted(films, key=lambda f: f["slug"] != CFG.get("bio_first"))
 for k, src in BIO.items():
-    write(f"{k}/index.html", hub_page(films, f"/{k}/", src), gen=True)
+    write(f"{k}/index.html", bio_page(bio, f"/{k}/", src), gen=True)
+for f in films:
+    write(f"go/{f['slug']}/index.html", one_page(f, f"/go/{f['slug']}/"), gen=True)
+(OUT / "go" / ".gen").write_text("")
 for f in films:
     write(f"{f['slug']}/index.html", film_page(f, films), gen=True)
 write("privacy/index.html", privacy_page(), gen=True)
