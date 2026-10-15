@@ -4,7 +4,7 @@
 // ttclid nằm ở user.ttclid (Events 2.0): https://www.rudderstack.com/docs/destinations/streaming-destinations/tiktok-ads/cloud-mode/
 // event_id phải trùng event_id pixel gửi để TikTok khử trùng. Token: secret TIKTOK_EVENTS_TOKEN (wrangler secret put).
 const TT_URL = "https://business-api.tiktok.com/open_api/v1.3/event/track/";
-const EVENTS = new Set(["Pageview", "ViewContent", "ClickButton", "CompleteRegistration", "SubmitForm", "Contact", "Subscribe", "Search"]);
+const EVENTS = new Set(["Pageview", "ViewContent", "ClickButton", "CompleteRegistration", "SubmitForm", "Lead", "Contact", "Subscribe", "Search"]);
 const SITE_RE = /^https:\/\/(www\.)?swoonflicks\.com(\/|$)/;
 
 export async function ttEvent(req, env, ctx) {
