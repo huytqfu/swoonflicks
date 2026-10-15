@@ -22,8 +22,16 @@ ALLOWED_ORIGINS = "https://swoonflicks.com,https://www.swoonflicks.com"
 # Giới hạn chống spam, mỗi ngày (reset theo TTL 24h)
 MAX_PER_EMAIL = "2"
 MAX_PER_IP = "6"
+# TikTok Pixel (không bí mật). Access token Events API là secret TIKTOK_EVENTS_TOKEN; đang thử thì đặt secret TIKTOK_TEST_CODE.
+TIKTOK_PIXEL_ID = "DB89EV3C77U7A7QI950G"
 
 # KV: đếm giới hạn + lưu danh sách người đã xin mã. Tạo bằng `wrangler kv namespace create INVITES` rồi dán id vào đây.
 [[kv_namespaces]]
 binding = "INVITES"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
+id = "33920117dd974ac1a5a69e4eab206c81"
+
+# Giới hạn /tt-event: 60 sự kiện / 60 giây / IP
+[[ratelimits]]
+name = "TT_LIMIT"
+namespace_id = "1001"
+simple = { limit = 60, period = 60 }
