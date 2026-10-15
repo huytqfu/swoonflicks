@@ -4,6 +4,7 @@
 import { buildMail } from "./mail.js";
 import { MAIL_LOGO_B64 } from "./mail-logo.js";
 import { ttEvent } from "./tt-event.js";
+import { fbEvent } from "./fb-event.js";
 
 const MAIL_LOGO = Uint8Array.from(atob(MAIL_LOGO_B64), (c) => c.charCodeAt(0));
 
@@ -19,6 +20,11 @@ export default {
     const url = new URL(req.url);
     if (url.pathname === "/img/mail-logo.png") return new Response(MAIL_LOGO, { headers: { "content-type": "image/png", "cache-control": "public, max-age=86400" } });
     if (url.pathname === "/health") return json({ ok: true }, 200, cors);
+    if (req.method === "POST" && url.pathname === "/fb-event") {
+      if (!allowed.includes(origin)) return json({ error: "origin" }, 403, cors);
+      const [st, out] = await fbEvent(req, env, ctx);
+      return json(out, st, cors);
+    }
     if (req.method === "POST" && url.pathname === "/tt-event") {
       if (!allowed.includes(origin)) return json({ error: "origin" }, 403, cors);
       const [st, out] = await ttEvent(req, env, ctx);

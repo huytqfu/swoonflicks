@@ -9,7 +9,7 @@ const post = (body, origin = "https://swoonflicks.com") => new Request("https://
 const ev = { event: "ViewContent", event_id: "e1", url: "https://swoonflicks.com/watch/x/", content_id: "x", ttclid: "C1", timestamp: Math.floor(Date.now() / 1000) };
 
 let sent = [];
-globalThis.fetch = async (url, init) => { sent.push({ url: String(url), headers: init.headers, body: JSON.parse(init.body) }); return new Response(JSON.stringify({ code: 0 }), { status: 200 }); };
+globalThis.fetch = async (url, init) => { sent.push({ url: String(url), headers: init.headers || {}, body: JSON.parse(init.body) }); return new Response(JSON.stringify({ code: 0 }), { status: 200 }); };
 
 test("tt-event forwards with ip, ua, ttclid, same event_id", async () => {
   sent = [];
@@ -31,4 +31,18 @@ test("tt-event: wrong origin 403, bad event 400, foreign url 400, no token 202, 
   assert.equal((await worker.fetch(post(ev), env(), ctx)).status, 202);
   assert.equal((await worker.fetch(post(ev), env({ TIKTOK_EVENTS_TOKEN: "t", TT_LIMIT: { limit: async () => ({ success: false }) } }), ctx)).status, 429);
   assert.equal(sent.length, 0);
+});
+
+test("fb-event forwards to Meta with ip, ua, fbp/fbc, same event_id", async () => {
+  sent = [];
+  const body = { event: "ClickAffiliate", event_id: "f1", url: "https://swoonflicks.com/", fbp: "fb.1.1.2", fbc: "fb.1.1.abc" };
+  const mk = () => new Request("https://api.swoonflicks.com/fb-event", { method: "POST", headers: { "Content-Type": "text/plain;charset=UTF-8", Origin: "https://swoonflicks.com", "CF-Connecting-IP": "1.2.3.4", "User-Agent": "UA" }, body: JSON.stringify(body) });
+  const r = await worker.fetch(mk(), env({ META_CAPI_TOKEN: "mt", META_PIXEL_ID: "MP", META_API_VERSION: "v24.0" }), ctx);
+  assert.equal(r.status, 200);
+  await new Promise((r) => setTimeout(r, 10));
+  assert.equal(sent[0].url, "https://graph.facebook.com/v24.0/MP/events");
+  assert.equal(sent[0].body.access_token, "mt");
+  const d = sent[0].body.data[0];
+  assert.deepEqual([d.event_name, d.event_id, d.action_source, d.user_data.client_ip_address, d.user_data.client_user_agent, d.user_data.fbp, d.user_data.fbc], ["ClickAffiliate", "f1", "website", "1.2.3.4", "UA", "fb.1.1.2", "fb.1.1.abc"]);
+  assert.equal((await worker.fetch(mk(), env(), ctx)).status, 202);
 });

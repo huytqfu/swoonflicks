@@ -24,6 +24,8 @@ MAX_PER_EMAIL = "2"
 MAX_PER_IP = "6"
 # TikTok Pixel (không bí mật). Access token Events API là secret TIKTOK_EVENTS_TOKEN; đang thử thì đặt secret TIKTOK_TEST_CODE.
 TIKTOK_PIXEL_ID = "DB89EV3C77U7A7QI950G"
+META_PIXEL_ID = "1608930717637929"
+META_API_VERSION = "v24.0"
 
 # KV: đếm giới hạn + lưu danh sách người đã xin mã. Tạo bằng `wrangler kv namespace create INVITES` rồi dán id vào đây.
 [[kv_namespaces]]
