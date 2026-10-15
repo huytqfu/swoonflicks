@@ -107,7 +107,7 @@ def head(title, desc, path, img=None, extra="", noindex=False, src="", lang="en"
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>{e(title)}</title><meta name="description" content="{e(desc)}">
 {f'<link rel="canonical" href="{BASE}{path}">' if path else ''}{'<meta name="robots" content="noindex,follow">' if noindex else ''}
-<meta name="theme-color" content="#0b0709"><link rel="icon" href="/img/logo-64.png">
+<meta name="theme-color" content="#0b0709"><link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/icon-96.png" sizes="96x96" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest">
 <meta property="og:type" content="{'video.tv_show' if img and '/og/' in img and not img.endswith('home.jpg') else 'website'}"><meta property="og:site_name" content="Swoonflicks">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">{f'<meta property="og:url" content="{BASE}{path}">' if path else ''}{og}
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
