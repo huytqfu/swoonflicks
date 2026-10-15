@@ -1,9 +1,10 @@
 // Nội dung email gửi mã mời, 3 ngôn ngữ (khớp trang /invite/rs-boost/, /es/, /pt/).
 // Khung theo mail Drama Partner sếp gửi 14/10 21:03: tiêu đề "code is ready" → khối mã → nút đăng ký chính thức →
 // "Before you register" 4 lưu ý an toàn → link guide → chân "transactional email". Bản EN–VI để duyệt: docs/invite-email-gate/email-copy.md.
-// Logo: lockup thật của site (brand v3c) qua URL công khai, không chế logo mới.
+// Logo: lockup brand v3c (brand/_v3c-khe-nac-2026-09-30/logo-lockup-transparent.png) bỏ tagline, mark trái tim đủ,
+// nền card #171015 đệm sẵn, Worker tự phục vụ ở /img/mail-logo.png. lockup-sm.png của site cắt mất nửa dưới mark.
 
-const LOGO = "https://swoonflicks.com/img/lockup-sm.png";  // 354x52, không tagline
+const LOGO = "https://api.swoonflicks.com/img/mail-logo.png";  // 480x122, hiển thị 200px
 const SITE = "https://swoonflicks.com";
 
 const T = {
@@ -82,8 +83,8 @@ export function buildMail({ lang, program, code, signup, page }) {
 <body style="margin:0;padding:0;background:#0b0709;font-family:Poppins,Helvetica,Arial,sans-serif;color:#f6f4f7">
 <span style="display:none;max-height:0;overflow:hidden;color:#0b0709">${esc(t.preheader)}</span>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0b0709"><tr><td align="center" style="padding:24px 12px">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#171015;border-radius:16px;overflow:hidden;border-top:4px solid #f4406d">
-<tr><td style="padding:24px 24px 0"><a href="${SITE}/"><img src="${LOGO}" alt="Swoonflicks" width="150" style="display:block;width:150px;height:auto;border:0"></a></td></tr>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#171015;border-radius:16px;border-top:4px solid #f4406d">
+<tr><td style="padding:28px 24px 4px;background:#171015"><a href="${SITE}/"><img src="${LOGO}" alt="Swoonflicks" width="200" height="51" style="display:block;width:200px;height:auto;max-width:100%;border:0;background:#171015"></a></td></tr>
 <tr><td style="padding:18px 24px 8px;font-size:16px;line-height:1.55">
 <h1 style="margin:0 0 14px;font-size:28px;line-height:1.2;color:#ffffff">${esc(t.subject(program))}</h1>
 <p style="margin:0 0 20px;color:#e2d6dc">${esc(t.intro(program))}</p>

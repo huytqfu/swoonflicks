@@ -8,7 +8,7 @@ for (const lang of ["en", "es", "pt"]) {
     assert.ok(m.subject.includes("RS Boost"));
     assert.ok(m.html.includes("ABC123xyz") && m.text.includes("ABC123xyz"));
     assert.ok(m.html.includes("https://cps.reelshort.com/user/register") && m.text.includes("https://cps.reelshort.com/user/register"));
-    assert.ok(m.html.includes("https://swoonflicks.com/img/lockup-sm.png"));
+    assert.ok(m.html.includes("https://api.swoonflicks.com/img/mail-logo.png"));
     assert.ok(!/<[a-z]/.test(m.text));
     assert.ok(!/\bfree episodes?\b|\bep(isode)? \d+ free\b/i.test(m.html));  // không lộ số tập free
   });
