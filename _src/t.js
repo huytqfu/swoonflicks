@@ -68,7 +68,8 @@
 
   // 3. Gửi: tên sự kiện chung -> tên chuẩn từng nền
   var TT = { ViewContent: 'ViewContent', ClickAffiliate: 'ClickButton', RequestInvite: 'Lead' }; // chỉ 3 sự kiện này đi Events API
-  var GA = { ViewContent: 'view_film', ClickAffiliate: 'click_affiliate', VideoPlay: 'video_start', VideoProgress: 'video_progress', Filter: 'filter_select' };
+  var FB = { ViewContent: 'ViewContent', ClickAffiliate: 'ClickAffiliate', RequestInvite: 'Lead' }; // 3 sự kiện đi Conversions API; chỉ ClickAffiliate là custom
+  var GA = { ViewContent: 'view_item', ClickAffiliate: 'click_affiliate', RequestInvite: 'generate_lead', VideoPlay: 'video_start', VideoProgress: 'video_progress', Filter: 'filter_select' };
   function send(name, p0, id) {
     // click id không gửi thành tham số (pixel Meta/TikTok tự đọc từ URL), tránh nổ cardinality GA4
     var p = Object.assign({}, p0); delete p.fbclid; delete p.ttclid; delete p.gclid;
@@ -76,8 +77,14 @@
     var item = p.film ? [{ content_id: p.film, content_name: p.title, content_type: 'product', content_category: p.app }] : [];
     if (W.gtag && C.ga4) gtag('event', GA[name] || name, Object.assign({ event_id: id }, p));
     if (W.fbq && C.meta && ads) {
+      // Meta không có event chuẩn cho "bấm link ra ngoài": Lead là gửi thông tin liên hệ, nên giữ cho form mã mời; bấm link CPS = custom ClickAffiliate
+      // (developers.facebook.com/docs/meta-pixel/reference#standard-events). Muốn tối ưu ads theo click thì tạo custom conversion từ event này.
       if (name === 'ViewContent') fbq('track', 'ViewContent', Object.assign({ content_ids: [p.film], content_name: p.title, content_type: 'product', content_category: p.app }, p), { eventID: id });
+      else if (name === 'RequestInvite') fbq('track', 'Lead', p, { eventID: id });
       else fbq('trackCustom', name, p, { eventID: id });
+      // Conversions API: bản sao cùng event_name + event_id gửi Worker /fb-event để Meta khử trùng (developers.facebook.com/docs/marketing-api/conversions-api/deduplicate-pixel-and-server-events)
+      if (C.fbapi && FB[name]) beacon(C.fbapi, { event: FB[name], event_id: id, url: location.href, content_id: p.film || undefined,
+        timestamp: Math.floor(Date.now() / 1000), referrer: D.referrer || undefined, fbp: cookie('_fbp'), fbc: cookie('_fbc') || fbc() });
     }
     if (W.ttq && C.tiktok && ads) {
       // tên chuẩn TikTok: click link CPS = ClickButton (TikTok để tới 2027), gửi form mã mời = Lead (tên mới của SubmitForm từ 05/2025; pixel và API cùng tên để khử trùng)
@@ -86,15 +93,18 @@
       // Events API: bản sao cùng event + event_id gửi Worker để TikTok khử trùng (help: ads.tiktok.com/help/article/event-deduplication).
       // sendBeacon text/plain: không preflight, sống qua cú chuyển trang, không chặn click.
       if (C.ttapi && TT[name]) {
-        var ck = (D.cookie.match(/(?:^|; )_ttp=([^;]*)/) || [])[1];
-        var body = JSON.stringify({ event: tn, event_id: id, url: location.href, content_id: p.film || undefined,
+        beacon(C.ttapi, { event: tn, event_id: id, url: location.href, content_id: p.film || undefined,
           timestamp: Math.floor(Date.now() / 1000), referrer: D.referrer || undefined,
-          ttclid: get(SS, 'sf_ttclid') || undefined, ttp: ck ? decodeURIComponent(ck) : undefined });
-        try { navigator.sendBeacon ? navigator.sendBeacon(C.ttapi, new Blob([body], { type: 'text/plain' }))
-          : fetch(C.ttapi, { method: 'POST', body: body, keepalive: true, mode: 'no-cors' }) } catch (e) {}
+          ttclid: get(SS, 'sf_ttclid') || undefined, ttp: cookie('_ttp') });
       }
     }
   }
+  function cookie(k) { var m = D.cookie.match(new RegExp('(?:^|; )' + k + '=([^;]*)')); return m ? decodeURIComponent(m[1]) : undefined }
+  // fbc chuẩn Meta: fb.1.<ms lần chạm>.<fbclid>, dùng khi pixel chưa kịp đặt cookie _fbc
+  function fbc() { var v = get(SS, 'sf_fbclid'); return v ? 'fb.1.' + Date.now() + '.' + v : undefined }
+  // sendBeacon text/plain: không preflight, sống qua cú chuyển trang, không chặn click
+  function beacon(u, o) { var b = JSON.stringify(o);
+    try { navigator.sendBeacon ? navigator.sendBeacon(u, new Blob([b], { type: 'text/plain' })) : fetch(u, { method: 'POST', body: b, keepalive: true, mode: 'no-cors' }) } catch (e) {} }
   function track(name, params) {
     var p = Object.assign(attr(), params || {}), id = uid();
     (W.sfLog = W.sfLog || []).push([name, p, id]);
