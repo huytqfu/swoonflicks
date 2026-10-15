@@ -67,6 +67,7 @@
   }
 
   // 3. Gửi: tên sự kiện chung -> tên chuẩn từng nền
+  var TT = { ViewContent: 'ViewContent', ClickAffiliate: 'ClickButton', RequestInvite: 'Lead' }; // chỉ 3 sự kiện này đi Events API
   var GA = { ViewContent: 'view_film', ClickAffiliate: 'click_affiliate', VideoPlay: 'video_start', VideoProgress: 'video_progress', Filter: 'filter_select' };
   function send(name, p0, id) {
     // click id không gửi thành tham số (pixel Meta/TikTok tự đọc từ URL), tránh nổ cardinality GA4
@@ -79,8 +80,19 @@
       else fbq('trackCustom', name, p, { eventID: id });
     }
     if (W.ttq && C.tiktok && ads) {
-      var tp = Object.assign({ contents: item, content_type: 'product' }, p);
-      ttq.track(name === 'ClickAffiliate' ? 'ClickButton' : name, tp, { event_id: id });
+      // tên chuẩn TikTok: click link CPS = ClickButton (TikTok để tới 2027), gửi form mã mời = Lead (tên mới của SubmitForm từ 05/2025)
+      var tn = TT[name] || name, tp = Object.assign({ contents: item, content_type: 'product' }, p);
+      ttq.track(tn, tp, { event_id: id });
+      // Events API: bản sao cùng event + event_id gửi Worker để TikTok khử trùng (help: ads.tiktok.com/help/article/event-deduplication).
+      // sendBeacon text/plain: không preflight, sống qua cú chuyển trang, không chặn click.
+      if (C.ttapi && TT[name]) {
+        var ck = (D.cookie.match(/(?:^|; )_ttp=([^;]*)/) || [])[1];
+        var body = JSON.stringify({ event: tn, event_id: id, event_time: Math.floor(Date.now() / 1000), url: location.href,
+          referrer: D.referrer || undefined, ttclid: get(SS, 'sf_ttclid') || undefined, ttp: ck ? decodeURIComponent(ck) : undefined,
+          properties: { contents: item, content_type: 'product', placement: p.placement, link_url: p.link_url } });
+        try { navigator.sendBeacon ? navigator.sendBeacon(C.ttapi, new Blob([body], { type: 'text/plain' }))
+          : fetch(C.ttapi, { method: 'POST', body: body, keepalive: true, mode: 'no-cors' }) } catch (e) {}
+      }
     }
   }
   function track(name, params) {
