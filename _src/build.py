@@ -41,7 +41,14 @@ GENRE = {
     "i-spoke-baby-dragon-and-won-everyone-over-628653": ["Fantasy"],
     "rejected-luna-is-the-alpha-queen-69fa0a97": ["Fantasy", "Romance", "Revenge"],
     "the-empresss-final-wish-6a06bb65": ["Royal", "Family"],
-    "my-billionaire-boss-wont-let-me-quit-6a792e03": ["Romance"],  # tag RS: Romance, Billionaire, Workplace (material/rs/films/<slug>/info.json)
+    "my-billionaire-boss-wont-let-me-quit-6a792e03": ["Romance"],
+    # lô DramaCPS 15/10, suy từ description trong info.json
+    "my-voice-saves-my-family-643562": ["Family", "Fantasy"],
+    "my-sister-s-boyfriend-arrested-me-639196": ["Family", "Revenge"],
+    "don-t-touch-the-legendary-lawyer-s-grandson-636806": ["Family", "Revenge"],
+    "not-your-average-crow-634222": ["Fantasy"],
+    "the-little-jinx-is-a-lucky-star-133039": ["Family", "Fantasy"],
+    "she-dumped-a-ceo-for-her-sugar-baby-649297": ["Revenge", "Romance"],  # tag RS: Romance, Billionaire, Workplace (material/rs/films/<slug>/info.json)
 }
 # 6 kênh, handle chung @swoonflicks (sếp 14/10 02:21: đủ 6 nền, có logo + handle). Logo: Simple Icons (CC0).
 SOCIAL = [
@@ -486,7 +493,9 @@ films = []
 for r in csv.DictReader(open(SD / "ke" / "shelf.csv", encoding="utf-8")):
     link = r["link"] or RS_LINK.get(r["film"])
     d = film_dir(r["film"])
-    if r["ready"] != "CO" or not link or not d:
+    # Web lên mọi phim đã qua lọc (sếp 15/10: "đưa lên website hết toàn bộ phim trên kệ"), chỉ loại GIU (trượt gate / 18+).
+    # Cột ready vẫn là cổng của social; web không đợi lịch đăng giãn cách. Thiếu poster banner.jpg thì chưa lên.
+    if r["ready"] == "GIU" or not link or not d or not (d / "banner.jpg").exists():
         continue
     slug = re.sub(r"-[0-9a-f]{6,8}$", "", r["film"])
     films.append(dict(id=r["film"], slug=slug, title=r["title"], app=r["app"] or "ReelShort", link=link, d=d,
