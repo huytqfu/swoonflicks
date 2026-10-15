@@ -61,7 +61,7 @@ SOCIAL = [
 ]
 # Link bio từng nền: lưới poster, bấm poster phim nào ra thẳng link CPS gốc phim đó (sếp 14/10 02:04). Phim đang đăng xếp đầu:
 # config.json "bio_first" (slug). Link ads: /go/<slug>/ một phim một nút. Không nhúng phim, không tự chuyển. Nguồn gắn khi URL không mang utm.
-BIO = {"ig": "instagram", "tt": "tiktok", "yt": "youtube", "fb": "facebook"}
+BIO = {"ig": "instagram", "tt": "tiktok", "yt": "youtube", "fb": "facebook", "th": "threads", "x": "x"}
 
 e = html.escape
 CFG_F = HUB / "config.json"

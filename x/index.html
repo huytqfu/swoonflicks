@@ -1,0 +1,220 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Swoonflicks · Watch the drama</title><meta name="description" content="Tap a drama to keep watching.">
+<link rel="canonical" href="https://swoonflicks.com/x/"><meta name="robots" content="noindex,follow">
+<meta name="theme-color" content="#0b0709"><link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/icon-96.png" sizes="96x96" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Swoonflicks">
+<meta property="og:title" content="Swoonflicks · Watch the drama"><meta property="og:description" content="Tap a drama to keep watching."><meta property="og:url" content="https://swoonflicks.com/x/"><meta property="og:image" content="https://swoonflicks.com/img/og/home.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"></noscript>
+<style>/* Swoonflicks site. Concept brand v3c (chốt 29/09): "Romance novels, now on screen". Nền gần đen ánh hồng, 1 màu nhấn hồng #f4406d,
+đỏ thẫm #740827 của tim, chữ trắng ngà #f6f4f7, Poppins. Logo lockup (tim + "oo" móc xích trắng hồng) ở đầu trang. */
+:root{--sa:env(safe-area-inset-top);--bg:#0b0709;--card:#171015;--line:#34202b;--pink:#f4406d;--pink-hi:#ff8fab;--crim:#740827;--ink:#0b0709;
+--txt:#f6f4f7;--mut:#b5a3ad;--face:linear-gradient(135deg,#ff6f93 0%,#f4406d 55%,#c8204d 100%);
+--disp:Poppins,system-ui,sans-serif;--lab:Poppins,system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{background:var(--bg) radial-gradient(120% 50% at 50% -10%,#3a0c1f 0%,rgba(11,7,9,0) 64%) no-repeat;color:var(--txt);
+font:15px/1.55 Poppins,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+.wrap{max-width:680px;margin:0 auto;padding:0 16px}
+:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+
+/* tiêu đề: Poppins đậm trắng ngà */
+.m{font-family:var(--disp);font-weight:700;line-height:1.15;color:var(--txt);letter-spacing:-.01em}
+
+/* đầu trang */
+.hd{text-align:center;padding:calc(24px + var(--sa)) 0 4px}
+.hd .lk{width:min(88%,360px);height:auto;margin:0 auto;filter:drop-shadow(0 6px 28px rgba(244,64,109,.28))}
+.hd h1{font-size:clamp(30px,9vw,44px)}
+.hd.sm{padding-top:calc(16px + var(--sa))}.hd.sm .lk{width:min(72%,280px)}
+.tag{color:var(--mut);font-size:14px;margin:12px auto 0;max-width:30em}
+
+/* bộ lọc */
+.flt{position:static;margin:16px -16px 0;padding:10px 0;display:grid;gap:8px;background:rgba(11,7,9,.9);
+-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid rgba(52,32,43,.6)}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:0 16px}
+.chips::-webkit-scrollbar{display:none}
+.chips b{flex:none;align-self:center;font:700 10px/1 system-ui;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);width:44px}
+.chip{flex:none;min-height:44px;display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--card);font-weight:600;font-size:13px;line-height:1;padding:0 15px;border-radius:999px}
+.chip[aria-pressed=true]{background:#2a0f1b;color:#fff;border-color:var(--pink)}
+
+/* thẻ phim */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:14px 0 6px}
+@media(min-width:620px){.grid{grid-template-columns:repeat(3,1fr)}}
+.cd{position:relative;display:flex;flex-direction:column;border-radius:14px;overflow:hidden;background:var(--card);
+box-shadow:0 0 0 1px var(--line),0 10px 24px rgba(0,0,0,.45);transition:transform .15s}
+.cd:active{transform:scale(.98)}
+.cd img{width:100%;height:auto;aspect-ratio:3/4;object-fit:cover}
+.cd .in{flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:10px 10px 12px;border-top:1px solid var(--line)}
+.cd h2{font:600 14px/1.3 var(--disp);color:var(--txt);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.go{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font:700 12px/1 system-ui;color:var(--pink)}
+.go svg{width:9px;height:9px;fill:currentColor}
+.badge{position:absolute;top:8px;left:8px;z-index:1;font:700 10px/1 system-ui;letter-spacing:.08em;text-transform:uppercase;
+background:rgba(11,7,9,.72);color:var(--txt);padding:5px 7px;border-radius:6px}
+.cd.big{grid-column:1/-1}
+@media(min-width:620px){.cd.big{flex-direction:row}.cd.big img{width:50%}.cd.big .in{border-top:0;border-left:1px solid var(--line);padding:20px;justify-content:flex-end;gap:12px}}
+
+.cd.big h2{font-size:20px;font-weight:700}
+.cd[hidden]{display:none}
+.empty{text-align:center;color:var(--mut);padding:30px 0}
+.empty .chip{margin-top:12px;color:var(--txt)}
+.empty[hidden]{display:none}
+
+/* mạng xã hội + chân trang */
+.h3{font:700 12px/1 system-ui;letter-spacing:.2em;text-transform:uppercase;color:var(--pink);text-align:center;margin-top:28px}
+.soc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 4px}
+@media(min-width:520px){.soc{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.soc a{display:flex;align-items:center;gap:10px;min-height:48px;padding:8px 12px;border-radius:14px;background:var(--card);box-shadow:0 0 0 1px var(--line)}
+.soc svg{flex:none;width:20px;height:20px;fill:currentColor}
+.soc span{display:flex;flex-direction:column;min-width:0;font-size:11px;line-height:1.3;color:var(--mut)}
+.soc b{color:var(--txt);font-size:13px;font-weight:600}
+.ft{text-align:center;color:var(--mut);font-size:12px;line-height:1.7;padding:22px 0 40px}
+.ft a{text-decoration:underline}
+
+/* trang phim */
+.top{display:flex;align-items:center;justify-content:space-between;padding:calc(12px + var(--sa)) 0 12px}
+.back{font-weight:600;font-size:14px;color:var(--mut);padding:6px 0}
+.top .brand img{height:26px;width:auto}
+.pl{position:relative;width:min(100%,400px,calc(62svh * 9 / 16));aspect-ratio:9/16;margin:0 auto;border-radius:16px;overflow:hidden;background:#000;
+box-shadow:0 0 0 1px var(--line),0 18px 40px rgba(0,0,0,.6)}
+.pl.ps{width:min(100%,420px,calc(38svh * 3 / 4));aspect-ratio:3/4}
+.pl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pl .play{position:absolute;inset:0;width:100%;display:grid;place-items:center;border:0;background:linear-gradient(0deg,rgba(0,0,0,.6),rgba(0,0,0,.05) 50%)}
+.btnp{width:76px;height:76px;border-radius:50%;background:var(--face);display:grid;place-items:center;box-shadow:0 0 0 7px rgba(244,64,109,.25),0 10px 30px rgba(0,0,0,.6)}
+.btnp svg{width:28px;height:28px;fill:#fff;margin-left:5px}
+.pl .lbl{position:absolute;left:0;right:0;bottom:16px;text-align:center;font:700 12px system-ui;letter-spacing:.2em;text-transform:uppercase;color:var(--pink-hi);text-shadow:0 2px 6px #000}
+.pl .vid{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0}
+.pl .vid.on{opacity:1}
+.pst{text-align:center;color:var(--mut);font-size:13px;min-height:1px;margin-top:8px}
+.pst:empty{margin:0}
+.parts{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:12px -16px 0;padding:0 16px;justify-content:safe center}
+.parts::-webkit-scrollbar{display:none}
+.ttl{text-align:center;margin:4px 0 14px}
+.ttl h1{font-size:clamp(22px,6.4vw,32px);text-wrap:balance}
+.meta{font-weight:600;font-size:13px;color:var(--mut);margin-top:8px}
+.cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin:18px 0 8px;padding:15px 18px;border-radius:14px;background:var(--face);color:#fff;
+font:700 17px/1.2 var(--disp);text-align:center;box-shadow:0 10px 28px rgba(244,64,109,.28),inset 0 -2px 0 rgba(0,0,0,.18)}
+.cta small{display:block;font-weight:600;font-size:12px;opacity:.78;margin-top:2px}
+.cta svg{width:14px;height:14px;flex:none}
+.note{text-align:center;color:var(--mut);font-size:12px}
+.syn{margin-top:22px;padding:16px;background:var(--card);border-radius:14px;box-shadow:0 0 0 1px var(--line)}
+.syn summary{font:700 12px/1 system-ui;letter-spacing:.2em;text-transform:uppercase;color:var(--pink);cursor:pointer;min-height:24px;display:flex;align-items:center}
+.syn p{color:#e2d6dc;margin-top:10px}
+.more{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:12px -16px 0;padding:0 16px 4px}
+.more::-webkit-scrollbar{display:none}
+.more .cd{flex:0 0 40%;max-width:200px}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:9;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(11,7,9,.94);
+-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid var(--line);transform:translateY(110%);transition:transform .25s}
+.bar.on{transform:none}
+.bar .cta{max-width:648px;margin:0 auto;padding:13px;font-size:15px}
+.pad{height:84px}
+
+/* văn bản (privacy) */
+.doc h1{font:700 28px/1.25 var(--disp);color:var(--pink-hi);margin:10px 0 14px}
+.doc h2{font:700 16px system-ui;color:var(--pink);margin:20px 0 6px}
+.doc p,.doc li{color:#e2d6dc;margin-bottom:8px}
+.doc ul,.doc ol{padding-left:20px}
+
+/* banner đồng ý cookie (chỉ hiện cho EU/UK) */
+.cb{position:fixed;left:12px;right:12px;bottom:12px;z-index:20;max-width:480px;margin:0 auto;background:var(--card);border:1px solid var(--crim);
+border-radius:14px;padding:14px;font-size:13px;box-shadow:0 10px 30px #000}
+.cb a{text-decoration:underline}
+.cb div{display:flex;gap:8px;margin-top:10px}
+.cb button{flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);background:transparent;font-weight:700}
+.cb button.y{background:var(--face);color:#fff;border:0}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* trang mã mời */
+.inv .code{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;border:1px dashed var(--crim);border-radius:12px}
+.inv .code b{flex:1;font:800 20px/1 ui-monospace,Consolas,monospace;letter-spacing:.08em;color:var(--pink-hi)}
+.inv .code button{border:0;border-radius:10px;padding:10px 16px;background:var(--face);color:#fff;font-weight:800}
+.syn h2{font:700 12px/1 system-ui;letter-spacing:.2em;text-transform:uppercase;color:var(--pink)}
+.ab ul{margin:10px 0 0 18px;color:#e2d6dc}.ab li{margin-top:6px}
+.faq details{border-top:1px solid var(--line);margin-top:12px;padding-top:12px}.faq details:first-of-type{border:0;padding-top:0}
+.faq summary{font:600 15px/1.35 system-ui;color:#f6f4f7;cursor:pointer;min-height:24px;text-transform:none;letter-spacing:0;display:block}
+
+/* trang một nút (link bio / ads): poster + nút ra app, không nhúng phim */
+.one main{min-height:100svh;display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:0;padding-bottom:24px;text-align:center}
+.one .brand{flex:none;align-self:stretch;display:flex;justify-content:center;padding:calc(14px + var(--sa)) 0 14px;border-bottom:1px solid var(--line);margin:0 0 auto}.one .brand img{height:26px;width:auto}
+.one .po{margin-top:32px}.one .more1{margin-bottom:auto}
+.one .po{flex:none;width:min(78%,300px,calc(38svh * 3 / 4));border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px var(--line),0 18px 40px rgba(0,0,0,.6)}
+.one .po img{width:100%;height:auto;aspect-ratio:3/4;object-fit:cover}
+.one h1{font-size:clamp(20px,6vw,28px);text-wrap:balance;max-width:20em}
+.one .cta{max-width:420px;margin:6px 0 0}
+.one .more1{color:var(--mut);font-size:13px;text-decoration:underline;margin-top:6px}
+
+
+/* vùng an toàn 64px nền tối trên logo/trái tim trên mobile: thanh công cụ của app/trình xem không đè logo (sếp 14/10) */
+@media (max-width:720px){:root{--sa:calc(64px + env(safe-area-inset-top))}}
+/* cổng email xin mã mời (thay khối code khi config "gate" có endpoint) */
+.gate{position:relative;border:1px solid var(--crim);box-shadow:0 0 0 1px var(--line),0 14px 36px rgba(244,64,109,.14)}
+.gate .bd{position:absolute;top:-10px;left:14px;font:700 10px/1 system-ui;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:var(--face);padding:6px 9px;border-radius:999px}
+.gate h2{margin-top:6px;font:700 20px/1.25 var(--disp);letter-spacing:-.01em;text-transform:none;color:var(--txt)}
+.gate .gp{margin-top:8px}
+.gf{margin-top:14px}
+.gf label{display:block;font:700 11px/1 system-ui;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);margin-bottom:6px}
+.gf .row{display:flex;gap:8px}
+.gf input{flex:1;min-width:0;min-height:48px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:#0b0709;color:var(--txt);font:600 15px var(--disp)}
+.gf input:focus{border-color:var(--pink);outline:0}
+.gf button{flex:none;min-height:48px;padding:0 18px;border:0;border-radius:12px;background:var(--face);color:#fff;font:800 14px/1 var(--disp);white-space:nowrap;box-shadow:0 8px 22px rgba(244,64,109,.28)}
+.gf button[disabled]{opacity:.6;cursor:wait}
+.gf .cf-turnstile{margin-top:10px}
+.gf .fine{color:var(--mut);font-size:12px;margin-top:10px}
+.gf .msg{margin-top:10px;font-weight:600;font-size:13px;color:#ff9f9f}.gf .msg.ok{color:var(--pink-hi)}.gf .msg[hidden]{display:none}
+.gf .okh{font:700 20px/1.25 var(--disp);color:var(--pink-hi)}.gf .okp{margin-top:8px}.gf .okp b{color:var(--txt)}
+@media(max-width:380px){.gf .row{flex-direction:column}.gf button{width:100%}}
+</style>
+<script>window.SF={"ga4": "G-HT9YJHVCX3", "meta": "1608930717637929", "tiktok": "DB89EV3C77U7A7QI950G", "ttapi": "https://api.swoonflicks.com/tt-event", "fbapi": "https://api.swoonflicks.com/fb-event", "src": "x"}</script><script src="/assets/t.js" defer></script>
+</head>
+<body class="bio"><main class="wrap">
+<header class="hd sm"><h1><img class="lk" src="/img/lockup.png" alt="Swoonflicks · Romance novels, now on screen" width="681" height="150"></h1>
+<p class="tag">Tap the drama you saw to keep watching.</p></header>
+<div class="grid"><a class="cd" href="https://r.reelsgo.tv/0iE0IRoARlPa" rel="nofollow sponsored noopener" data-aff="x" data-film="dragons-bow-to-the-trash" data-app="NetShort" data-title="Dragons Bow To The Trash">
+<img src="/img/dragons-bow-to-the-trash.webp" alt="Dragons Bow To The Trash poster" width="360" height="480" decoding="async">
+<div class="in"><h2>Dragons Bow To The Trash</h2><span class="go">Watch now <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<a class="cd" href="https://r.reelsgo.tv/0PD_ckMYig-z" rel="nofollow sponsored noopener" data-aff="x" data-film="mommy-i-m-not-lying" data-app="ShortMax" data-title="Mommy, I&#x27;m Not Lying">
+<img src="/img/mommy-i-m-not-lying.webp" alt="Mommy, I&#x27;m Not Lying poster" width="360" height="480" decoding="async">
+<div class="in"><h2>Mommy, I&#x27;m Not Lying</h2><span class="go">Watch now <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<a class="cd" href="https://r.reelsgo.tv/9XLeiiiFdJxO" rel="nofollow sponsored noopener" data-aff="x" data-film="mech-god-from-the-dark-side-of-the-moon" data-app="NetShort" data-title="Mech God from the Dark Side of the Moon">
+<img src="/img/mech-god-from-the-dark-side-of-the-moon.webp" alt="Mech God from the Dark Side of the Moon poster" width="360" height="480" decoding="async">
+<div class="in"><h2>Mech God from the Dark Side of the Moon</h2><span class="go">Watch now <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<a class="cd" href="https://r.reelsgo.tv/rAL4vcslX0Yb" rel="nofollow sponsored noopener" data-aff="x" data-film="the-unbound-rise-of-the-godslayer" data-app="ShortMax" data-title="The Unbound: Rise of the Godslayer">
+<img src="/img/the-unbound-rise-of-the-godslayer.webp" alt="The Unbound: Rise of the Godslayer poster" width="360" height="480" decoding="async">
+<div class="in"><h2>The Unbound: Rise of the Godslayer</h2><span class="go">Watch now <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<a class="cd" href="https://r.reelsgo.tv/VAjswnP6LlFA" rel="nofollow sponsored noopener" data-aff="x" data-film="i-spoke-baby-dragon-and-won-everyone-over" data-app="NetShort" data-title="I Spoke Baby Dragon and Won Everyone Over!">
+<img src="/img/i-spoke-baby-dragon-and-won-everyone-over.webp" alt="I Spoke Baby Dragon and Won Everyone Over! poster" width="360" height="480" loading="lazy" decoding="async">
+<div class="in"><h2>I Spoke Baby Dragon and Won Everyone Over!</h2><span class="go">Watch now <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<a class="cd" href="https://reelslink.com/cps/xwAWVb" rel="nofollow sponsored noopener" data-aff="x" data-film="rejected-luna-is-the-alpha-queen" data-app="ReelShort" data-title="Rejected Luna Is the Alpha Queen">
+<img src="/img/rejected-luna-is-the-alpha-queen.webp" alt="Rejected Luna Is the Alpha Queen poster" width="360" height="480" loading="lazy" decoding="async">
+<div class="in"><h2>Rejected Luna Is the Alpha Queen</h2><span class="go">Watch now <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<a class="cd" href="https://reelslink.com/cps/uGhlNR" rel="nofollow sponsored noopener" data-aff="x" data-film="the-empresss-final-wish" data-app="ReelShort" data-title="The Empress&#x27;s Final Wish">
+<img src="/img/the-empresss-final-wish.webp" alt="The Empress&#x27;s Final Wish poster" width="360" height="480" loading="lazy" decoding="async">
+<div class="in"><h2>The Empress&#x27;s Final Wish</h2><span class="go">Watch now <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<a class="cd" href="https://r.reelsgo.tv/Bcv7NQJO3RXi" rel="nofollow sponsored noopener" data-aff="x" data-film="my-voice-saves-my-family" data-app="NetShort" data-title="My Voice Saves My Family">
+<img src="/img/my-voice-saves-my-family.webp" alt="My Voice Saves My Family poster" width="360" height="480" loading="lazy" decoding="async">
+<div class="in"><h2>My Voice Saves My Family</h2><span class="go">Watch now <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<a class="cd" href="https://r.reelsgo.tv/JSXTtyJfNtsg" rel="nofollow sponsored noopener" data-aff="x" data-film="my-sister-s-boyfriend-arrested-me" data-app="NetShort" data-title="My Sister’s Boyfriend Arrested Me">
+<img src="/img/my-sister-s-boyfriend-arrested-me.webp" alt="My Sister’s Boyfriend Arrested Me poster" width="360" height="480" loading="lazy" decoding="async">
+<div class="in"><h2>My Sister’s Boyfriend Arrested Me</h2><span class="go">Watch now <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<a class="cd" href="https://r.reelsgo.tv/R8KJ6Cfa70MY" rel="nofollow sponsored noopener" data-aff="x" data-film="don-t-touch-the-legendary-lawyer-s-grandson" data-app="NetShort" data-title="Don&#x27;t touch the legendary lawyer&#x27;s grandson">
+<img src="/img/don-t-touch-the-legendary-lawyer-s-grandson.webp" alt="Don&#x27;t touch the legendary lawyer&#x27;s grandson poster" width="360" height="480" loading="lazy" decoding="async">
+<div class="in"><h2>Don&#x27;t touch the legendary lawyer&#x27;s grandson</h2><span class="go">Watch now <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<a class="cd" href="https://r.reelsgo.tv/W6DVNm1ASKw0" rel="nofollow sponsored noopener" data-aff="x" data-film="not-your-average-crow" data-app="NetShort" data-title="Not Your Average Crow">
+<img src="/img/not-your-average-crow.webp" alt="Not Your Average Crow poster" width="360" height="480" loading="lazy" decoding="async">
+<div class="in"><h2>Not Your Average Crow</h2><span class="go">Watch now <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<a class="cd" href="https://r.reelsgo.tv/Y0_80SMFI76E" rel="nofollow sponsored noopener" data-aff="x" data-film="the-little-jinx-is-a-lucky-star" data-app="KalosTV" data-title="The Little Jinx is a Lucky Star">
+<img src="/img/the-little-jinx-is-a-lucky-star.webp" alt="The Little Jinx is a Lucky Star poster" width="360" height="480" loading="lazy" decoding="async">
+<div class="in"><h2>The Little Jinx is a Lucky Star</h2><span class="go">Watch now <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<a class="cd" href="https://r.reelsgo.tv/8cDaz3pf8OUe" rel="nofollow sponsored noopener" data-aff="x" data-film="she-dumped-a-ceo-for-her-sugar-baby" data-app="ReelShort" data-title="She Dumped a CEO for Her Sugar Baby">
+<img src="/img/she-dumped-a-ceo-for-her-sugar-baby.webp" alt="She Dumped a CEO for Her Sugar Baby poster" width="360" height="480" loading="lazy" decoding="async">
+<div class="in"><h2>She Dumped a CEO for Her Sugar Baby</h2><span class="go">Watch now <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a>
+<a class="cd" href="https://reelslink.com/cps/PWmOPM" rel="nofollow sponsored noopener" data-aff="x" data-film="my-billionaire-boss-wont-let-me-quit" data-app="ReelShort" data-title="My Billionaire Boss Won&#x27;t Let Me Quit">
+<img src="/img/my-billionaire-boss-wont-let-me-quit.webp" alt="My Billionaire Boss Won&#x27;t Let Me Quit poster" width="360" height="480" loading="lazy" decoding="async">
+<div class="in"><h2>My Billionaire Boss Won&#x27;t Let Me Quit</h2><span class="go">Watch now <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 0l6 5-6 5z"/></svg></span></div></a></div>
+<p class="note">Each poster opens the official app · affiliate link</p>
+<p class="h3">Follow for new parts</p><nav class="soc"><a href="https://www.tiktok.com/@swoonflicks" rel="noopener" target="_blank" aria-label="TikTok @swoonflicks"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg><span><b>TikTok</b>@swoonflicks</span></a><a href="https://www.instagram.com/swoonflicks" rel="noopener" target="_blank" aria-label="Instagram @swoonflicks"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg><span><b>Instagram</b>@swoonflicks</span></a><a href="https://www.youtube.com/@swoonflicks" rel="noopener" target="_blank" aria-label="YouTube @swoonflicks"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg><span><b>YouTube</b>@swoonflicks</span></a><a href="https://www.facebook.com/swoonflicks" rel="noopener" target="_blank" aria-label="Facebook @swoonflicks"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg><span><b>Facebook</b>@swoonflicks</span></a><a href="https://www.threads.net/@swoonflicks" rel="noopener" target="_blank" aria-label="Threads @swoonflicks"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></svg><span><b>Threads</b>@swoonflicks</span></a><a href="https://x.com/swoonflicks" rel="noopener" target="_blank" aria-label="X @swoonflicks"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg><span><b>X</b>@swoonflicks</span></a></nav><p class="ft">Swoonflicks shares short dramas we love.<br>
+Some links are affiliate links: we may earn a commission when you keep watching, at no extra cost to you.<br>
+<a href="/privacy/">Privacy</a> · <a href="mailto:admin@swoonflicks.com">admin@swoonflicks.com</a></p></main></body></html>
