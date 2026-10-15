@@ -4,8 +4,8 @@
    - Hết video tự lướt sang tập kế; đã bấm xem và lướt hết tập free rồi lướt tiếp tới màn trả phí đầu thì nhảy thẳng link app, không đếm ngược (sếp 14/10 02:28).
      Chưa xem hết tập free (hoặc phim không có tập nào phát được) thì màn khoá chỉ đứng yên với nút, không tự nhảy (sếp 15/10).
    - Ra link app (tự nhảy, nút, ô tập trong lưới) thì nhớ tập đó; khách quay lại site thì nhảy về màn khoá, hiện "Continue Episode N on <app>".
-   - Nguồn: yt = Shorts kênh mình (API, đọc được tiến độ + hết video); rs = iframe chính chủ RS Boost (không đọc được gì, khách tự lướt).
-   - Sự kiện qua SFT (t.js): VideoPlay, VideoProgress (chỉ YouTube đọc được), ClickAffiliate (t.js tự bắt a[data-aff]; tự nhảy bắn tay, placement auto). */
+   - Nguồn: mp4 = tập gốc DramaCPS tự host R2 (<video>, đọc được tiến độ + hết video); yt = Shorts kênh mình (API, đọc được tiến độ + hết video); rs = iframe chính chủ RS Boost (không đọc được gì, khách tự lướt).
+   - Sự kiện qua SFT (t.js): VideoPlay, VideoProgress (chỉ mp4 + YouTube đọc được), ClickAffiliate (t.js tự bắt a[data-aff]; tự nhảy bắn tay, placement auto). */
 (function (W, D) {
   var B = D.body.dataset, feed = D.querySelector('.rl'), S = [].slice.call(D.querySelectorAll('.rl > .sl')), ct = D.querySelector('.rt .ct'),
     gate = D.querySelector('.sl.gate'), dlg = D.querySelector('.eps'), link = gate && gate.querySelector('.unl'),
@@ -22,7 +22,7 @@
     P = null;
     if (!s) return;
     s.classList.remove('on-air');
-    [].forEach.call(s.querySelectorAll('.stg iframe,.stg .vh,.stg .err'), function (x) { x.remove() });
+    [].forEach.call(s.querySelectorAll('.stg iframe,.stg video,.stg .vh,.stg .err'), function (x) { x.remove() });
   }
   function ytApi(cb) {
     if (W.YT && YT.Player) return cb();
@@ -70,6 +70,24 @@
               if (x.data === 0) next(s);
             } } });
       });
+    } else if (k === 'mp4') {
+      // mp4: tập gốc DramaCPS tự host trên R2 (media.swoonflicks.com), player gốc của trình duyệt; đọc được tiến độ + hết video như yt
+      if (!/^https:\/\/media\.swoonflicks\.com\//.test(v)) return fail(s);
+      var m = D.createElement('video');
+      m.src = v; m.playsInline = true; m.autoplay = true; m.controls = true; m.preload = 'auto';
+      m.setAttribute('playsinline', ''); m.title = B.title + ' episode ' + ep;
+      m.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;background:#000;object-fit:contain';
+      m.onerror = function () { fail(s) };
+      m.onplay = function () { if (!marks[v + 'p']) { marks[v + 'p'] = 1; T('VideoPlay', { video_id: v, episode: +ep, platform: 'site' }) } };
+      m.ontimeupdate = function () {
+        var d = m.duration, t = m.currentTime; if (!d) return;
+        [25, 50, 75, 95].forEach(function (q) {
+          if (!marks[v + q] && t / d * 100 >= q) { marks[v + q] = 1; T('VideoProgress', { video_id: v, episode: +ep, percent: q, platform: 'site' }) }
+        });
+      };
+      m.onended = function () { next(s) };
+      stg.appendChild(m);
+      var pr = m.play(); if (pr && pr.catch) pr.catch(function () {});  // autoplay bị chặn thì khách bấm play trên controls
     } else if (k === 'fb') {
       // fb: reel đã đăng trên page Swoonflicks, nhúng plugin video chính chủ Facebook; không đọc được tiến độ như rs
       if (!/^\d+$/.test(v)) return fail(s);

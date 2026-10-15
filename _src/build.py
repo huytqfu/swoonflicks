@@ -4,7 +4,7 @@ Chạy: py -3.14 hub/build.py
 - Concept brand v3c: đen hồng, Poppins, logo lockup "oo" móc xích + "Romance novels, now on screen" (sếp 14/10: bỏ vàng royal). CSS: hub/site.css.
 - Không hiện tên network (ReelShort/DramaCPS) cho người xem; f["app"] chỉ còn trong tracking nội bộ (sếp 14/10).
 - Tracking: hub/t.js (GA4 + Meta + TikTok, ID ở hub/config.json, trống = không tải). Nút ra app = link CPS gốc, không cloak.
-- Video: trang phim lướt dọc kiểu Reels (_src/reel.js + reel.css), tập lấy từ hub/episodes.json (make_episodes.py: Shorts YT kênh mình > iframe chính chủ RS Boost > chưa có nguồn).
+- Video: trang phim lướt dọc kiểu Reels (_src/reel.js + reel.css), tập lấy từ hub/episodes.json (make_episodes.py: mp4 gốc DramaCPS tự host R2 > iframe chính chủ RS Boost > chưa có nguồn).
   Lưới tập đồng đều, không lộ số tập free; chạm tập trả phí đầu thì tự nhảy link app (sếp 14/10). Không ghi tên app trên trang trừ dòng "Continue Episode N on <app>" khi khách quay lại.
 - Build xoá thư mục sinh (có file .gen), img/, assets/; giữ .git + CNAME.
 """
@@ -27,25 +27,12 @@ RS_LINK = {
 # Thứ tự: phim đang đăng gần nhất lên đầu
 ORDER = ["dragons-bow-to-the-trash-638707", "mommy-i-m-not-lying-646011", "mech-god-from-the-dark-side-of-the-moon-635894",
          "the-unbound-rise-of-the-godslayer-647593", "i-spoke-baby-dragon-and-won-everyone-over-628653"]
-# Shorts đã đăng trên YouTube @swoonflicks (yt-dlp /shorts 13/10). TikTok tắt nhúng nên không dùng.
-# make_episodes.py đọc map này (ưu tiên YT) để sinh episodes.json.
+# Web chỉ chiếu tập GỐC chưa cook (sếp 15/10): bản cook trên YouTube/Facebook để lại cho social, không nhúng nữa.
+# Map để trống nhưng giữ khung (make_episodes.py đọc bằng regex); 3 phim DramaCPS chiếu mp4 gốc tự host R2, phim RS dùng iframe RS Boost.
 YT = {
-    "the-unbound-rise-of-the-godslayer-647593": [("Part 1", "VOS5UiGpIV8"), ("Part 2", "ylUIh9I908I"), ("Part 3", "ZkCDRpUW8w8"),
-                                                 ("Part 4", "FQGrMJvSNhA"), ("Part 5", "TH9eRUwcubs")],
-    "rejected-luna-is-the-alpha-queen-69fa0a97": [("Part 10", "cx-rFqh4x4w")],
 }
-# Reel đã đăng trên Facebook page Swoonflicks (khớp từng part theo thời lượng file cover1s, 15/10). Phim không có YT thì nhúng FB.
 FB = {
-    "dragons-bow-to-the-trash-638707": [("Part 1", "1423036206465271"), ("Part 2", "1872977197448669"), ("Part 3", "4480313915557540"),
-                                        ("Part 4", "1833326407800135"), ("Part 5", "1044737648579320"), ("Part 6", "1651877269613273"),
-                                        ("Part 7", "1722076808886711"), ("Part 8", "1473716274570276")],
-    "i-spoke-baby-dragon-and-won-everyone-over-628653": [("Part 1", "1602789194668454"), ("Part 2", "1465630305628418"),
-                                                         ("Part 3", "1153516677352078"), ("Part 4", "1989116111759289"),
-                                                         ("Part 5", "975770858912779"), ("Part 6", "1655711112779827"),
-                                                         ("Part 7", "1425684949675447")],
 }
-# ngày đăng YT (lấy từ itemprop uploadDate trang video) cho VideoObject.uploadDate
-YT_DATE = {"VOS5UiGpIV8": "2026-10-07T10:38:03-07:00", "cx-rFqh4x4w": "2026-10-02T12:17:04-07:00"}
 GENRE = {
     "dragons-bow-to-the-trash-638707": ["Fantasy"],
     "mommy-i-m-not-lying-646011": ["Family"],
@@ -179,7 +166,7 @@ def content(slug):
 
 
 def episodes(f):
-    """Từ episodes.json: (tổng tập hoặc None, số tập free, [(n, nền, id|url|None)]). Nền: yt / rs (iframe RS Boost) / None (chưa có nguồn)."""
+    """Từ episodes.json: (tổng tập hoặc None, số tập free, [(n, nền, id|url|None)]). Nền: mp4 (R2) / yt / fb / rs (iframe RS Boost) / None (chưa có nguồn)."""
     x = EPS.get(f["id"], {})
     eps = [(e["n"], e.get("src"), e.get("id") or e.get("url")) for e in x.get("eps", [])]
     return x.get("total"), x.get("free") or len(eps), eps
@@ -190,7 +177,7 @@ PLAY = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 0l9 5-9 5z"/></s
 
 
 def film_page(f, films):
-    """Trang phim kiểu Reels: mỗi tập 1 màn, vuốt dọc. Tập free có nguồn thì phát (Shorts YT kênh mình, hoặc iframe chính chủ RS Boost);
+    """Trang phim kiểu Reels: mỗi tập 1 màn, vuốt dọc. Tập free có nguồn thì phát (mp4 gốc tự host R2, hoặc iframe chính chủ RS Boost);
     tập free chưa có nguồn = poster + nút mở app (không giả play). Không lộ số tập free ở đâu (sếp 14/10 02:21).
     Hết tập free: màn khoá + nút lớn, khách tự bấm (không đếm ngược, không tự chuyển).
     Tên app chỉ hiện ở dòng "Continue Episode N on <app>" khi khách quay lại sau khi đã ra app (reel.js)."""
@@ -236,12 +223,10 @@ def film_page(f, films):
     ld = {"@context": "https://schema.org", "@type": "TVSeries", "name": f["title"], "description": cut(syn, 300),
           "image": f"{BASE}/img/og/{f['slug']}.jpg", "url": f"{BASE}/{f['slug']}/", "genre": f["genre"],
           "inLanguage": "en"}
-    yt = [(n, v) for n, k, v in eps if k == "yt"]
-    if yt:
-        ld["trailer"] = {"@type": "VideoObject", "name": f"{f['title']} Episode {yt[0][0]}", "embedUrl": f"https://www.youtube.com/embed/{yt[0][1]}",
-                         "thumbnailUrl": f"https://i.ytimg.com/vi/{yt[0][1]}/hqdefault.jpg", "description": cut(syn, 200)}
-        if yt[0][1] in YT_DATE:
-            ld["trailer"]["uploadDate"] = YT_DATE[yt[0][1]]
+    mp = [(n, v) for n, k, v in eps if k == "mp4"]
+    if mp:  # tập gốc tự host: trailer = tập 1 trên R2 (chưa có ngày đăng thật nên không ghi uploadDate)
+        ld["trailer"] = {"@type": "VideoObject", "name": f"{f['title']} Episode {mp[0][0]}", "contentUrl": mp[0][1],
+                         "thumbnailUrl": f"{BASE}/img/og/{f['slug']}.jpg", "description": cut(syn, 200)}
     bc = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Swoonflicks", "item": f"{BASE}/"},
         {"@type": "ListItem", "position": 2, "name": f["title"], "item": f"{BASE}/{f['slug']}/"}]}
@@ -250,7 +235,7 @@ def film_page(f, films):
     if faq:  # FAQPage khớp đúng chữ hiển thị
         lds.append({"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
             {"@type": "Question", "name": x["q"], "acceptedAnswer": {"@type": "Answer", "text": x["a"]}} for x in faq]})
-    extra = ('<link rel="stylesheet" href="/assets/reel.css">' + ('<link rel="preconnect" href="https://www.youtube-nocookie.com">' if yt else "") +
+    extra = ('<link rel="stylesheet" href="/assets/reel.css">' + ('<link rel="preconnect" href="https://media.swoonflicks.com">' if mp else "") +
              f'<script type="application/ld+json">{json.dumps(lds, ensure_ascii=False)}</script>')
     title = seo.get("title") or f"{f['title']} · Watch now | Swoonflicks"
     about = ""
