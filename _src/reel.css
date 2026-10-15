@@ -4,13 +4,14 @@
 html:has(body.reel){height:100%;overflow:hidden;scroll-behavior:auto}
 .rl{position:fixed;inset:0;overflow-y:auto;overscroll-behavior:contain;scroll-snap-type:y mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .rl::-webkit-scrollbar{display:none}
-.sl{position:relative;height:100vh;height:100dvh;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden;display:grid;place-items:center;background:#000}
+.sl{position:relative;height:100%;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden;display:grid;place-items:center;background:#000}
 .sl .bg{position:absolute;inset:-40px;width:calc(100% + 80px);height:calc(100% + 80px);max-width:none;object-fit:cover;filter:blur(28px) brightness(.45);transform:scale(1.05)}
 
 /* tập free: khung 9:16 giữa màn, poster + nút play, iframe (YouTube / RS Boost) thay vào khi phát */
 .stg{position:relative;height:100%;max-width:100%;aspect-ratio:9/16;background:#000}
 @media(max-aspect-ratio:9/16){.stg{width:100%;height:auto}}
 .stg .ps{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.snd{position:absolute;top:calc(64px + var(--sa,0px));left:50%;transform:translateX(-50%);z-index:2;min-height:44px;padding:0 18px;border:0;border-radius:999px;background:var(--r-acc);color:#fff;font:700 14px system-ui}
 .stg iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
 .play{position:absolute;inset:0;width:100%;border:0;display:grid;place-items:center;background:linear-gradient(0deg,rgba(0,0,0,.65),rgba(0,0,0,0) 45%)}
 .play span{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;background:var(--r-acc);box-shadow:0 0 0 8px rgba(255,79,139,.25),0 12px 30px rgba(0,0,0,.6)}

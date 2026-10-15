@@ -146,7 +146,7 @@ em.querySelector('.clr').onclick=function(){document.querySelectorAll('.chip[dat
 
 def hub_page(films, path="/", src=""):
     ig = path != "/"
-    genres = sorted({g for f in films for g in f["genre"]})
+    genres = sorted({g for f in films for g in f["genre"]}, key=lambda g: (g != "Romance", g))
     chip = lambda k, v, lbl, on=False: f'<button type="button" class="chip" data-k="{k}" data-v="{e(v)}" aria-pressed="{str(on).lower()}">{e(lbl)}</button>'
     flt = ('<div class="flt"><div class="chips" role="group" aria-label="Filter by genre"><b aria-hidden="true">Genre</b>' + chip("genre", "", "All", True) + "".join(chip("genre", g, g) for g in genres) + "</div></div>")
     grid = "\n".join(card(f, big=(i == 0 and not ig), lazy=(i > 3)) for i, f in enumerate(films))

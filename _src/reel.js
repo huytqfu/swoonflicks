@@ -22,7 +22,18 @@
     P = null;
     if (!s) return;
     s.classList.remove('on-air');
-    [].forEach.call(s.querySelectorAll('.stg iframe,.stg video,.stg .vh,.stg .err'), function (x) { x.remove() });
+    if (V && V.parentNode === s.querySelector('.stg')) { V.pause(); V.onended = V.onerror = V.onplay = V.ontimeupdate = null; V.remove() }
+    [].forEach.call(s.querySelectorAll('.stg iframe,.stg video,.stg .vh,.stg .err,.stg .snd'), function (x) { x.remove() });
+  }
+  // mp4: 1 thẻ <video> dùng lại cho mọi tập. iOS chỉ cho phát có tiếng trên thẻ đã được khách chạm play;
+  // tạo thẻ mới mỗi tập thì tập tự lướt tới bị chặn, đứng im (sếp 15/10: "không qua được tập mới").
+  var V = null;
+  function vid() {
+    if (V) return V;
+    V = D.createElement('video');
+    V.playsInline = true; V.controls = true; V.preload = 'auto'; V.setAttribute('playsinline', '');
+    V.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;background:#000;object-fit:contain';
+    return V;
   }
   function ytApi(cb) {
     if (W.YT && YT.Player) return cb();
@@ -73,10 +84,8 @@
     } else if (k === 'mp4') {
       // mp4: tập gốc DramaCPS tự host trên R2 (media.swoonflicks.com), player gốc của trình duyệt; đọc được tiến độ + hết video như yt
       if (!/^https:\/\/media\.swoonflicks\.com\//.test(v)) return fail(s);
-      var m = D.createElement('video');
-      m.src = v; m.playsInline = true; m.autoplay = true; m.controls = true; m.preload = 'auto';
-      m.setAttribute('playsinline', ''); m.title = B.title + ' episode ' + ep;
-      m.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;background:#000;object-fit:contain';
+      var m = vid();
+      m.src = v; m.title = B.title + ' episode ' + ep; m.muted = false;
       m.onerror = function () { fail(s) };
       m.onplay = function () { if (!marks[v + 'p']) { marks[v + 'p'] = 1; T('VideoPlay', { video_id: v, episode: +ep, platform: 'site' }) } };
       m.ontimeupdate = function () {
@@ -87,7 +96,15 @@
       };
       m.onended = function () { next(s) };
       stg.appendChild(m);
-      var pr = m.play(); if (pr && pr.catch) pr.catch(function () {});  // autoplay bị chặn thì khách bấm play trên controls
+      var pr = m.play();
+      // trình duyệt chặn phát có tiếng (tập tự lướt tới, không có cú chạm) thì phát tắt tiếng + nút bật tiếng, không đứng im
+      if (pr && pr.catch) pr.catch(function () {
+        if (act !== s || m.parentNode !== stg) return;
+        m.muted = true; m.play().catch(function () {});
+        var u = D.createElement('button'); u.type = 'button'; u.className = 'snd'; u.textContent = 'Tap for sound';
+        u.onclick = function () { m.muted = false; m.play().catch(function () {}); u.remove() };
+        stg.appendChild(u);
+      });
     } else if (k === 'fb') {
       // fb: reel đã đăng trên page Swoonflicks, nhúng plugin video chính chủ Facebook; không đọc được tiến độ như rs
       if (!/^\d+$/.test(v)) return fail(s);
@@ -121,7 +138,12 @@
     if (s.classList.contains('fr') && gest) play(s);
   }
   if ('IntersectionObserver' in W) {
-    var io = new IntersectionObserver(function (es) { es.forEach(function (x) { if (x.isIntersecting) activate(x.target) }) }, { root: feed, threshold: 0.6 });
+    // lướt nhanh qua nhiều tập: chỉ phát tập dừng lại, không nạp video từng tập lướt ngang (giật, lố tập)
+    var seen = null, wait;
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (x) { if (x.isIntersecting) seen = x.target });
+      clearTimeout(wait); wait = setTimeout(function () { if (seen) activate(seen) }, 140);
+    }, { root: feed, threshold: 0.6 });
     S.forEach(function (s) { io.observe(s) });
   }
   S.forEach(function (s) { var b = s.querySelector('.play'); if (b) b.onclick = function () { act = s; play(s) } });
