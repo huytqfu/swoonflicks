@@ -169,7 +169,7 @@ border-radius:14px;padding:14px;font-size:13px;box-shadow:0 10px 30px #000}
 </style>
 <script>window.SF={"ga4": "", "meta": "", "tiktok": "", "src": ""}</script><script src="/assets/t.js" defer></script><script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
-<body><main class="wrap"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a></div>
+<body><main class="wrap"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="120" height="26"></a></div>
 <div class="ttl"><h1><span class="m">Invitation codes</span></h1></div>
 <p class="tag" style="text-align:center">For creators who want to earn by sharing short dramas. These affiliate programs ask for an invitation code when you sign up. Request ours below and paste it in the sign-up form.</p>
 <p class="note" style="text-align:center">This is a creator sign-up code, not a viewer code: it does not unlock episodes or give coins. Earnings depend on each program's own terms.</p>
@@ -179,8 +179,8 @@ border-radius:14px;padding:14px;font-size:13px;box-shadow:0 10px 30px #000}
 <form class="gf" method="post" action="https://api.swoonflicks.com/invite" novalidate data-program="RS Boost" data-lang="en" data-ok-h="Check your inbox" data-ok-p="Your invite code is on its way to {e}. If it is not there in a few minutes, look in spam or promotions."
  data-err="Something went wrong. Try again in a minute, or write to partner@swoonflicks.com." data-limit="You already requested this code today. Check your inbox and spam folder." data-bad="Please enter a valid email address." data-sending="Sending…">
 <label for="ge">Your email</label>
-<div class="row"><input id="ge" type="email" name="email" required autocomplete="email" inputmode="email" spellcheck="false" placeholder="you@mail.com" maxlength="254"><button type="submit">Send my invite code</button></div>
-<div class="cf-turnstile" data-sitekey="0x4AAAAAAFW1AozifNupSekS" data-theme="dark" data-size="flexible" data-action="invite"></div><p class="fine">One email with the code. No newsletter, no follow-ups.</p><p class="msg" role="status" aria-live="polite" hidden></p></form>
+<div class="row"><input id="ge" type="email" name="email" required autocomplete="email" inputmode="email" spellcheck="false" placeholder="you@mail.com" maxlength="254"><button type="submit" disabled>Send my invite code</button></div>
+<script>function sfTsB(){return document.querySelector('form.gf button')}function sfTsOk(){var b=sfTsB();if(b)b.disabled=false}function sfTsNo(){var b=sfTsB();if(b)b.disabled=true}</script><div class="cf-turnstile" data-sitekey="0x4AAAAAAFW1AozifNupSekS" data-theme="dark" data-size="flexible" data-action="invite" data-callback="sfTsOk" data-expired-callback="sfTsNo" data-error-callback="sfTsNo"></div><p class="fine">One email with the code. No newsletter, no follow-ups.</p><p class="msg" role="status" aria-live="polite" hidden></p></form>
 <p class="note">This is our referral code. If you join with it, ReelShort may give us a better commission rate. It costs you nothing and does not change what you earn.</p></section><section class="syn ab"><h2>Guides</h2><ul><li><a href="/guides/dramabox-redeem-code/"><u>DramaBox redeem codes: what is real</u></a></li><li><a href="/guides/how-to-join-rs-boost/"><u>How to join RS Boost, step by step</u></a></li><li><a href="/guides/reelshort-invitation-code/"><u>ReelShort invitation code: how it really works</u></a></li><li><a href="/invite/rs-boost/"><u>RS Boost invite code (ReelShort affiliate program)</u></a></li><li><a href="/guides/rs-boost-rules/"><u>RS Boost rules every new creator should know</u></a></li></ul></section><p class="ft">Swoonflicks shares short dramas we love.<br>
 Some links are affiliate links: we may earn a commission when you keep watching, at no extra cost to you.<br>
 <a href="/privacy/">Privacy</a> · <a href="mailto:admin@swoonflicks.com">admin@swoonflicks.com</a></p></main>
@@ -195,5 +195,5 @@ b.disabled=true;var t0=b.textContent;b.textContent=f.dataset.sending;say('');
 fetch(f.action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json().catch(function(){return{}}).then(function(j){return{s:r.status,j:j}})})
 .then(function(r){if(r.s===200&&r.j.ok){f.innerHTML='<p class="okh">'+f.dataset.okH+'</p><p class="okp">'+f.dataset.okP.replace('{e}','<b></b>')+'</p>';f.querySelector('.okp b').textContent=em;
 window.SFT&&SFT.track('RequestInvite',{program:f.dataset.program,page:location.pathname,lang:f.dataset.lang});return}
-say(r.s===429?f.dataset.limit:(r.j&&r.j.error==='bad_email'?f.dataset.bad:f.dataset.err));b.disabled=false;b.textContent=t0;if(window.turnstile)try{turnstile.reset()}catch(e){}})
+say(r.s===429?f.dataset.limit:(r.j&&r.j.error==='bad_email'?f.dataset.bad:f.dataset.err));b.disabled=!!tk;b.textContent=t0;if(window.turnstile)try{turnstile.reset()}catch(e){}})
 .catch(function(){say(f.dataset.err);b.disabled=false;b.textContent=t0})})})()</script></body></html>

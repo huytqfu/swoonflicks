@@ -11,7 +11,7 @@ Chạy: py -3.14 hub/build.py
 import csv, html, json, re, shutil
 from datetime import date
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ImageDraw
 
 SD = Path(__file__).resolve().parent.parent
 HUB = SD / "hub"
@@ -292,7 +292,7 @@ def one_page(f, path, src=""):
            f'data-film="{e(f["slug"])}" data-app="{e(f["app"])}" data-title="{e(f["title"])}"')
     return head(f"{f['title']} · Watch now | Swoonflicks", cut(f["syn"], 155), path, f"/img/og/{f['slug']}.jpg", noindex=True, src=src) + f'''
 <body class="one" data-film="{e(f['slug'])}" data-title="{e(f['title'])}" data-app="{e(f['app'])}"><main class="wrap">
-<a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a>
+<a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="120" height="26"></a>
 <a class="po" {aff}><img src="/img/{f['slug']}-h.webp" alt="{e(f['title'])} poster" width="720" height="960" fetchpriority="high"></a>
 <h1 class="m">{e(f['title'])}</h1>
 <a class="cta" {aff}><span>Watch the full drama</span>{EXT}</a>
@@ -303,7 +303,7 @@ def one_page(f, path, src=""):
 
 def privacy_page():
     return head("Privacy · Swoonflicks", "How Swoonflicks uses cookies and measurement.", "/privacy/") + '''
-<body><main class="wrap doc"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a></div>
+<body><main class="wrap doc"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="120" height="26"></a></div>
 <h1>Privacy</h1>
 <p>Swoonflicks is a fan site that shares episodes of short dramas and links to the apps where you can watch the rest.</p>
 <h2>What we measure</h2>
@@ -346,7 +346,7 @@ def invite_page(inv):
         rows += '<section class="syn ab"><h2>Guides</h2><ul>' + "".join(
             f'<li><a href="{e(g["path"])}"><u>{e(g["h1"])}</u></a></li>' for g in gl) + "</ul></section>"
     return head("Invitation codes · Swoonflicks", "Invitation codes to join short drama affiliate programs like RS Boost.", "/invite/", extra=TURNSTILE_JS) + f'''
-<body><main class="wrap"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a></div>
+<body><main class="wrap"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="120" height="26"></a></div>
 <div class="ttl"><h1>{metal("Invitation codes")}</h1></div>
 <p class="tag" style="text-align:center">For creators who want to earn by sharing short dramas. These affiliate programs ask for an invitation code when you sign up. {"Request ours below and paste it in the sign-up form." if GATE.get("endpoint") else "Copy ours and paste it in the sign-up form."}</p>
 <p class="note" style="text-align:center">This is a creator sign-up code, not a viewer code: it does not unlock episodes or give coins. Earnings depend on each program's own terms.</p>
@@ -395,14 +395,16 @@ TURNSTILE_JS = '<script src="https://challenges.cloudflare.com/turnstile/v0/api.
 def gate_box(inv, lang, disclosure=""):
     """Form xin mã qua email thay khối code. Chữ theo UI[lang]; Worker trả 200 ok / 429 limit / 4xx-5xx lỗi."""
     u = UI[lang]; p = inv["program"]
-    ts = f'<div class="cf-turnstile" data-sitekey="{e(GATE["turnstile"])}" data-theme="dark" data-size="flexible" data-action="invite"></div>' if GATE.get("turnstile") else ""
+    ts = f'<div class="cf-turnstile" data-sitekey="{e(GATE["turnstile"])}" data-theme="dark" data-size="flexible" data-action="invite" data-callback="sfTsOk" data-expired-callback="sfTsNo" data-error-callback="sfTsNo"></div>' if GATE.get("turnstile") else ""
+    # Nút gửi khoá tới khi Turnstile trả token (test live 15/10: bấm nhanh trước khi Turnstile xong thì lỗi). Callback khai trước div để api.js async luôn thấy.
+    tsjs = "<script>function sfTsB(){return document.querySelector('form.gf button')}function sfTsOk(){var b=sfTsB();if(b)b.disabled=false}function sfTsNo(){var b=sfTsB();if(b)b.disabled=true}</script>" if ts else ""
     return f'''<section class="syn inv gate" id="invite"><span class="bd">{e(u["badge"])}</span><h2>{e(u["gate_h"].format(p=p))}</h2>
 <p class="gp">{e(u["gate_p"].format(p=p))}</p>
 <form class="gf" method="post" action="{e(GATE["endpoint"])}" novalidate data-program="{e(p)}" data-lang="{lang}" data-ok-h="{e(u["ok_h"])}" data-ok-p="{e(u["ok_p"])}"
  data-err="{e(u["err"])}" data-limit="{e(u["limit"])}" data-bad="{e(u["bad"])}" data-sending="{e(u["sending"])}">
 <label for="ge">{e(u["email"])}</label>
-<div class="row"><input id="ge" type="email" name="email" required autocomplete="email" inputmode="email" spellcheck="false" placeholder="you@mail.com" maxlength="254"><button type="submit">{e(u["send"])}</button></div>
-{ts}<p class="fine">{e(u["fine"])}</p><p class="msg" role="status" aria-live="polite" hidden></p></form>
+<div class="row"><input id="ge" type="email" name="email" required autocomplete="email" inputmode="email" spellcheck="false" placeholder="you@mail.com" maxlength="254"><button type="submit"{" disabled" if ts else ""}>{e(u["send"])}</button></div>
+{tsjs}{ts}<p class="fine">{e(u["fine"])}</p><p class="msg" role="status" aria-live="polite" hidden></p></form>
 {f'<p class="note">{e(disclosure)}</p>' if disclosure else ""}</section>'''
 
 
@@ -416,7 +418,7 @@ b.disabled=true;var t0=b.textContent;b.textContent=f.dataset.sending;say('');
 fetch(f.action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json().catch(function(){return{}}).then(function(j){return{s:r.status,j:j}})})
 .then(function(r){if(r.s===200&&r.j.ok){f.innerHTML='<p class="okh">'+f.dataset.okH+'</p><p class="okp">'+f.dataset.okP.replace('{e}','<b></b>')+'</p>';f.querySelector('.okp b').textContent=em;
 window.SFT&&SFT.track('RequestInvite',{program:f.dataset.program,page:location.pathname,lang:f.dataset.lang});return}
-say(r.s===429?f.dataset.limit:(r.j&&r.j.error==='bad_email'?f.dataset.bad:f.dataset.err));b.disabled=false;b.textContent=t0;if(window.turnstile)try{turnstile.reset()}catch(e){}})
+say(r.s===429?f.dataset.limit:(r.j&&r.j.error==='bad_email'?f.dataset.bad:f.dataset.err));b.disabled=!!tk;b.textContent=t0;if(window.turnstile)try{turnstile.reset()}catch(e){}})
 .catch(function(){say(f.dataset.err);b.disabled=false;b.textContent=t0})})})()</script>'''
 
 
@@ -476,7 +478,7 @@ def guide_page(g, films):
             {"@type": "Question", "name": x["q"], "acceptedAnswer": {"@type": "Answer", "text": x["a"]}} for x in faq]})
     extra = altl + f'<script type="application/ld+json">{json.dumps(lds, ensure_ascii=False)}</script>' + (TURNSTILE_JS if inv else "")
     return head(g["title"], g["description"], g["path"], "/img/og/home.jpg", extra, lang=lang) + f'''
-<body><main class="wrap doc"><div class="top"><a class="back" href="/">{e(u["back"])}</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="118" height="26"></a></div>
+<body><main class="wrap doc"><div class="top"><a class="back" href="/">{e(u["back"])}</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="120" height="26"></a></div>
 <h1>{e(g["h1"])}</h1>{f'<p>{e(g["lead"])}</p>' if g.get("lead") else ""}
 {codebox}{body}{faqh}{relh}{srch}
 {f'<p class="note">{e(u["checked"])}: {e(g["checked"])}</p>' if g.get("checked") else ""}
@@ -531,7 +533,8 @@ for s in (64, 128):
     im = logo.copy(); im.thumbnail((s, s)); im.save(OUT / "img" / f"logo-{s}.png", optimize=True)
 lk = Image.open(SD / "brand" / "logo-lockup-transparent.png")  # 1362x300, gồm tagline
 lk.resize((681, 150), Image.LANCZOS).save(OUT / "img" / "lockup.png", optimize=True)
-lk.crop((0, 0, 1362, 200)).resize((354, 52), Image.LANCZOS).save(OUT / "img" / "lockup-sm.png", optimize=True)  # bỏ tagline, nét 2x cho cao 26px
+sm = lk.copy(); ImageDraw.Draw(sm).rectangle((360, 200, 1361, 299), fill=(0, 0, 0, 0))  # xoá tagline nhưng giữ trọn tim (crop cao 200 từng cắt cụt đáy tim)
+sm.crop(sm.getbbox()).resize((240, 52), Image.LANCZOS).save(OUT / "img" / "lockup-sm.png", optimize=True)  # nét 2x cho cao 26px
 
 
 def fit(im, w, h):
