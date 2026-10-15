@@ -67,7 +67,7 @@
   }
 
   // 3. Gửi: tên sự kiện chung -> tên chuẩn từng nền
-  var TT = { ViewContent: 'ViewContent', ClickAffiliate: 'ClickButton', RequestInvite: 'SubmitForm' }; // chỉ 3 sự kiện này đi Events API (Worker /tt-event chỉ nhận danh sách tên cố định, chưa có Lead)
+  var TT = { ViewContent: 'ViewContent', ClickAffiliate: 'ClickButton', RequestInvite: 'Lead' }; // chỉ 3 sự kiện này đi Events API
   var GA = { ViewContent: 'view_film', ClickAffiliate: 'click_affiliate', VideoPlay: 'video_start', VideoProgress: 'video_progress', Filter: 'filter_select' };
   function send(name, p0, id) {
     // click id không gửi thành tham số (pixel Meta/TikTok tự đọc từ URL), tránh nổ cardinality GA4
@@ -80,7 +80,7 @@
       else fbq('trackCustom', name, p, { eventID: id });
     }
     if (W.ttq && C.tiktok && ads) {
-      // tên chuẩn TikTok: click link CPS = ClickButton (TikTok để tới 2027), gửi form mã mời = SubmitForm (TikTok đổi tên thành Lead từ 05/2025 nhưng Worker chưa nhận Lead; pixel và API phải cùng tên để khử trùng)
+      // tên chuẩn TikTok: click link CPS = ClickButton (TikTok để tới 2027), gửi form mã mời = Lead (tên mới của SubmitForm từ 05/2025; pixel và API cùng tên để khử trùng)
       var tn = TT[name] || name, tp = Object.assign({ contents: item, content_type: 'product' }, p);
       ttq.track(tn, tp, { event_id: id });
       // Events API: bản sao cùng event + event_id gửi Worker để TikTok khử trùng (help: ads.tiktok.com/help/article/event-deduplication).
