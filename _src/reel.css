@@ -27,8 +27,7 @@ background:linear-gradient(180deg,#000 0,#000 var(--sa),rgba(0,0,0,0));pointer-e
 .rt>*{pointer-events:auto}
 .rt .bk{width:44px;height:44px;display:grid;place-items:center;font:400 34px/1 system-ui;color:#fff;margin-top:-4px}
 .rt .ct{flex:1;font:700 13px/1 system-ui;letter-spacing:.08em;color:#fff;text-shadow:0 1px 4px #000}
-.eps-o{min-height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(0,0,0,.35);color:#fff;font:700 13px/1 system-ui;
--webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.eps-o{min-height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(0,0,0,.6);color:#fff;font:700 13px/1 system-ui}
 .reel.at-info .rt .ct{opacity:0}
 
 /* màn khoá: poster mờ + ổ khoá + nút lớn */
@@ -63,3 +62,7 @@ background:#141014;color:#fff;overflow:auto}
 .info .wrap{width:100%;min-width:0}
 .reel :focus-visible{outline-color:var(--r-acc2)}
 .info .it{font:800 22px/1.25 system-ui;text-align:center;margin-bottom:4px}
+
+/* Lướt mượt: 1 nền mờ cố định thay vì mỗi tập 1 ảnh blur(28px) trượt theo (GPU phải vẽ lại khi cuộn, giật trên điện thoại) */
+.rbg{position:fixed;inset:-40px;width:calc(100% + 80px);height:calc(100% + 80px);max-width:none;object-fit:cover;filter:blur(28px) brightness(.45);transform:translateZ(0) scale(1.05);pointer-events:none}
+.sl.fr{background:transparent}

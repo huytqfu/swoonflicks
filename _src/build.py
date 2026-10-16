@@ -211,7 +211,6 @@ def film_page(f, films):
         lazy = '' if i == 0 else ' loading="lazy"'
         if k:
             slides.append(f'''<section class="sl fr" data-ep="{n}" data-k="{k}" data-v="{e(v)}" aria-label="{lbl}">
-<img class="bg" src="{poster}" alt="" width="720" height="960"{lazy}>
 <div class="stg"><img class="ps" src="{poster}" alt="" width="720" height="960"{' fetchpriority="high"' if i == 0 else lazy}>
 <button type="button" class="play" aria-label="Play episode {n}"><span>{PLAY}</span></button>
 <div class="cap">{cap}</div></div></section>''')
@@ -254,6 +253,7 @@ def film_page(f, films):
     return head(title, seo.get("description") or cut(syn, 155), f"/{f['slug']}/", f"/img/og/{f['slug']}.jpg", extra) + f'''
 <body class="reel" data-film="{e(f['slug'])}" data-title="{e(f['title'])}" data-app="{e(f['app'])}">
 <header class="rt"><a class="bk" href="/" aria-label="All dramas">‹</a><span class="ct" aria-live="polite"></span></header>
+<img class="rbg" src="{poster}" alt="" width="720" height="960" aria-hidden="true">
 <main class="rl">{"".join(slides)}
 <section class="sl info"><div class="wrap"><h2 class="it">{e(f['title'])}</h2>
 {about}<details class="syn" open><summary>The story</summary><p>{e(syn)}</p></details>
