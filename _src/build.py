@@ -130,6 +130,15 @@ def social():
         f'<span><b>{n}</b>@swoonflicks</span></a>' for n, u, d in SOCIAL) + "</nav>"
 
 
+ADS = CFG.get("ads_links") or {}
+
+
+def ads_href(f):
+    """Link DramaCPS riêng cho Google Ads (config "ads_links": slug → URL). Có thì thêm data-ads-href, t.js đổi href khi phiên đến từ Google Ads; href mặc định vẫn là link organic."""
+    u = ADS.get(f["slug"])
+    return f' data-ads-href="{e(u)}"' if u else ""
+
+
 def card(f, big=False, lazy=True):
     img = f"/img/{f['slug']}-h.webp" if big else f"/img/{f['slug']}.webp"  # thẻ to = poster 3:4 nguyên khung, không cắt tên phim (sếp 15/10)
     w, h = (720, 960) if big else (360, 480)
@@ -208,7 +217,7 @@ def film_page(f, films):
     total, free, eps = episodes(f)
     poster = f"/img/{f['slug']}-h.webp"
     gate = free + 1  # tập trả phí đầu tiên = màn khoá
-    aff = lambda place, ep=None: (f'href="{e(f["link"])}" rel="nofollow sponsored noopener" data-aff="{place}" '
+    aff = lambda place, ep=None: (f'href="{e(f["link"])}"{ads_href(f)} rel="nofollow sponsored noopener" data-aff="{place}" '
                                   f'data-film="{e(f["slug"])}" data-app="{e(f["app"])}" data-title="{e(f["title"])}"' + (f' data-ep="{ep}"' if ep else ""))
     # gộp các tập free liền nhau chưa có nguồn thành 1 màn
     groups = []
@@ -282,7 +291,7 @@ def film_page(f, films):
 def bio_page(films, path, src):
     """Link-in-bio: lưới poster, mỗi poster là link affiliate gốc của phim đó (bắn ClickAffiliate kèm slug)."""
     k = path.strip("/")
-    tiles = "\n".join(f'''<a class="cd" href="{e(f["link"])}" rel="nofollow sponsored noopener" data-aff="{k}" data-film="{e(f["slug"])}" data-app="{e(f["app"])}" data-title="{e(f["title"])}">
+    tiles = "\n".join(f'''<a class="cd" href="{e(f["link"])}"{ads_href(f)} rel="nofollow sponsored noopener" data-aff="{k}" data-film="{e(f["slug"])}" data-app="{e(f["app"])}" data-title="{e(f["title"])}">
 <img src="/img/{f['slug']}.webp" alt="{e(f['title'])} poster" width="360" height="480"{'' if i < 4 else ' loading="lazy"'} decoding="async">
 <div class="in"><h2>{e(f['title'])}</h2><span class="go">Watch now {ARROW}</span></div></a>''' for i, f in enumerate(films))
     return head("Swoonflicks · Watch the drama", "Tap a drama to keep watching.", path, "/img/og/home.jpg", noindex=True, src=src) + f'''
@@ -296,7 +305,7 @@ def bio_page(films, path, src):
 
 def one_page(f, path, src=""):
     """Trang một nút: poster + tên phim + nút to ra link affiliate gốc (bắn ClickAffiliate qua data-aff). Khách tự bấm, không redirect."""
-    aff = (f'href="{e(f["link"])}" rel="nofollow sponsored noopener" data-aff="go" '
+    aff = (f'href="{e(f["link"])}"{ads_href(f)} rel="nofollow sponsored noopener" data-aff="go" '
            f'data-film="{e(f["slug"])}" data-app="{e(f["app"])}" data-title="{e(f["title"])}"')
     return head(f"{f['title']} · Watch now | Swoonflicks", cut(f["syn"], 155), path, f"/img/og/{f['slug']}.jpg", noindex=True, src=src) + f'''
 <body class="one" data-film="{e(f['slug'])}" data-title="{e(f['title'])}" data-app="{e(f['app'])}"><main class="wrap">
@@ -310,7 +319,7 @@ def one_page(f, path, src=""):
 
 
 def privacy_page():
-    return head("Privacy · Swoonflicks", "How Swoonflicks uses cookies and measurement.", "/privacy/") + '''
+    return head("Privacy · Swoonflicks", "How Swoonflicks uses cookies and measurement.", "/privacy/", "/img/og/home.jpg") + '''
 <body><main class="wrap doc"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="120" height="26"></a></div>
 <h1>Privacy</h1>
 <p>Swoonflicks is a fan site that shares episodes of short dramas and links to the apps where you can watch the rest.</p>
@@ -353,7 +362,7 @@ def invite_page(inv):
     if gl:
         rows += '<section class="syn ab"><h2>Guides</h2><ul>' + "".join(
             f'<li><a href="{e(g["path"])}"><u>{e(g["h1"])}</u></a></li>' for g in gl) + "</ul></section>"
-    return head("Invitation codes · Swoonflicks", "Invitation codes to join short drama affiliate programs like RS Boost.", "/invite/", extra=TURNSTILE_JS) + f'''
+    return head("Invitation codes · Swoonflicks", "Invitation codes to join short drama affiliate programs like RS Boost.", "/invite/", "/img/og/home.jpg", extra=TURNSTILE_JS) + f'''
 <body><main class="wrap"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="120" height="26"></a></div>
 <div class="ttl"><h1>{metal("Invitation codes")}</h1></div>
 <p class="tag" style="text-align:center">For creators who want to earn by sharing short dramas. These affiliate programs ask for an invitation code when you sign up. {"Request ours below and paste it in the sign-up form." if GATE.get("endpoint") else "Copy ours and paste it in the sign-up form."}</p>
@@ -472,7 +481,7 @@ def guide_page(g, films):
     # "watch": [slug...] = lưới poster ra thẳng link CPS gốc, cùng tab, giống trang bio (bắn ClickAffiliate placement=guide)
     wl = [f for s in g.get("watch", []) for f in films if f["slug"] == s]
     watchh = (f'<h2>{e(g.get("watch_h2", "Start watching"))}</h2><div class="more">' + "".join(
-        f'''<a class="cd" href="{e(f["link"])}" rel="nofollow sponsored noopener" data-aff="guide" data-film="{e(f["slug"])}" data-app="{e(f["app"])}" data-title="{e(f["title"])}">
+        f'''<a class="cd" href="{e(f["link"])}"{ads_href(f)} rel="nofollow sponsored noopener" data-aff="guide" data-film="{e(f["slug"])}" data-app="{e(f["app"])}" data-title="{e(f["title"])}">
 <img src="/img/{f['slug']}.webp" alt="{e(f['title'])} poster" width="360" height="480" loading="lazy" decoding="async">
 <div class="in"><h2>{e(f['title'])}</h2><span class="go">Watch now {ARROW}</span></div></a>''' for f in wl) +
               '</div><p class="note">Each poster opens the official app · affiliate link</p>') if wl else ""
