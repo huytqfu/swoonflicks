@@ -98,6 +98,8 @@ def metal(t):
 
 def head(title, desc, path, img=None, extra="", noindex=False, src="", lang="en"):
     cfg = {k: CFG.get(k, "") for k in ("ga4", "meta", "tiktok", "ttapi", "fbapi")}; cfg["src"] = src  # chỉ ID tracking ra trang; không rò "invite"/"gate" (mã mời) vào HTML
+    # Google Ads conversion (AW-ID + label): chỉ ra trang khi config có đủ cả hai; trống thì HTML y như cũ
+    if CFG.get("gads") and CFG.get("gads_label"): cfg.update(gads=CFG["gads"], gads_label=CFG["gads_label"])
     # OG phim là ảnh dọc 600x800: summary_large_image (khung ngang) sẽ cắt nát, dùng summary; home.jpg ngang giữ large
     tw = "summary_large_image" if img and img.endswith("home.jpg") else "summary"
     wh = (1200, 630) if img and img.endswith("home.jpg") else (600, 800)
