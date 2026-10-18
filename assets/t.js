@@ -1,5 +1,5 @@
-/* Swoonflicks tracking: GA4 + Meta Pixel + TikTok Pixel, một cửa SFT.track().
-   Cấu hình: window.SF = {ga4, meta, tiktok, src} do build.py bơm từ hub/config.json. ID trống thì nền đó không tải.
+/* Swoonflicks tracking: GA4 + Meta Pixel + TikTok Pixel (+ Google Ads conversion), một cửa SFT.track().
+   Cấu hình: window.SF = {ga4, meta, tiktok, gads, gads_label, src} do build.py bơm từ hub/config.json. ID trống thì nền đó không tải.
    Mục đích (MASTER-PLAN-v2 §6): tệp retarget/lookalike người xem video + bấm link, đếm click theo phim/nguồn. Không tối ưu purchase.
    Mỗi sự kiện có event_id để sau này gửi trùng qua CAPI / Events API (khử trùng). ?debug=1 in sự kiện ra console. */
 (function (W, D) {
@@ -30,19 +30,23 @@
   // múi trống / Etc/* (VPN, UTC) coi như EU cho chắc; thêm Síp, Ceuta, Svalbard, lãnh thổ hải ngoại Pháp
   var EU = !tz || /^Etc\//.test(tz) || /^Europe\//.test(tz) || /^Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe)/.test(tz) ||
     /^(Asia\/(Nicosia|Famagusta)|Africa\/Ceuta|Arctic\/Longyearbyen|Indian\/(Reunion|Mayotte)|America\/(Martinique|Guadeloupe|Cayenne|Marigot|St_Barthelemy))$/.test(tz);
-  var ANY = !!(C.ga4 || C.meta || C.tiktok);
+  var GADS = C.gads && C.gads_label ? C.gads + '/' + C.gads_label : ''; // send_to của conversion action Google Ads (AW-xxx/label)
+  var ANY = !!(C.ga4 || C.meta || C.tiktok || GADS);
   var consent = EU ? get(LS, 'sf_consent') : 'yes', loaded = false, queue = [];
 
   function script(src) { var s = D.createElement('script'); s.async = true; s.src = src; D.head.appendChild(s) }
   function load() {
     if (loaded) return; loaded = true;
-    if (C.ga4) {
+    if (C.ga4 || GADS) {
       W.dataLayer = W.dataLayer || []; W.gtag = function () { dataLayer.push(arguments) };
       // load() chỉ chạy sau khi đồng ý hoặc ngoài EU, nên mặc định granted; tín hiệu v2 cần cho remarketing Google Ads ở EEA
       gtag('consent', 'default', { ad_storage: 'granted', analytics_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted' });
       var u = new URL(location.href); u.searchParams.delete('fbclid'); u.searchParams.delete('ttclid');
-      gtag('js', new Date()); gtag('config', C.ga4, { transport_type: 'beacon', page_location: u.href });
-      script('https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(C.ga4));
+      gtag('js', new Date());
+      if (C.ga4) gtag('config', C.ga4, { transport_type: 'beacon', page_location: u.href });
+      // một gtag.js dùng chung GA4 + Google Ads; config AW để thẻ Ads tự đọc gclid / đặt cookie _gcl_aw
+      if (GADS) gtag('config', C.gads, { page_location: u.href });
+      script('https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(C.ga4 || C.gads));
     }
     if (C.meta) {
       !function (f, b, e, v, n, t, s) { if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments) };
@@ -76,6 +80,9 @@
     var ads = name !== 'Filter'; // lọc kệ chỉ đếm ở GA4, không đổ rác vào tệp quảng cáo
     var item = p.film ? [{ content_id: p.film, content_name: p.title, content_type: 'product', content_category: p.app }] : [];
     if (W.gtag && C.ga4) gtag('event', GA[name] || name, Object.assign({ event_id: id }, p));
+    // Google Ads: bấm link CPS = conversion. transport beacon, không event_callback: không giữ click lại, khách nhảy app ngay.
+    // transaction_id = event_id để Google khử trùng nếu bắn lặp (support.google.com/google-ads/answer/6386790)
+    if (W.gtag && GADS && name === 'ClickAffiliate') gtag('event', 'conversion', { send_to: GADS, transaction_id: id, transport_type: 'beacon' });
     if (W.fbq && C.meta && ads) {
       // Meta không có event chuẩn cho "bấm link ra ngoài": Lead là gửi thông tin liên hệ, nên giữ cho form mã mời; bấm link CPS = custom ClickAffiliate
       // (developers.facebook.com/docs/meta-pixel/reference#standard-events). Muốn tối ưu ads theo click thì tạo custom conversion từ event này.
