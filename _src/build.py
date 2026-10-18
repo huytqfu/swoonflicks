@@ -255,7 +255,7 @@ def film_page(f, films):
 <header class="rt"><a class="bk" href="/" aria-label="All dramas">‹</a><span class="ct" aria-live="polite"></span></header>
 <img class="rbg" src="{poster}" alt="" width="720" height="960" aria-hidden="true">
 <main class="rl">{"".join(slides)}
-<section class="sl info"><div class="wrap"><h2 class="it">{e(f['title'])}</h2>
+<section class="sl info"><div class="wrap"><{"h2" if slides else "h1"} class="it">{e(f['title'])}</{"h2" if slides else "h1"}>
 {about}<details class="syn" open><summary>The story</summary><p>{e(syn)}</p></details>
 {faqh}
 <p class="h3">More dramas</p><div class="more">{more}</div>
