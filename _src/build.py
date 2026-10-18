@@ -176,6 +176,19 @@ def hub_page(films, path="/", src=""):
 {social()}{FOOT}</main>{JS_HUB}</body></html>'''
 
 
+_TD = None
+
+
+def trailer_date(slug):
+    """Ngày đăng thật của trailer (tập 1 trên R2) từ site/_src/trailer-dates.json, dạng ISO 8601. Không có hoặc sai định dạng thì trả None."""
+    global _TD
+    if _TD is None:
+        p = OUT / "_src" / "trailer-dates.json"
+        _TD = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
+    v = _TD.get(slug) or ""
+    return v if re.fullmatch(r"\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2})?(Z|[+-]\d{2}:\d{2})?)?", v) else None
+
+
 def content(slug):
     # nội dung riêng từng phim: site/_src/content/<slug>.json (+ .seo.json), viết tay, có thể thiếu
     d = OUT / "_src" / "content"
@@ -241,9 +254,10 @@ def film_page(f, films):
           "image": f"{BASE}/img/og/{f['slug']}.jpg", "url": f"{BASE}/{f['slug']}/", "genre": f["genre"],
           "inLanguage": "en"}
     mp = [(n, v) for n, k, v in eps if k == "mp4"]
-    if mp:  # tập gốc tự host: trailer = tập 1 trên R2 (chưa có ngày đăng thật nên không ghi uploadDate)
+    up = trailer_date(f["slug"])
+    if mp and up:  # trailer = tập 1 trên R2; Google bắt buộc uploadDate cho VideoObject, chưa có ngày thật thì bỏ hẳn khối trailer
         ld["trailer"] = {"@type": "VideoObject", "name": f"{f['title']} Episode {mp[0][0]}", "contentUrl": mp[0][1],
-                         "thumbnailUrl": f"{BASE}/img/og/{f['slug']}.jpg", "description": cut(syn, 200)}
+                         "thumbnailUrl": f"{BASE}/img/og/{f['slug']}.jpg", "description": cut(syn, 200), "uploadDate": up}
     bc = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Swoonflicks", "item": f"{BASE}/"},
         {"@type": "ListItem", "position": 2, "name": f["title"], "item": f"{BASE}/{f['slug']}/"}]}
