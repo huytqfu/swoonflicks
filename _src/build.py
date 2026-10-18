@@ -296,7 +296,7 @@ def one_page(f, path, src=""):
 
 
 def privacy_page():
-    return head("Privacy · Swoonflicks", "How Swoonflicks uses cookies and measurement.", "/privacy/") + '''
+    return head("Privacy · Swoonflicks", "How Swoonflicks uses cookies and measurement.", "/privacy/", "/img/og/home.jpg") + '''
 <body><main class="wrap doc"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="120" height="26"></a></div>
 <h1>Privacy</h1>
 <p>Swoonflicks is a fan site that shares episodes of short dramas and links to the apps where you can watch the rest.</p>
@@ -339,7 +339,7 @@ def invite_page(inv):
     if gl:
         rows += '<section class="syn ab"><h2>Guides</h2><ul>' + "".join(
             f'<li><a href="{e(g["path"])}"><u>{e(g["h1"])}</u></a></li>' for g in gl) + "</ul></section>"
-    return head("Invitation codes · Swoonflicks", "Invitation codes to join short drama affiliate programs like RS Boost.", "/invite/", extra=TURNSTILE_JS) + f'''
+    return head("Invitation codes · Swoonflicks", "Invitation codes to join short drama affiliate programs like RS Boost.", "/invite/", "/img/og/home.jpg", extra=TURNSTILE_JS) + f'''
 <body><main class="wrap"><div class="top"><a class="back" href="/">‹ All dramas</a><a class="brand" href="/"><img src="/img/lockup-sm.png" alt="Swoonflicks" width="120" height="26"></a></div>
 <div class="ttl"><h1>{metal("Invitation codes")}</h1></div>
 <p class="tag" style="text-align:center">For creators who want to earn by sharing short dramas. These affiliate programs ask for an invitation code when you sign up. {"Request ours below and paste it in the sign-up form." if GATE.get("endpoint") else "Copy ours and paste it in the sign-up form."}</p>
