@@ -486,6 +486,8 @@ def guide_page(g, films):
 <div class="in"><h2>{e(f['title'])}</h2><span class="go">Watch now {ARROW}</span></div></a>''' for f in wl) +
               '</div><p class="note">Each poster opens the official app · affiliate link</p>') if wl else ""
     fl = [f for f in films if f["app"] == g.get("films_app")] if g.get("films_app") else []
+    # "films": [slug...] = thẻ phim link NỘI BỘ sang trang /<slug>/ (khác "watch" ra thẳng link CPS); ghép sau films_app, không trùng
+    fl += [f for s in g.get("films", []) for f in films if f["slug"] == s and f not in fl]
     moreh = (f'<p class="h3">{e(u["more"])}</p><div class="more">' + "".join(card(f) for f in fl) + "</div>") if fl else ""
     alt = g.get("alternates", {})
     altl = "".join(f'<link rel="alternate" hreflang="{k}" href="{BASE}{v}">' for k, v in alt.items())

@@ -3,7 +3,7 @@
  "lang": "en",
  "checked": "2026-10-14",
  "title": "Short Drama Weekly Pass vs Coins: Which to Buy",
- "description": "Weekly VIP pass or coins for ReelShort, NetShort and other vertical drama apps? How each works, which fits your binge, and how to cancel on iPhone and Android.",
+ "description": "Weekly VIP pass or coins for ReelShort, NetShort and other drama apps? How each works, which fits your binge, and how to cancel on iPhone and Android.",
  "h1": "Weekly pass or coins? Paying for short dramas without regret",
  "lead": "Coins suit one drama you want to finish. A weekly pass suits a binge across several dramas in a few days. A pass renews automatically, so cancel the renewal as soon as you buy.",
  "sections": [
@@ -111,5 +111,9 @@
   "https://www.reelshort.com/fandom/how-to-earn-free-coins-on-reelshort-01-25-3faa2218/",
   "https://support.apple.com/en-us/HT202039",
   "https://support.google.com/googleplay/answer/7018481"
+ ],
+ "films": [
+  "dragons-bow-to-the-trash",
+  "my-sister-s-boyfriend-arrested-me"
  ]
 }
