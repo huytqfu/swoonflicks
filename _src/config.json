@@ -18,5 +18,7 @@
   "endpoint": "https://api.swoonflicks.com/invite",
   "turnstile": "0x4AAAAAAFW1AozifNupSekS"
  },
- "fbapi": "https://api.swoonflicks.com/fb-event"
+ "fbapi": "https://api.swoonflicks.com/fb-event",
+ "gads": "",
+ "gads_label": ""
 }
