@@ -139,6 +139,13 @@ def ads_href(f):
     return f' data-ads-href="{e(u)}"' if u else ""
 
 
+def related(f, films, n=3):
+    """Phim cùng nhóm thể loại (GENRE): nhiều thể loại chung xếp trước, hoà thì theo thứ tự kệ. Không trùng thể loại thì không gợi ý."""
+    g = set(f["genre"])
+    pool = [(-len(g & set(o["genre"])), i, o) for i, o in enumerate(films) if o is not f and g & set(o["genre"])]
+    return [o for _, _, o in sorted(pool, key=lambda x: x[:2])[:n]]
+
+
 def card(f, big=False, lazy=True):
     img = f"/img/{f['slug']}-h.webp" if big else f"/img/{f['slug']}.webp"  # thẻ to = poster 3:4 nguyên khung, không cắt tên phim (sếp 15/10)
     w, h = (720, 960) if big else (360, 480)
@@ -249,7 +256,9 @@ def film_page(f, films):
 <p class="cont" hidden></p>
 <a class="unl" {aff("gate", gate)}>Continue watching {EXT}</a>
 <p class="nt">Opens the official app · affiliate link</p></div></section>''')
-    more = "".join(card(o) for o in films if o is not f)
+    rel = related(f, films)
+    relh = ('<p class="h3">More like this</p><div class="more">' + "".join(card(o) for o in rel) + "</div>") if rel else ""
+    more = "".join(card(o) for o in films if o is not f and o not in rel)
     ld = {"@context": "https://schema.org", "@type": "TVSeries", "name": f["title"], "description": cut(syn, 300),
           "image": f"{BASE}/img/og/{f['slug']}.jpg", "url": f"{BASE}/{f['slug']}/", "genre": f["genre"],
           "inLanguage": "en"}
@@ -283,7 +292,7 @@ def film_page(f, films):
 <section class="sl info"><div class="wrap"><{"h2" if slides else "h1"} class="it">{e(f['title'])}</{"h2" if slides else "h1"}>
 {about}<details class="syn" open><summary>The story</summary><p>{e(syn)}</p></details>
 {faqh}
-<p class="h3">More dramas</p><div class="more">{more}</div>
+{relh}<p class="h3">More dramas</p><div class="more">{more}</div>
 {social()}{FOOT}</div></section></main>
 <script src="/assets/reel.js" defer></script></body></html>'''
 
