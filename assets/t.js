@@ -18,6 +18,9 @@
     try { put(SS, 'sf_ref', new URL(D.referrer).hostname) } catch (e) {}
   }
   if (!get(SS, 'sf_landing')) put(SS, 'sf_landing', location.pathname);
+  // Phiên đến từ Google Ads (gclid, hoặc utm_source=google + utm_medium=cpc): giữ cờ cả phiên để mọi trang dùng link DramaCPS riêng cho ads
+  if (q.get('gclid') || (q.get('utm_source') === 'google' && q.get('utm_medium') === 'cpc')) put(SS, 'sf_paid', '1');
+  var PAID = get(SS, 'sf_paid') === '1';
   function attr() {
     var o = {};
     KEYS.concat(['ref', 'landing']).forEach(function (k) { var v = get(SS, 'sf_' + k); if (v) o[k] = v });
@@ -133,7 +136,13 @@
 
   // 4. Gắn tự động: trang phim -> ViewContent; link có data-aff -> ClickAffiliate (link CPS giữ nguyên, không cloak)
   function film() { var b = D.body.dataset; return b.film ? { film: b.film, title: b.title, app: b.app } : {} }
+  // Đổi nút ra app sang link ads (chỉ phim có data-ads-href do build bơm từ config "ads_links"); không có thì giữ link organic
+  function swapAds() {
+    if (!PAID) return;
+    [].forEach.call(D.querySelectorAll('a[data-ads-href]'), function (a) { a.href = a.dataset.adsHref });
+  }
   function boot() {
+    swapAds();
     if (consent === 'yes') load(); else if (consent !== 'no' && ANY) banner();
     if (D.body.dataset.film) track('ViewContent', film());
     D.addEventListener('click', function (e) {
@@ -141,6 +150,7 @@
       if (!a) return;
       track('ClickAffiliate', Object.assign(film(), { film: a.dataset.film || film().film, title: a.dataset.title || film().title,
         app: a.dataset.app || film().app, placement: a.dataset.aff, link_url: a.href,
+        link_kind: a.dataset.adsHref && a.href === a.dataset.adsHref ? 'ads' : 'organic',
         episode: a.dataset.ep ? +a.dataset.ep : undefined }));
     }, true);
   }
