@@ -49,6 +49,14 @@ GENRE = {
     "not-your-average-crow-634222": ["Fantasy"],
     "the-little-jinx-is-a-lucky-star-133039": ["Family", "Fantasy"],
     "she-dumped-a-ceo-for-her-sugar-baby-649297": ["Revenge", "Romance"],  # tag RS: Romance, Billionaire, Workplace (material/rs/films/<slug>/info.json)
+    # lo3 dot2 ShortMax 19/10, genre theo spec
+    "his-childhood-friend-ruined-my-car-i-ruined-his-empire-660602": ["Revenge", "Romance"],
+    "i-raised-the-wrong-fianc-662399": ["Romance"],
+    "my-family-sold-me-for-7-million-i-owned-their-building-662357": ["Family", "Revenge"],
+    "reborn-i-ditched-the-faithless-crown-prince-660348": ["Royal", "Romance"],
+    "reborn-i-refused-to-pay-for-her-lies-664454": ["Family", "Revenge"],
+    "scrap-lace-broken-vows-660461": ["Revenge", "Romance"],
+    "the-plus-size-fianc-e-both-brothers-wanted-660385": ["Romance"],
 }
 # 6 kênh, handle chung @swoonflicks (sếp 14/10 02:21: đủ 6 nền, có logo + handle). Logo: Simple Icons (CC0).
 SOCIAL = [
