@@ -30,16 +30,23 @@ python3 _src/tests/new_film_test.py && node _src/tests/ads-links.test.js
 
 Luật trang phim (tool tự kiểm): không chữ "free", không tên network, không số tập, không chi tiết vũ khí, không tên riêng / con số ngoài synopsis, title ≤60, description ≤155.
 
-## 5 file nháp hiện có
+## 10 file nháp ShortMax hiện có (A27, 19/10)
 
-Lấy từ `ke/lo3/network-ads-films-2026-10-19.md` (claude-work-brain, nhánh `claude/lo3-network-ads-2026-10-19`). File đó **không có phim ShortMax nào** (không tìm thấy page ShortMax chính chủ); 5 tên dưới đây là phim có tên rõ trên các page suy luận là NetShort, xếp theo số ad.
+Top 10 bão hoà thấp của `side-hustle/short-drama/lo3-saturation-2026-10-19.md` (claude-work-brain, nhánh `claude/lo3-saturation-2026-10-19`, mục 3). `network` = ShortMax theo tag upload, chưa đối chiếu app. 5 spec NetShort cũ chuyển sang `_old/` (không xoá).
 
-| File | Tín hiệu (file nguồn) | Còn thiếu |
+| File | Tên (ký tự) | Còn thiếu |
 |---|---|---|
-| `my-succubus-glow-up.json` | page Netshorts chính chủ 19 ad + 9 ad page farm | synopsis, cặp link DramaCPS, poster, genre; kiểm 18+ |
-| `the-dragonless-beggar-commands-nine-dragons.json` | page Netshorts 13 ad | như trên |
-| `the-mafia-bosses-max-level-nanny.json` | 12 ad / 9 page farm | như trên |
-| `my-spells-can-evolve-endlessly.json` | 8 ad / 8 page farm | như trên |
-| `blind-heiress-exposes-husband-at-banquet-shatters-ipo-dreams.json` | 2 ad / 1 page | như trên; có thể là hook, không phải tên phim; tên 61 ký tự nên phải điền `seo_title` |
+| `from-fat-girl-to-beauty-queen.json` | 29 | synopsis, cặp link, poster |
+| `i-taught-the-dragon-how-to-court-now-he-s-completely-mine.json` | 58 | như trên; seo_title tự rút về `<tên>` trơn |
+| `they-called-me-a-fool-until-i-saved-the-mafia-don.json` | 50 | như trên; seo_title rút về `<tên>: Watch` |
+| `too-fat-for-you-watch-me-marry-the-billionaire.json` | 47 | như trên; seo_title rút về `<tên>: Watch` |
+| `heiress-in-disguise.json` | 19 | như trên |
+| `the-mafia-heiress-returns.json` | 25 | như trên |
+| `revenge-of-the-billionaire-s-hidden-wife.json` | 40 | như trên |
+| `rise-of-the-forgotten-god-from-trash-to-shocking-the-gods.json` | 58 | như trên; seo_title rút về `<tên>` trơn |
+| `my-billionaire-ex-s-revenge.json` | 27 | như trên |
+| `forbidden-by-the-moon.json` | 21 | như trên |
 
-Chưa xác minh cho cả 5: phim có trên DramaCPS không, network thật của từng phim, tên chính thức.
+- **Synopsis: 0/10 có nguồn chính thức.** WebSearch 19/10 cho từng tên (kèm "ShortMax") không ra trang chính thức nào có synopsis đúng tên; `_source` để `null`, `synopsis` = TODO. Vài kết quả chỉ là tên gần hoặc bản tiếng Tây Ban Nha khác tên, không dùng.
+- `genre` điền theo tên phim, **chưa xác minh**; sửa khi có synopsis.
+- Tên lấy từ tiêu đề upload YouTube; tên chính thức trên DramaCPS / app chưa xác minh.
