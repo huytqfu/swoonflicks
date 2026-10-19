@@ -3,9 +3,9 @@
  "lang": "en",
  "checked": "2026-10-14",
  "title": "Weekend Short Drama Binge Plan: Pay Once, No Regret",
- "description": "A simple weekend plan for vertical dramas: pick one story Friday, start free, pay once on Saturday, turn off renewal, and finish by Sunday.",
+ "description": "A simple weekend plan for vertical dramas: pick one story Friday, start watching, pay once on Saturday, turn off renewal, and finish by Sunday.",
  "h1": "How to binge a vertical drama in one weekend",
- "lead": "Pick one drama on Friday and start it free. Pay once on Saturday only if you want the ending, turn off renewal right away, and finish on Sunday. No hunting, no pop-ups, no surprise charge next week.",
+ "lead": "Pick one drama on Friday and start watching. Pay once on Saturday only if you want the ending, turn off renewal right away, and finish on Sunday. No hunting, no pop-ups, no surprise charge next week.",
  "sections": [
   {
    "h2": "Friday night: pick one story",
@@ -14,7 +14,7 @@
    ]
   },
   {
-   "h2": "Start free",
+   "h2": "Start watching",
    "p": [
     "Watch the opening on Swoonflicks or in the app. If you are not hooked by the time the free episodes end, drop it and pick another. You have spent nothing."
    ]
@@ -52,7 +52,6 @@
   "my-billionaire-boss-wont-let-me-quit",
   "rejected-luna-is-the-alpha-queen",
   "the-empresss-final-wish",
-  "mommy-i-m-not-lying",
   "dragons-bow-to-the-trash"
  ],
  "watch_h2": "This weekend's picks",
@@ -82,5 +81,10 @@
  "sources": [
   "https://support.apple.com/en-us/HT202039",
   "https://support.google.com/googleplay/answer/7018481"
+ ],
+ "films": [
+  "the-unbound-rise-of-the-godslayer",
+  "dragons-bow-to-the-trash",
+  "my-sister-s-boyfriend-arrested-me"
  ]
 }
