@@ -11,7 +11,7 @@ custom_domain = true
 
 [vars]
 # Mã mời gửi đi (không phải bí mật, chỉ giấu khỏi HTML trang; đổi ở đây nếu RS Boost cấp mã mới)
-INVITE_CODE = "jCsNUgQuecHY"
+INVITE_CODE = "8Il7s2qjXNdM"
 INVITE_PROGRAM = "RS Boost"
 SIGNUP_URL = "https://cps.reelshort.com/user/register"
 # Người gửi: subdomain đã verify trên Resend (DNS theo README). Reply về hộp partner@ (forward Gmail).

@@ -21,8 +21,8 @@ FONTS = "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&displ
 
 # Link CPS RS Boost (reelslink) lấy từ caption X/YT đã đăng
 RS_LINK = {
-    "rejected-luna-is-the-alpha-queen-69fa0a97": "https://reelslink.com/cps/xwAWVb",
-    "the-empresss-final-wish-6a06bb65": "https://reelslink.com/cps/uGhlNR",
+    "rejected-luna-is-the-alpha-queen-69fa0a97": "https://reelslink.com/cps/j0ATeI",
+    "the-empresss-final-wish-6a06bb65": "https://reelslink.com/cps/eIIqUU",
 }
 # Thứ tự: phim đang đăng gần nhất lên đầu
 ORDER = ["dragons-bow-to-the-trash-638707", "mommy-i-m-not-lying-646011", "mech-god-from-the-dark-side-of-the-moon-635894",

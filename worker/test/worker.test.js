@@ -7,7 +7,7 @@ function kv() {
   return { m, get: async (k) => m.get(k) ?? null, put: async (k, v) => { m.set(k, v); } };
 }
 const env = (over = {}) => ({
-  INVITE_CODE: "jCsNUgQuecHY", INVITE_PROGRAM: "RS Boost", SIGNUP_URL: "https://cps.reelshort.com/user/register",
+  INVITE_CODE: "8Il7s2qjXNdM", INVITE_PROGRAM: "RS Boost", SIGNUP_URL: "https://cps.reelshort.com/user/register",
   MAIL_FROM: "Swoonflicks <invite@send.swoonflicks.com>", MAIL_REPLY_TO: "partner@swoonflicks.com",
   ALLOWED_ORIGINS: "https://swoonflicks.com", MAX_PER_EMAIL: "2", MAX_PER_IP: "6", RESEND_API_KEY: "re_test", INVITES: kv(), ...over
 });
@@ -28,7 +28,7 @@ test("happy path sends one email with code, 200 ok", async () => {
   assert.equal(r.status, 200); assert.deepEqual(await r.json(), { ok: true });
   assert.equal(sent.length, 1);
   assert.equal(sent[0].body.to[0], "creator@example.com");
-  assert.ok(sent[0].body.html.includes("jCsNUgQuecHY"));
+  assert.ok(sent[0].body.html.includes("8Il7s2qjXNdM"));
   assert.ok(sent[0].body.subject.startsWith("Tu código"));
   assert.ok(sent[0].headers["Idempotency-Key"].startsWith("invite-"));
   assert.equal(r.headers.get("Access-Control-Allow-Origin"), "https://swoonflicks.com");
