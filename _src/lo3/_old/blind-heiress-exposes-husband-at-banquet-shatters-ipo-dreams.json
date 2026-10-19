@@ -1,0 +1,30 @@
+{
+ "_draft": true,
+ "_signal": "2 ad / 1 page (mục 3); có thể là câu hook chứ không phải tên phim; nguồn: claude-work-brain ke/lo3/network-ads-films-2026-10-19.md (nhánh claude/lo3-network-ads-2026-10-19)",
+ "_todo": [
+  "synopsis gốc (chép nguyên từ DramaCPS / trang phim)",
+  "drama_url + app_home_url (cặp link DramaCPS)",
+  "phim có trên DramaCPS không: chưa xác minh",
+  "network chưa xác minh từng phim (suy luận NetShort từ page)",
+  "genre",
+  "poster banner.jpg",
+  "trailer (mp4 tập 1 → R2)",
+  "tên dài 61 ký tự, title SEO tự sinh >60: điền seo_title tay sau khi biết tên phim thật"
+ ],
+ "slug": "blind-heiress-exposes-husband-at-banquet-shatters-ipo-dreams",
+ "title": "Blind Heiress Exposes Husband at Banquet, Shatters IPO Dreams",
+ "network": "NetShort",
+ "genre": [],
+ "synopsis": "TODO",
+ "drama_url": "TODO",
+ "app_home_url": "TODO",
+ "trailer_url": null,
+ "poster": null,
+ "sources": {
+  "episodes": null,
+  "app": null
+ },
+ "intro": null,
+ "why": [],
+ "faq": []
+}

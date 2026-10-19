@@ -182,6 +182,10 @@ def main(argv):
             rd = lambda n: json.loads((CONTENT / n).read_text(encoding="utf-8")) if (CONTENT / n).exists() else {}
             seo, ct = rd(f"{s}.seo.json"), rd(f"{s}.json")
             title, syn, warn = built_title(s), built_synopsis(s), []
+            spec = next(SRC.glob(f"lo3/{s}.json"), None)  # phim chưa build: lấy title + synopsis từ spec lô
+            if spec and not syn:
+                sp = json.loads(spec.read_text(encoding="utf-8"))
+                title, syn = title or sp.get("title", ""), sp.get("synopsis", "")
             errs = lint(title, syn, ct, seo, warn=warn) + ([] if syn else ["không đọc được synopsis từ trang đã build"])
             bad += bool(errs)
             print(f"{'SẠCH' if not errs else 'LỖI '} {s}" + "".join(f"\n   - {x}" for x in errs)
@@ -192,6 +196,10 @@ def main(argv):
         if not spec.get(k):
             print(f"spec thiếu {k}")
             return 2
+    todo = [k for k, v in spec.items() if v == "TODO"] + (["_draft"] if spec.get("_draft") else [])
+    if todo:
+        print(f"spec còn nháp, chưa sinh: {', '.join(todo)}")
+        return 2
     ct, seo, home = make(spec)
     ban, warn = ban_re(spec.get("network", "")), []
     errs = [f"keywords: chữ cấm trong {x!r}" for x in seo["keywords"] if ban.search(x)]  # keywords sinh mới thì chặn
