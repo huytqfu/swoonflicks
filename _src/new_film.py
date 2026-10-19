@@ -192,6 +192,10 @@ def main(argv):
         if not spec.get(k):
             print(f"spec thiếu {k}")
             return 2
+    todo = [k for k, v in spec.items() if v == "TODO"] + (["_draft"] if spec.get("_draft") else [])
+    if todo:
+        print(f"spec còn nháp, chưa sinh: {', '.join(todo)}")
+        return 2
     ct, seo, home = make(spec)
     ban, warn = ban_re(spec.get("network", "")), []
     errs = [f"keywords: chữ cấm trong {x!r}" for x in seo["keywords"] if ban.search(x)]  # keywords sinh mới thì chặn

@@ -70,6 +70,18 @@ class NewFilm(unittest.TestCase):
             self.assertIn("keywords", added)
             self.assertEqual(out["sources"]["episodes"], SPEC["sources"]["episodes"])
 
+    def test_draft_refused(self):
+        import json, tempfile, io, contextlib
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / "spec.json"
+            p.write_text(json.dumps({**SPEC, "synopsis": "TODO", "_draft": True}), encoding="utf-8")
+            out = io.StringIO()
+            with contextlib.redirect_stdout(out):
+                rc = nf.main([str(p), "--write"])
+            self.assertEqual(rc, 2)
+            self.assertIn("synopsis", out.getvalue())
+            self.assertFalse((nf.CONTENT / f"{SPEC['slug']}.json").exists())
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=1)

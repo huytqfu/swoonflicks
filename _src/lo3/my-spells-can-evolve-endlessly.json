@@ -1,0 +1,29 @@
+{
+ "_draft": true,
+ "_signal": "8 ad / 8 page farm (mục 3); nguồn: claude-work-brain ke/lo3/network-ads-films-2026-10-19.md (nhánh claude/lo3-network-ads-2026-10-19)",
+ "_todo": [
+  "synopsis gốc (chép nguyên từ DramaCPS / trang phim)",
+  "drama_url + app_home_url (cặp link DramaCPS)",
+  "phim có trên DramaCPS không: chưa xác minh",
+  "network chưa xác minh từng phim (suy luận NetShort từ page)",
+  "genre",
+  "poster banner.jpg",
+  "trailer (mp4 tập 1 → R2)"
+ ],
+ "slug": "my-spells-can-evolve-endlessly",
+ "title": "My Spells Can Evolve Endlessly",
+ "network": "NetShort",
+ "genre": [],
+ "synopsis": "TODO",
+ "drama_url": "TODO",
+ "app_home_url": "TODO",
+ "trailer_url": null,
+ "poster": null,
+ "sources": {
+  "episodes": null,
+  "app": null
+ },
+ "intro": null,
+ "why": [],
+ "faq": []
+}

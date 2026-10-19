@@ -1,0 +1,30 @@
+{
+ "_draft": true,
+ "_signal": "Netshorts page chính chủ 19 ad + 9 ad page farm (mục 3 và cập nhật phần 2); nguồn: claude-work-brain ke/lo3/network-ads-films-2026-10-19.md (nhánh claude/lo3-network-ads-2026-10-19)",
+ "_todo": [
+  "synopsis gốc (chép nguyên từ DramaCPS / trang phim)",
+  "drama_url + app_home_url (cặp link DramaCPS)",
+  "phim có trên DramaCPS không: chưa xác minh",
+  "network chưa xác minh từng phim (suy luận NetShort từ page)",
+  "genre",
+  "poster banner.jpg",
+  "trailer (mp4 tập 1 → R2)",
+  "kiểm nội dung 18+ trước khi lên kệ (từ 'succubus')"
+ ],
+ "slug": "my-succubus-glow-up",
+ "title": "My Succubus Glow Up",
+ "network": "NetShort",
+ "genre": [],
+ "synopsis": "TODO",
+ "drama_url": "TODO",
+ "app_home_url": "TODO",
+ "trailer_url": null,
+ "poster": null,
+ "sources": {
+  "episodes": null,
+  "app": null
+ },
+ "intro": null,
+ "why": [],
+ "faq": []
+}
