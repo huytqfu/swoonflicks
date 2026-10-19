@@ -30,23 +30,20 @@ python3 _src/tests/new_film_test.py && node _src/tests/ads-links.test.js
 
 Luật trang phim (tool tự kiểm): không chữ "free", không tên network, không số tập, không chi tiết vũ khí, không tên riêng / con số ngoài synopsis, title ≤60, description ≤155.
 
-## 10 file nháp ShortMax hiện có (A27, 19/10)
+## 7 phim ShortMax đã sinh content (A28, 19/10)
 
-Top 10 bão hoà thấp của `side-hustle/short-drama/lo3-saturation-2026-10-19.md` (claude-work-brain, nhánh `claude/lo3-saturation-2026-10-19`, mục 3). `network` = ShortMax theo tag upload, chưa đối chiếu app. 5 spec NetShort cũ chuyển sang `_old/` (không xoá).
+Spec do PC điền (synopsis + cặp link DramaCPS); content sinh bằng `new_film.py --write`. 10 spec nháp A27 và 5 spec NetShort ở `_old/`.
 
-| File | Tên (ký tự) | Còn thiếu |
-|---|---|---|
-| `from-fat-girl-to-beauty-queen.json` | 29 | synopsis, cặp link, poster |
-| `i-taught-the-dragon-how-to-court-now-he-s-completely-mine.json` | 58 | như trên; seo_title tự rút về `<tên>` trơn |
-| `they-called-me-a-fool-until-i-saved-the-mafia-don.json` | 50 | như trên; seo_title rút về `<tên>: Watch` |
-| `too-fat-for-you-watch-me-marry-the-billionaire.json` | 47 | như trên; seo_title rút về `<tên>: Watch` |
-| `heiress-in-disguise.json` | 19 | như trên |
-| `the-mafia-heiress-returns.json` | 25 | như trên |
-| `revenge-of-the-billionaire-s-hidden-wife.json` | 40 | như trên |
-| `rise-of-the-forgotten-god-from-trash-to-shocking-the-gods.json` | 58 | như trên; seo_title rút về `<tên>` trơn |
-| `my-billionaire-ex-s-revenge.json` | 27 | như trên |
-| `forbidden-by-the-moon.json` | 21 | như trên |
+| Phim | Slug | Genre | Nguồn synopsis | SEO title / desc |
+|---|---|---|---|---|
+| His Childhood Friend Ruined My Car, I Ruined His Empire | `his-childhood-friend-ruined-my-car-i-ruined-his-empire` | Revenge, Romance | [DramaCPS](https://dramacps.com/dashboard/materials?source=shortmax&q=660602) | 55 / 134 |
+| I Raised the Wrong Fiancé | `i-raised-the-wrong-fianc` | Romance | [DramaCPS](https://dramacps.com/dashboard/materials?source=shortmax&q=662399) | 41 / 125 |
+| My Family Sold Me for $7 Million. I Owned Their Building | `my-family-sold-me-for-7-million-i-owned-their-building` | Family, Revenge | [DramaCPS](https://dramacps.com/dashboard/materials?source=shortmax&q=662357) | 56 / 142 |
+| Reborn, I Ditched the Faithless Crown Prince | `reborn-i-ditched-the-faithless-crown-prince` | Royal, Romance | [DramaCPS](https://dramacps.com/dashboard/materials?source=shortmax&q=660348) | 60 / 114 |
+| Reborn, I Refused to Pay for Her Lies | `reborn-i-refused-to-pay-for-her-lies` | Family, Revenge | [DramaCPS](https://dramacps.com/dashboard/materials?source=shortmax&q=664454) | 53 / 150 |
+| Scrap Lace, Broken Vows | `scrap-lace-broken-vows` | Revenge, Romance | [DramaCPS](https://dramacps.com/dashboard/materials?source=shortmax&q=660461) | 39 / 147 |
+| The Plus-Size Fiancée Both Brothers Wanted | `the-plus-size-fianc-e-both-brothers-wanted` | Romance | [DramaCPS](https://dramacps.com/dashboard/materials?source=shortmax&q=660385) | 58 / 140 |
 
-- **Synopsis: 0/10 có nguồn chính thức.** WebSearch 19/10 cho từng tên (kèm "ShortMax") không ra trang chính thức nào có synopsis đúng tên; `_source` để `null`, `synopsis` = TODO. Vài kết quả chỉ là tên gần hoặc bản tiếng Tây Ban Nha khác tên, không dùng.
-- `genre` điền theo tên phim, **chưa xác minh**; sửa khi có synopsis.
-- Tên lấy từ tiêu đề upload YouTube; tên chính thức trên DramaCPS / app chưa xác minh.
+- Genre chọn từ nhóm có sẵn của `GENRE` theo synopsis; dòng `GENRE` trong build.py (khoá `<slug>-<id>`) máy nhà thêm.
+- Scrap Lace: tên gốc DramaCPS có dấu phẩy toàn góc (`，`), spec đổi thành `, `.
+- Poster: cloud không tải được `cover_url` (img.reelhunter.xyz bị chặn) → máy nhà tải, đưa về 3:4, lưu `banner.jpg`.
